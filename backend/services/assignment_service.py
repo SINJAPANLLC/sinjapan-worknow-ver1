@@ -29,6 +29,58 @@ class AssignmentService(PostgresService):
         self.applications = application_service or ApplicationService()
         self.jobs = job_service or JobService()
 
+    def _auto_create_payment_if_needed(self, assignment_id: str, assignment_data: Dict) -> None:
+        """Automatically create payment for completed assignment if not already created"""
+        from .payment_service import PaymentService
+        
+        # Check if payment already exists
+        with self._get_cursor() as cursor:
+            cursor.execute(
+                "SELECT id FROM payments WHERE assignment_id = %s LIMIT 1",
+                (assignment_id,)
+            )
+            existing_payment = cursor.fetchone()
+            
+            if existing_payment:
+                return  # Payment already created
+            
+            # Check if started_at and completed_at are set
+            started_at = assignment_data.get("started_at")
+            completed_at = assignment_data.get("completed_at")
+            
+            if not started_at or not completed_at:
+                return  # Cannot calculate hours worked
+            
+            # Get hourly rate from job
+            cursor.execute("""
+                SELECT j.hourly_rate
+                FROM assignments a
+                JOIN jobs j ON a.job_id = j.id
+                WHERE a.id = %s
+            """, (assignment_id,))
+            result = cursor.fetchone()
+            
+            if not result or not result.get("hourly_rate"):
+                return  # No hourly rate set
+            
+            hourly_rate = result["hourly_rate"]
+            
+            # Calculate hours worked
+            if isinstance(started_at, str):
+                started_at = datetime.fromisoformat(started_at.replace('Z', '+00:00'))
+            if isinstance(completed_at, str):
+                completed_at = datetime.fromisoformat(completed_at.replace('Z', '+00:00'))
+            
+            hours_worked = (completed_at - started_at).total_seconds() / 3600
+            amount = int(hours_worked * hourly_rate)
+            
+            # Create payment
+            try:
+                payment_service = PaymentService()
+                payment_service.create_internal_payment(assignment_id, amount)
+            except Exception as e:
+                print(f"Failed to auto-create payment for assignment {assignment_id}: {str(e)}")
+
     def _to_assignment(self, data: Dict) -> AssignmentRead:
         return AssignmentRead(**data)
 
@@ -55,6 +107,11 @@ class AssignmentService(PostgresService):
         if "status" in update_data and isinstance(update_data["status"], AssignmentStatus):
             update_data["status"] = update_data["status"].value
         updated = self.update(assignment_id, update_data)
+        
+        # Auto-create payment when assignment is completed (if not already created)
+        if updated.get("status") == AssignmentStatus.COMPLETED.value:
+            self._auto_create_payment_if_needed(assignment_id, updated)
+        
         return self._to_assignment(updated)
 
     def list_assignments(
@@ -120,4 +177,9 @@ class AssignmentService(PostgresService):
             update_data["delivered_at"] = datetime.utcnow()
             update_data["completed_at"] = datetime.utcnow()
         updated = self.update(assignment_id, update_data)
+        
+        # Auto-create payment when delivery is completed
+        if next_status == AssignmentStatus.DELIVERED:
+            self._auto_create_payment_if_needed(assignment_id, updated)
+        
         return self._to_assignment(updated)
