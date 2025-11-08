@@ -26,7 +26,7 @@ class AssignmentsController extends StateNotifier<AsyncValue<List<Assignment>>> 
           .toList();
       state = AsyncValue.data(items);
     } catch (error, stack) {
-      state = AsyncValue.error(error, stackTrace: stack);
+      state = AsyncValue.error(error, stack);
     }
   }
 
@@ -39,7 +39,7 @@ class AssignmentsController extends StateNotifier<AsyncValue<List<Assignment>>> 
       });
       await refresh();
     } catch (error, stack) {
-      state = AsyncValue.error(error, stackTrace: stack);
+      state = AsyncValue.error(error, stack);
     }
   }
 }

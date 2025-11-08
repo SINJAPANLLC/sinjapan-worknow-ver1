@@ -103,7 +103,7 @@ class HomeScreen extends ConsumerWidget {
                             onTap: () => context.go('/admin/dashboard'),
                           ),
                       ],
-                    ).animate(interval: 60.ms).fadeIn(delay: 200.ms),
+                    ).animate().fadeIn(delay: 200.ms),
                   ],
                 ),
               ),

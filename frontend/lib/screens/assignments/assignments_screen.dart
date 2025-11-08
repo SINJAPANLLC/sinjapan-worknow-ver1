@@ -103,8 +103,8 @@ class _AssignmentsScreenState extends ConsumerState<AssignmentsScreen> {
                     child: assignmentsState.when(
                       data: (assignments) {
                         if (assignments.isEmpty) {
-                          return const ListView(
-                            children: [
+                          return ListView(
+                            children: const [
                               Padding(
                                 padding: EdgeInsets.all(32),
                                 child: Center(child: Text('割り当てられたタスクはありません。')),
@@ -207,7 +207,9 @@ class _AssignmentTile extends StatelessWidget {
                   labelText: 'ステータス更新',
                   border: OutlineInputBorder(),
                 ),
-                onChanged: onStatusChanged,
+                onChanged: onStatusChanged != null 
+                    ? (value) { if (value != null) onStatusChanged?.call(value); }
+                    : null,
               ),
           ],
         ),

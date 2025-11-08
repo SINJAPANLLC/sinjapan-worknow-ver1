@@ -105,8 +105,8 @@ class _ApplicationsScreenState extends ConsumerState<ApplicationsScreen> {
                     child: applicationsState.when(
                       data: (applications) {
                         if (applications.isEmpty) {
-                          return const ListView(
-                            children: [
+                          return ListView(
+                            children: const [
                               Padding(
                                 padding: EdgeInsets.all(32),
                                 child: Center(child: Text('応募はまだありません。')),
@@ -223,7 +223,9 @@ class _ApplicationTile extends StatelessWidget {
                         labelText: 'ステータス更新',
                         border: OutlineInputBorder(),
                       ),
-                      onChanged: onUpdateStatus,
+                      onChanged: onUpdateStatus != null 
+                          ? (value) { if (value != null) onUpdateStatus?.call(value); }
+                          : null,
                     ),
                   ),
               ],

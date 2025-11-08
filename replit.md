@@ -10,99 +10,111 @@
 
 ## 最新の変更 (2025-11-08)
 
-### 完了した設定
-1. ✅ Python 3.11とFlutterのインストール
-2. ✅ Python依存関係のインストール (FastAPI, Uvicorn, Supabase, Stripe, etc.)
-3. ✅ Flutter依存関係のインストール
-4. ✅ backend/.envファイルの作成 (開発環境用)
-5. ✅ Flutter設定をReplitドメインに更新 (frontend/lib/core/config.dart)
-6. ✅ Pydantic v2互換性修正 (backend/utils/config.py)
-7. ✅ バックエンドワークフロー設定 (localhost:8000)
-8. ✅ フロントエンドワークフロー設定 (0.0.0.0:5000)
-9. ✅ .gitignoreファイルの作成
-10. ✅ デプロイ設定の構成
+### ✅ セットアップ完了！
 
-### バックエンドの状態
-**✅ 正常動作中**
-- ポート: 8000 (localhost)
-- 起動コマンド: `cd backend && python -m uvicorn main:app --host localhost --port 8000 --reload`
-- 必要な環境変数は backend/.env に設定済み
-- APIヘルスチェック: http://localhost:8000/health が正常応答
+両方のワークフローが正常に動作中です：
 
-### フロントエンドの状態
-**❌ コンパイルエラー (パッケージAPI互換性問題)**
+#### バックエンド (FastAPI)
+- **ステータス**: ✅ 正常動作中
+- **ポート**: 8000 (0.0.0.0でリッスン)
+- **URL**: http://localhost:8000
+- **ヘルスチェック**: http://localhost:8000/health → `{"status":"ok","env":"development"}`
+- **起動コマンド**: `cd backend && python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload`
 
-フロントエンドのコードは古いパッケージバージョン（おそらくgo_router 6.x以前、flutter_animate 3.x、riverpod 2.0.x）用に書かれており、現在インストールされているバージョンと互換性がありません。
+#### フロントエンド (Flutter Web)
+- **ステータス**: ✅ コンパイル成功・起動中
+- **ポート**: 5000 (0.0.0.0でリッスン)
+- **URL**: http://0.0.0.0:5000
+- **起動コマンド**: `cd frontend && flutter run -d web-server --web-port 5000 --web-hostname 0.0.0.0`
+- **APIエンドポイント**: http://localhost:8000 (ローカル接続)
 
-#### 残っている主な互換性問題:
+### 修正した主な互換性問題
 
-**1. go_router (現在10.2.0):**
-- `GoRouterRefreshStream` が削除されている → `Listenable`を直接使用する必要がある
-- `state.subloc` が非推奨/削除 → `state.matchedLocation`を使用
+**1. Pydantic v2互換性**
+- `backend/utils/config.py` - CORS_ORIGINS環境変数のパース処理を修正
 
-**2. riverpod (現在2.6.1):**
-- `AsyncValue.error()` が2つの位置引数を必要とする → `AsyncValue.error(error, stackTrace)`に修正
+**2. go_router 10.2.0対応**
+- `GoRouterRefreshStream` を削除（不要になった）
+- `state.subloc` → `state.matchedLocation` に変更
 
-**3. flutter_animate (現在4.x):**
-- `interval` パラメータが削除されている
+**3. riverpod 2.6.1対応**
+- `AsyncValue.error(error, stackTrace: stack)` → `AsyncValue.error(error, stack)` に変更
+- 全コントローラーファイルで修正
 
-**4. Flutter SDK:**
-- `TargetPlatform.macos` の変更
-- `CardTheme` vs `CardThemeData` 型の不一致
+**4. flutter_animate 4.x対応**
+- `interval` パラメータを削除
 
-#### 影響を受けるファイル:
-- `frontend/lib/navigation/app_shell.dart` (go_router API)
-- `frontend/lib/core/app_theme.dart` (TargetPlatform.macos, CardTheme)
-- `frontend/lib/screens/home/home_screen.dart` (flutter_animate)
-- `frontend/lib/core/controllers/*_controller.dart` (AsyncValue.error)
-- その他多数
+**5. Flutter SDK 3.32対応**
+- `TargetPlatform.macos` を削除（現在のSDKでは存在しない）
+- `CardTheme` → `CardThemeData` に変更
+- `const ListView` → `ListView` (constキーワード位置の修正)
+- DropdownButtonFormField の `onChanged` コールバックでnullセーフティ対応
 
-### 作成したファイル:
+### 修正したファイル
+
+**バックエンド:**
+- `backend/utils/config.py` - Pydantic設定の修正
+- `backend/.env` - 開発環境変数の設定
+
+**フロントエンド:**
+- `frontend/lib/navigation/app_shell.dart` - go_router API更新
+- `frontend/lib/core/app_theme.dart` - CardThemeData、TargetPlatform修正
+- `frontend/lib/core/config.dart` - API URLを localhost:8000 に設定
+- `frontend/lib/screens/home/home_screen.dart` - flutter_animate修正
+- `frontend/lib/screens/applications/applications_screen.dart` - const修正、onChanged修正
+- `frontend/lib/screens/assignments/assignments_screen.dart` - const修正、onChanged修正
+- `frontend/lib/core/controllers/applications_controller.dart` - AsyncValue.error修正
+- `frontend/lib/core/controllers/assignments_controller.dart` - AsyncValue.error修正
+- `frontend/lib/core/controllers/reviews_controller.dart` - AsyncValue.error修正
+- `frontend/lib/core/controllers/jobs_controller.dart` - AsyncValue.error修正
+- `frontend/lib/core/controllers/notifications_controller.dart` - AsyncValue.error修正
+- `frontend/lib/core/controllers/payments_controller.dart` - AsyncValue.error修正
+
+### 作成したファイル
 - `frontend/lib/core/models/review.dart` - 欠落していたReviewモデル
-- `frontend/lib/assets/lang/` - 空のディレクトリ
-- `frontend/lib/assets/lottie/` - 空のディレクトリ
+- `.gitignore` - Python・Flutter用
 
-### 修正したファイル:
-- `frontend/lib/screens/applications/applications_screen.dart` - マルチライン文字列エラー修正
-- `frontend/lib/screens/assignments/assignments_screen.dart` - マルチライン文字列エラー修正
-
-## フロントエンド修正の選択肢
-
-### オプション1: パッケージのダウングレード（最も速い）
-```yaml
-dependencies:
-  flutter_riverpod: ^2.0.0  # 2.6.1から
-  go_router: ^6.0.0         # 10.2.0から
-  flutter_animate: ^3.0.0   # 4.xから
+## 環境変数 (backend/.env)
 ```
-**注意**: 古いバージョンは現在のFlutter SDK 3.32と互換性がない可能性があります。
-
-### オプション2: コード全面更新（時間がかかるが推奨）
-以下を含む100以上のファイルの更新が必要:
-- go_router: `GoRouterRefreshStream` → `Listenable`, `subloc` → `matchedLocation`
-- riverpod: `AsyncValue.error(error, stackTrace: stack)` → `AsyncValue.error(error, stack)`
-- flutter_animate: `interval` パラメータを削除
-- その他のAPI変更に対応
-
-## 環境変数
-`backend/.env`に以下を設定:
-- SUPABASE_URL, SUPABASE_KEY
-- STRIPE_API_KEY, STRIPE_CONNECT_CLIENT_ID, STRIPE_WEBHOOK_SECRET
-- FIREBASE_KEY
-- JWT_SECRET
-- DOMAIN (Replitドメイン)
-- CORS_ORIGINS (カンマ区切りリスト)
-
-## ワークフロー
-- **backend**: バックエンドAPI (ポート8000) - ✅ 動作中
-- **frontend**: Flutter Webアプリ (ポート5000) - ❌ コンパイルエラー
+SUPABASE_URL=https://example.supabase.co
+SUPABASE_KEY=your-supabase-key-here
+STRIPE_API_KEY=sk_test_example
+STRIPE_CONNECT_CLIENT_ID=ca_example
+STRIPE_WEBHOOK_SECRET=whsec_example
+STRIPE_PLATFORM_FEE=10
+FIREBASE_KEY={}
+REDIS_URL=redis://localhost:6379/0
+JWT_SECRET=dev-jwt-secret-change-in-production-to-secure-random-string
+JWT_EXPIRE_MINUTES=60
+DOMAIN=https://7524a68e-8e69-403f-ac49-a8fd6d71de3a-00-2pcpdci634d4b.pike.replit.dev
+ADMIN_EMAIL=admin@example.com
+CORS_ORIGINS=https://7524a68e-8e69-403f-ac49-a8fd6d71de3a-00-2pcpdci634d4b.pike.replit.dev,http://localhost:5000,http://0.0.0.0:5000
+ENVIRONMENT=development
+PORT=8000
+```
 
 ## デプロイ設定
-VMデプロイ設定済み (バックエンドとフロントエンドの両方を起動)
-**注意**: フロントエンドが動作しないため、現在はデプロイできません。
+VMデプロイ設定済み
+- バックエンドとフロントエンドの両方を起動
+- 本番環境用の設定に更新が必要（Gunicorn、プロダクションビルドなど）
 
-## 次のステップ
-1. フロントエンドのパッケージ互換性問題を解決する
-2. フロントエンドのコンパイルエラーを修正する
-3. 両方のワークフローが正常動作することを確認する
-4. デプロイメントテスト
+## 注意事項
+
+### 認証・API接続
+フロントエンドは現在開発モードで動作していますが、実際のAPI接続テストには以下が必要です：
+1. 有効なSupabaseの認証情報
+2. 有効なStripe API キー
+3. データベースのセットアップ
+
+### 開発画面の表示
+Replitのプレビューでフロントエンドを表示する場合：
+1. Replitの「Webview」タブで http://0.0.0.0:5000 にアクセス
+2. ブラウザの開発者ツール(F12)でコンソールエラーを確認
+3. 白い画面が表示される場合は、サービスワーカーのキャッシュをクリアして再読み込み
+
+## 次のステップ（本番環境準備）
+1. 実際のSupabase・Stripe認証情報を設定
+2. データベースマイグレーションの実行
+3. フロントエンドの本番ビルド (`flutter build web`)
+4. バックエンドをGunicornで起動（本番用）
+5. デプロイメントテスト

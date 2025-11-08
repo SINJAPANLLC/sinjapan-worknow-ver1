@@ -26,7 +26,7 @@ class ApplicationsController extends StateNotifier<AsyncValue<List<Application>>
           .toList();
       state = AsyncValue.data(items);
     } catch (error, stack) {
-      state = AsyncValue.error(error, stackTrace: stack);
+      state = AsyncValue.error(error, stack);
     }
   }
 
@@ -39,7 +39,7 @@ class ApplicationsController extends StateNotifier<AsyncValue<List<Application>>
       });
       await refresh();
     } catch (error, stack) {
-      state = AsyncValue.error(error, stackTrace: stack);
+      state = AsyncValue.error(error, stack);
     }
   }
 
@@ -50,7 +50,7 @@ class ApplicationsController extends StateNotifier<AsyncValue<List<Application>>
       });
       await refresh();
     } catch (error, stack) {
-      state = AsyncValue.error(error, stackTrace: stack);
+      state = AsyncValue.error(error, stack);
     }
   }
 }

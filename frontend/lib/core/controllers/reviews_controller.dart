@@ -29,7 +29,7 @@ class ReviewsController extends StateNotifier<AsyncValue<List<Review>>> {
           .toList();
       state = AsyncValue.data(items);
     } catch (error, stack) {
-      state = AsyncValue.error(error, stackTrace: stack);
+      state = AsyncValue.error(error, stack);
     }
   }
 
@@ -50,7 +50,7 @@ class ReviewsController extends StateNotifier<AsyncValue<List<Review>>> {
       });
       await refresh();
     } catch (error, stack) {
-      state = AsyncValue.error(error, stackTrace: stack);
+      state = AsyncValue.error(error, stack);
     }
   }
 
@@ -63,7 +63,7 @@ class ReviewsController extends StateNotifier<AsyncValue<List<Review>>> {
       });
       await refresh();
     } catch (error, stack) {
-      state = AsyncValue.error(error, stackTrace: stack);
+      state = AsyncValue.error(error, stack);
     }
   }
 }

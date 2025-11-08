@@ -75,7 +75,7 @@ class WorkNowTheme {
           color: _primaryDark,
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         elevation: 6,
         shadowColor: _primary.withOpacity(0.12),
         surfaceTintColor: Colors.white,
@@ -110,7 +110,6 @@ class WorkNowTheme {
         builders: {
           TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-          TargetPlatform.macos: CupertinoPageTransitionsBuilder(),
           TargetPlatform.windows: ZoomPageTransitionsBuilder(),
           TargetPlatform.linux: ZoomPageTransitionsBuilder(),
         },

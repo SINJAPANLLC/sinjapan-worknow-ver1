@@ -17,11 +17,9 @@ import '../screens/wallet/wallet_screen.dart';
 
 final appShellRouterProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(currentUserProvider);
-  final authController = ref.watch(currentUserProvider.notifier);
 
   return GoRouter(
     initialLocation: '/home',
-    refreshListenable: GoRouterRefreshStream(authController.stream),
     routes: [
       GoRoute(
         path: '/login',
@@ -96,7 +94,7 @@ final appShellRouterProvider = Provider<GoRouter>((ref) {
     ],
     redirect: (context, state) {
       final isAuthenticated = authState.valueOrNull != null;
-      final isLoggingIn = state.subloc == '/login';
+      final isLoggingIn = state.matchedLocation == '/login';
 
       if (!isAuthenticated && !isLoggingIn) {
         return '/login';
