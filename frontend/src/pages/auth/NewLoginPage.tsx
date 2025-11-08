@@ -34,14 +34,14 @@ export default function NewLoginPage() {
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
       
       <motion.div
-        className="relative z-10 w-full max-w-md px-4"
+        className="relative z-10 w-full max-w-sm px-4"
         variants={staggerChildren}
         initial="initial"
         animate="animate"
       >
         <motion.div variants={slideUp}>
-          <Card padding="lg" className="bg-white/95 backdrop-blur-sm shadow-2xl">
-            <div className="text-center mb-8">
+          <Card padding="md" className="bg-white/95 backdrop-blur-sm shadow-2xl">
+            <div className="text-center mb-6">
               <h2 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
                 ログイン
               </h2>
