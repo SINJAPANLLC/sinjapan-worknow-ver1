@@ -217,7 +217,7 @@ export function ProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00A5A8] to-[#007E7A] p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00A5A8] to-[#009999] p-4 md:p-8">
       <div className="max-w-2xl mx-auto space-y-6">
         <motion.div
           variants={slideUp}
@@ -227,7 +227,7 @@ export function ProfilePage() {
           <Card className="p-6">
             <div className="flex flex-col items-center space-y-4">
               <div className="relative">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-r from-[#00CED1] to-[#007E7A] flex items-center justify-center text-white text-3xl font-bold overflow-hidden">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-r from-[#00CED1] to-[#009999] flex items-center justify-center text-white text-3xl font-bold overflow-hidden">
                   {user.avatar_url ? (
                     <img src={user.avatar_url} alt={user.full_name} className="w-full h-full object-cover" />
                   ) : (

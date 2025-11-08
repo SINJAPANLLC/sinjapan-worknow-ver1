@@ -47,12 +47,12 @@ export default function JobsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#00C6A7] via-[#009B8F] to-[#007E7A] pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00B5B5] to-[#009999] pb-20">
       <div className="bg-white/95 backdrop-blur-sm sticky top-0 z-20 shadow-lg pt-20">
         <div className="px-4 py-3 space-y-3">
-          <button className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#00C6A7]/10 to-[#007E7A]/10 rounded-xl hover:from-[#00C6A7]/20 hover:to-[#007E7A]/20 transition-all border border-[#00C6A7]/20">
+          <button className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#00CED1]/10 to-[#009999]/10 rounded-xl hover:from-[#00CED1]/20 hover:to-[#009999]/20 transition-all border border-[#00CED1]/20">
             <div className="flex items-center gap-2">
-              <MapPinIcon className="w-5 h-5 text-[#007E7A]" />
+              <MapPinIcon className="w-5 h-5 text-[#009999]" />
               <span className="font-medium text-gray-900">{selectedPrefecture}</span>
             </div>
             <ChevronDown className="w-5 h-5 text-gray-400" />
@@ -65,7 +65,7 @@ export default function JobsPage() {
                 onClick={() => setSelectedDate(date.value)}
                 className={`flex-shrink-0 px-4 py-3 rounded-xl font-medium transition-all ${
                   selectedDate === date.value
-                    ? 'bg-gradient-to-r from-[#00C6A7] to-[#007E7A] text-white shadow-lg shadow-[#00C6A7]/30'
+                    ? 'bg-gradient-to-r from-[#00CED1] to-[#009999] text-white shadow-lg shadow-[#00CED1]/30'
                     : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
                 }`}
               >
@@ -78,9 +78,9 @@ export default function JobsPage() {
             ))}
           </div>
 
-          <button className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#00C6A7]/10 to-[#007E7A]/10 rounded-xl hover:from-[#00C6A7]/20 hover:to-[#007E7A]/20 transition-all border border-[#00C6A7]/20">
+          <button className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#00CED1]/10 to-[#009999]/10 rounded-xl hover:from-[#00CED1]/20 hover:to-[#009999]/20 transition-all border border-[#00CED1]/20">
             <div className="flex items-center gap-2">
-              <svg className="w-4 h-4 text-[#007E7A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-[#009999]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
               </svg>
               <span className="text-sm text-gray-700">
@@ -140,10 +140,10 @@ export default function JobsPage() {
                       />
                     </button>
 
-                    <div className="aspect-[4/3] bg-gradient-to-br from-[#00C6A7]/20 to-[#007E7A]/20 relative overflow-hidden">
+                    <div className="aspect-[4/3] bg-gradient-to-br from-[#00CED1]/20 to-[#009999]/20 relative overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                       <div className="absolute bottom-2 left-2">
-                        <Badge variant="success" className="bg-white/95 backdrop-blur-sm text-[#007E7A] border-0 shadow-sm font-bold">
+                        <Badge variant="success" className="bg-white/95 backdrop-blur-sm text-[#009999] border-0 shadow-sm font-bold">
                           未経験歓迎
                         </Badge>
                       </div>
@@ -156,7 +156,7 @@ export default function JobsPage() {
 
                       <div className="space-y-1 mb-3">
                         <div className="flex items-center gap-1 text-xs text-gray-600">
-                          <Clock className="w-3.5 h-3.5 flex-shrink-0 text-[#00C6A7]" />
+                          <Clock className="w-3.5 h-3.5 flex-shrink-0 text-[#00CED1]" />
                           <span className="truncate">
                             {job.starts_at ? new Date(job.starts_at).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) : '9:30'} 
                             ～ 
@@ -164,12 +164,12 @@ export default function JobsPage() {
                           </span>
                         </div>
                         <div className="flex items-center gap-1 text-xs text-gray-600">
-                          <MapPin className="w-3.5 h-3.5 flex-shrink-0 text-[#00C6A7]" />
+                          <MapPin className="w-3.5 h-3.5 flex-shrink-0 text-[#00CED1]" />
                           <span className="truncate">{job.location || '愛甲郡愛川町'} • 0.6km</span>
                         </div>
                       </div>
 
-                      <div className="text-2xl font-bold bg-gradient-to-r from-[#00C6A7] to-[#007E7A] bg-clip-text text-transparent">
+                      <div className="text-2xl font-bold bg-gradient-to-r from-[#00CED1] to-[#009999] bg-clip-text text-transparent">
                         ¥{job.hourly_rate ? job.hourly_rate.toLocaleString() : '2,175'}
                       </div>
                     </div>
@@ -180,7 +180,7 @@ export default function JobsPage() {
           </div>
         ) : (
           <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#00C6A7] to-[#007E7A] rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#00CED1] to-[#009999] rounded-full flex items-center justify-center mx-auto mb-4">
               <Sparkles className="w-8 h-8 text-white" />
             </div>
             <p className="text-gray-900 font-bold mb-2">求人が見つかりませんでした</p>

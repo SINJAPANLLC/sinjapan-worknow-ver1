@@ -19,7 +19,7 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
 ### UI/UX Decisions
 -   **Branding**: Unified branding under "Work Now" (space included).
     -   Logo: Turquoise background with "WORK NOW IN JAPAN".
-    -   Primary Color Palette: Turquoise gradient theme (`#00C6A7` to `#007E7A`).
+    -   Primary Color Palette: Turquoise gradient theme (`#00CED1` to `#009999`).
     -   Typography: `clamp()` for perfect mobile responsiveness.
     -   Icons: Lucide Icons for vector clarity, @heroicons/react for dashboards.
 -   **Design System**:

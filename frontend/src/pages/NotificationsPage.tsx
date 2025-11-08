@@ -72,14 +72,14 @@ export function NotificationsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00A5A8] to-[#007E7A] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00A5A8] to-[#009999] flex items-center justify-center">
         <p className="text-white text-lg">読み込み中...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00A5A8] to-[#007E7A] p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00A5A8] to-[#009999] p-4 md:p-8">
       <div className="max-w-3xl mx-auto space-y-6">
         <motion.div
           variants={slideUp}
