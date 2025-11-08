@@ -45,9 +45,9 @@ export default function ApplicationsPage() {
   const currentApplications = activeTab === 'upcoming' ? upcomingApplications : pastApplications;
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
-      <div className="bg-white pt-20 pb-0 sticky top-0 z-20 shadow-sm">
-        <h1 className="text-2xl font-bold text-center text-gray-900 py-4">はたらく</h1>
+    <div className="min-h-screen bg-gradient-to-br from-[#00C6A7] via-[#009B8F] to-[#007E7A] pb-20">
+      <div className="bg-white/95 backdrop-blur-sm pt-20 pb-0 sticky top-0 z-20 shadow-lg">
+        <h1 className="text-2xl font-bold text-center bg-gradient-to-r from-[#00C6A7] to-[#007E7A] bg-clip-text text-transparent py-4">はたらく</h1>
         
         <div className="flex">
           <button
@@ -62,7 +62,7 @@ export default function ApplicationsPage() {
             {activeTab === 'upcoming' && (
               <motion.div
                 layoutId="activeTab"
-                className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-400 to-yellow-500"
+                className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#00C6A7] to-[#007E7A]"
                 transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
               />
             )}
@@ -79,7 +79,7 @@ export default function ApplicationsPage() {
             {activeTab === 'past' && (
               <motion.div
                 layoutId="activeTab"
-                className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-400 to-yellow-500"
+                className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#00C6A7] to-[#007E7A]"
                 transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
               />
             )}
@@ -138,16 +138,16 @@ export default function ApplicationsPage() {
             className="py-8"
           >
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-3">
+              <h2 className="text-2xl font-bold text-white mb-3">
                 {activeTab === 'upcoming' ? '今後の予定はありません' : '過去の仕事はありません'}
               </h2>
-              <p className="text-gray-600 mb-6">
+              <p className="text-white/90 mb-6">
                 次のお仕事を探してみましょう。
               </p>
               <Link to="/jobs">
                 <Button 
                   variant="primary" 
-                  className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-3 rounded-xl shadow-lg"
+                  className="bg-gradient-to-r from-[#00C6A7] to-[#007E7A] hover:from-[#00B599] hover:to-[#006B68] text-white px-8 py-3 rounded-xl shadow-lg"
                 >
                   仕事をさがす
                 </Button>
@@ -172,16 +172,16 @@ export default function ApplicationsPage() {
               </svg>
             </div>
 
-            <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-2xl p-6 flex items-center gap-4 shadow-lg">
-              <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                <div className="w-12 h-16 bg-gray-100 rounded-lg flex items-center justify-center relative">
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-6 h-8 bg-yellow-400 rounded" />
+            <div className="bg-white rounded-2xl p-6 flex items-center gap-4 shadow-lg border-2 border-[#00C6A7]">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#00C6A7] to-[#007E7A] rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                <div className="w-12 h-16 bg-white rounded-lg flex items-center justify-center relative">
+                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-6 h-8 bg-gradient-to-br from-[#00C6A7] to-[#007E7A] rounded" />
                   <BookOpen className="w-6 h-6 text-gray-600 relative z-10" />
                 </div>
               </div>
               <div className="flex-1">
-                <h3 className="font-bold text-xl text-gray-900 mb-1">Timee</h3>
-                <p className="text-sm text-gray-800 font-medium">かんたん</p>
+                <h3 className="font-bold text-xl bg-gradient-to-r from-[#00C6A7] to-[#007E7A] bg-clip-text text-transparent mb-1">Work Now</h3>
+                <p className="text-sm text-gray-700 font-medium">かんたん</p>
                 <p className="text-lg font-bold text-gray-900">働きかたガイド</p>
               </div>
             </div>
