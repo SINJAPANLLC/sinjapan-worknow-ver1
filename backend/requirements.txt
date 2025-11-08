@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+supabase-py
+stripe
+firebase-admin
+gunicorn
+python-jose[cryptography]
+passlib[bcrypt]
+redis
+aiofiles
+python-multipart
+pydantic
+requests
+certbot
+certbot-nginx

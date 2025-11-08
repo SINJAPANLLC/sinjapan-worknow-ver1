@@ -1,0 +1,13 @@
+[Unit]
+Description=WORK NOW FastAPI Service
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/root/worknow/backend
+ExecStart=/usr/bin/gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
