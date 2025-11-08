@@ -4,9 +4,9 @@ import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { Footer } from '../../components/layout/Footer';
 import { 
-  Zap, 
-  Shield, 
-  Wallet, 
+  Target,
+  Coins,
+  Handshake,
   TrendingUp, 
   Users, 
   CheckCircle2,
@@ -30,22 +30,22 @@ export default function LandingPage() {
 
   const features = [
     {
-      icon: Zap,
-      title: '即戦力マッチング',
-      description: 'AIとデータ分析により、スキルと経験に基づいた精度の高いマッチングを実現',
-      gradient: 'from-yellow-400 to-orange-500',
+      icon: Target,
+      title: '自由な働き方',
+      description: 'いつでも、どこでも、好きな仕事を選べる',
+      gradient: 'from-purple-400 to-blue-500',
     },
     {
-      icon: Wallet,
-      title: '安全な報酬管理',
-      description: 'Stripe Connectによる国際水準のセキュリティで報酬を安全・迅速に管理',
+      icon: Coins,
+      title: '即日報酬',
+      description: '働いた分だけ、すぐに受け取れる',
       gradient: 'from-green-400 to-emerald-500',
     },
     {
-      icon: Shield,
-      title: 'セキュアな環境',
-      description: 'エンタープライズグレードの暗号化技術で、あなたのデータを完全保護',
-      gradient: 'from-blue-400 to-cyan-500',
+      icon: Handshake,
+      title: '信頼できるマッチング',
+      description: '企業との安心・安全なつながり',
+      gradient: 'from-yellow-400 to-orange-500',
     },
   ];
 
