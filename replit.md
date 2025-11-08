@@ -25,6 +25,7 @@ Flutter Webの表示問題により、React + Viteに完全移行しました。
 - **ポート**: 5000 (0.0.0.0でリッスン)
 - **URL**: http://0.0.0.0:5000
 - **起動コマンド**: `cd frontend && npm run dev`
+- **Vite設定**: `allowedHosts: true` でReplit環境対応
 - **技術スタック**:
   - React 18
   - TypeScript
@@ -49,51 +50,31 @@ Flutter Webの表示問題により、React + Viteに完全移行しました。
 - ダッシュボード
 - 求人ページ（基本構造）
 
-### 修正した主な互換性問題
+### 修正した主な問題
 
-**1. Pydantic v2互換性**
+**1. Vite設定 (Replit環境対応)**
+- `frontend/vite.config.ts` - `allowedHosts: true` を追加してReplit Webviewからのアクセスを許可
+
+**2. Pydantic v2互換性**
 - `backend/utils/config.py` - CORS_ORIGINS環境変数のパース処理を修正
 
-**2. go_router 10.2.0対応**
-- `GoRouterRefreshStream` を削除（不要になった）
-- `state.subloc` → `state.matchedLocation` に変更
+**3. TypeScript型エラー修正**
+- `frontend/src/components/layout/ProtectedRoute.tsx` - `ReactNode` を明示的にimport
 
-**3. riverpod 2.6.1対応**
-- `AsyncValue.error(error, stackTrace: stack)` → `AsyncValue.error(error, stack)` に変更
-- 全コントローラーファイルで修正
+**4. 認証フロー改善**
+- `frontend/src/hooks/useAuthInit.ts` - ページリロード時に `/auth/me` でユーザー情報を復元
+- `frontend/src/lib/api.ts` - 401エラー時に `logout()` を呼び出してからリダイレクト
 
-**4. flutter_animate 4.x対応**
-- `interval` パラメータを削除
-
-**5. Flutter SDK 3.32対応**
-- `TargetPlatform.macos` を削除（現在のSDKでは存在しない）
-- `CardTheme` → `CardThemeData` に変更
-- `const ListView` → `ListView` (constキーワード位置の修正)
-- DropdownButtonFormField の `onChanged` コールバックでnullセーフティ対応
-
-### 修正したファイル
-
-**バックエンド:**
-- `backend/utils/config.py` - Pydantic設定の修正
-- `backend/.env` - 開発環境変数の設定
-
-**フロントエンド:**
-- `frontend/lib/navigation/app_shell.dart` - go_router API更新
-- `frontend/lib/core/app_theme.dart` - CardThemeData、TargetPlatform修正
-- `frontend/lib/core/config.dart` - API URLを localhost:8000 に設定
-- `frontend/lib/screens/home/home_screen.dart` - flutter_animate修正
-- `frontend/lib/screens/applications/applications_screen.dart` - const修正、onChanged修正
-- `frontend/lib/screens/assignments/assignments_screen.dart` - const修正、onChanged修正
-- `frontend/lib/core/controllers/applications_controller.dart` - AsyncValue.error修正
-- `frontend/lib/core/controllers/assignments_controller.dart` - AsyncValue.error修正
-- `frontend/lib/core/controllers/reviews_controller.dart` - AsyncValue.error修正
-- `frontend/lib/core/controllers/jobs_controller.dart` - AsyncValue.error修正
-- `frontend/lib/core/controllers/notifications_controller.dart` - AsyncValue.error修正
-- `frontend/lib/core/controllers/payments_controller.dart` - AsyncValue.error修正
-
-### 作成したファイル
-- `frontend/lib/core/models/review.dart` - 欠落していたReviewモデル
-- `.gitignore` - Python・Flutter用
+### 作成したファイル（React）
+- `frontend/src/stores/authStore.ts` - Zustand認証ストア
+- `frontend/src/lib/api.ts` - Axios APIクライアント
+- `frontend/src/lib/supabase.ts` - Supabaseクライアント
+- `frontend/src/hooks/useAuthInit.ts` - 認証初期化フック
+- `frontend/src/components/layout/MainLayout.tsx` - メインレイアウト
+- `frontend/src/components/layout/ProtectedRoute.tsx` - 保護されたルート
+- `frontend/src/pages/auth/LoginPage.tsx` - ログイン画面
+- `frontend/src/pages/dashboard/DashboardPage.tsx` - ダッシュボード
+- `frontend/src/pages/jobs/JobsPage.tsx` - 求人リスト
 
 ## 環境変数 (backend/.env)
 ```
