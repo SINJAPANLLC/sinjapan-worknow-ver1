@@ -86,17 +86,9 @@ export function Header() {
               </Menu>
             </>
           ) : (
-            <>
-              <Link to="/login" className="text-white hover:text-white/80 transition-colors font-medium text-sm md:text-base">
-                ログイン
-              </Link>
-              <Link
-                to="/register/worker"
-                className="px-3 py-2 md:px-4 md:py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition-all font-medium text-sm md:text-base"
-              >
-                登録
-              </Link>
-            </>
+            <Link to="/login" className="text-white hover:text-white/80 transition-colors font-medium text-sm md:text-base">
+              ログイン
+            </Link>
           )}
         </nav>
       </div>

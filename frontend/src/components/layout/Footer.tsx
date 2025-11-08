@@ -4,16 +4,10 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="bg-neutral-900 text-white mt-auto hidden md:block">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="col-span-1 md:col-span-2">
-            <h3 className="text-2xl font-bold bg-gradient-primary-soft bg-clip-text text-transparent mb-4">
-              Work Now
-            </h3>
-            <p className="text-neutral-400 text-sm mb-4">
-              即戦力マッチング&報酬プラットフォーム
-            </p>
+    <footer className="bg-neutral-900 text-white mt-auto">
+      <div className="container mx-auto px-4 py-8 md:py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
             <div className="text-neutral-400 text-sm space-y-1">
               <p className="font-semibold text-neutral-300">運営会社</p>
               <p>合同会社SIN JAPAN</p>
@@ -26,38 +20,6 @@ export function Footer() {
                 </a>
               </p>
             </div>
-          </div>
-          
-          <div>
-            <h4 className="font-semibold mb-4">ワーカー</h4>
-            <ul className="space-y-2 text-sm text-neutral-400">
-              <li>
-                <Link to="/jobs" className="hover:text-primary-400 transition-colors">
-                  求人を探す
-                </Link>
-              </li>
-              <li>
-                <Link to="/register/worker" className="hover:text-primary-400 transition-colors">
-                  ワーカー登録
-                </Link>
-              </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h4 className="font-semibold mb-4">クライアント</h4>
-            <ul className="space-y-2 text-sm text-neutral-400">
-              <li>
-                <Link to="/post-job" className="hover:text-primary-400 transition-colors">
-                  求人を投稿
-                </Link>
-              </li>
-              <li>
-                <Link to="/register/client" className="hover:text-primary-400 transition-colors">
-                  クライアント登録
-                </Link>
-              </li>
-            </ul>
           </div>
           
           <div>

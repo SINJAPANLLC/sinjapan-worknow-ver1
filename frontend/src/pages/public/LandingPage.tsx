@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, useInView } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { Footer } from '../../components/layout/Footer';
 import { 
-  Target,
-  Coins,
-  Handshake,
+  Compass,
+  Wallet,
+  ShieldCheck,
   TrendingUp, 
   Users, 
   CheckCircle2,
@@ -23,6 +24,37 @@ import {
   pulseGlow 
 } from '../../utils/animations';
 
+function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: string }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (isInView) {
+      let startTime: number;
+      const duration = 2000;
+
+      const animate = (currentTime: number) => {
+        if (!startTime) startTime = currentTime;
+        const progress = Math.min((currentTime - startTime) / duration, 1);
+        
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        setCount(Math.floor(easeOutQuart * value));
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          setCount(value);
+        }
+      };
+
+      requestAnimationFrame(animate);
+    }
+  }, [isInView, value]);
+
+  return <span ref={ref}>{count.toLocaleString()}{suffix}</span>;
+}
+
 export default function LandingPage() {
   const { scrollYProgress } = useScroll();
   const heroY = useTransform(scrollYProgress, [0, 0.5], [0, 200]);
@@ -30,29 +62,29 @@ export default function LandingPage() {
 
   const features = [
     {
-      icon: Target,
+      icon: Compass,
       title: '自由な働き方',
       description: 'いつでも、どこでも、好きな仕事を選べる',
-      gradient: 'from-purple-400 to-blue-500',
+      gradient: 'from-[#33D9E3] via-[#3D8BEB] to-[#1F4FC9]',
     },
     {
-      icon: Coins,
+      icon: Wallet,
       title: '即日報酬',
       description: '働いた分だけ、すぐに受け取れる',
-      gradient: 'from-green-400 to-emerald-500',
+      gradient: 'from-[#5EEAD4] via-[#2ECC9A] to-[#0D7A5C]',
     },
     {
-      icon: Handshake,
+      icon: ShieldCheck,
       title: '信頼できるマッチング',
       description: '企業との安心・安全なつながり',
-      gradient: 'from-yellow-400 to-orange-500',
+      gradient: 'from-[#4C9BBF] via-[#2563EB] to-[#1E3A8A]',
     },
   ];
 
   const stats = [
-    { icon: Users, value: '10,000+', label: 'アクティブユーザー' },
-    { icon: TrendingUp, value: '98%', label: 'マッチング成功率' },
-    { icon: CheckCircle2, value: '5,000+', label: '成約実績' },
+    { icon: Users, value: 10000, suffix: '+', label: 'アクティブユーザー' },
+    { icon: TrendingUp, value: 98, suffix: '%', label: 'マッチング成功率' },
+    { icon: CheckCircle2, value: 5000, suffix: '+', label: '成約実績' },
   ];
 
   return (
@@ -172,155 +204,82 @@ export default function LandingPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent"
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent"
                 style={{ fontSize: 'clamp(1.875rem, 5vw, 3rem)' }}>
               Work Nowの特徴
             </h2>
-            <p className="text-neutral-600 text-base sm:text-lg max-w-2xl mx-auto">
-              最先端のテクノロジーで、理想の働き方を実現します
-            </p>
           </motion.div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ 
-                  delay: index * 0.15, 
-                  duration: 0.6,
-                  ease: [0.22, 1, 0.36, 1]
+                  delay: index * 0.12, 
+                  duration: 0.45,
+                  ease: [0.16, 1, 0.3, 1]
                 }}
               >
-                <motion.div
-                  whileHover={{ y: -8, transition: { type: "spring", stiffness: 300 } }}
-                >
-                  <Card className="text-center h-full p-8 group cursor-pointer border-2 border-transparent hover:border-primary/20 transition-all duration-300">
-                    <motion.div 
-                      className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${feature.gradient} mb-6 shadow-lg`}
-                      whileHover={{ 
-                        rotate: [0, -10, 10, 0],
-                        scale: 1.1,
-                        transition: { duration: 0.6 }
-                      }}
-                    >
-                      <feature.icon className="w-8 h-8 text-white" strokeWidth={2.5} />
-                    </motion.div>
-                    <h3 className="text-xl sm:text-2xl font-bold mb-4 text-neutral-800 group-hover:bg-gradient-primary group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
-                      {feature.title}
-                    </h3>
-                    <p className="text-neutral-700 leading-relaxed text-sm sm:text-base">
-                      {feature.description}
-                    </p>
-                  </Card>
-                </motion.div>
+                <Card className="text-center h-full p-10 group cursor-pointer bg-gradient-to-b from-white to-neutral-50/50 border border-white/40 hover:border-primary/30 hover:shadow-xl transition-all duration-500">
+                  <motion.div 
+                    className={`inline-flex p-5 rounded-2xl bg-gradient-to-br ${feature.gradient} mb-6 shadow-lg`}
+                    whileHover={{ 
+                      y: -6,
+                      scale: 1.04,
+                      transition: { type: "spring", stiffness: 180, damping: 24 }
+                    }}
+                  >
+                    <feature.icon className="w-10 h-10 text-white" strokeWidth={2.25} />
+                  </motion.div>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-4 text-neutral-800 group-hover:text-primary transition-all duration-300">
+                    {feature.title}
+                  </h3>
+                  <p className="text-neutral-600 leading-relaxed text-sm sm:text-base font-medium">
+                    {feature.description}
+                  </p>
+                </Card>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-16 sm:py-20 bg-gradient-to-br from-gray-50 to-white">
+      <section className="py-20 sm:py-24 bg-gradient-to-br from-neutral-50 to-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 lg:gap-12">
             {stats.map((stat, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ 
                   delay: index * 0.1,
-                  type: "spring",
-                  stiffness: 100
+                  duration: 0.5,
+                  ease: [0.16, 1, 0.3, 1]
                 }}
-                className="text-center"
+                className="text-center group"
               >
                 <motion.div
-                  whileHover={{ scale: 1.05, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                  className="inline-flex p-4 rounded-full bg-gradient-primary mb-4"
+                  whileHover={{ 
+                    y: -4,
+                    scale: 1.05,
+                    transition: { type: "spring", stiffness: 200, damping: 20 }
+                  }}
+                  className="inline-flex p-6 rounded-2xl bg-white shadow-lg border border-neutral-200/50 mb-6"
                 >
-                  <stat.icon className="w-8 h-8 text-white" strokeWidth={2} />
+                  <stat.icon className="w-10 h-10 text-primary" strokeWidth={2.25} />
                 </motion.div>
-                <div className="text-4xl sm:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
-                  {stat.value}
+                <div className="text-5xl sm:text-6xl font-bold text-primary mb-3">
+                  <AnimatedCounter value={stat.value} suffix={stat.suffix} />
                 </div>
-                <div className="text-neutral-700 font-medium">{stat.label}</div>
+                <div className="text-neutral-600 font-medium text-base">{stat.label}</div>
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-      
-      <section className="py-20 sm:py-32 bg-gradient-to-br from-primary via-primary-dark to-secondary text-white relative overflow-hidden">
-        <motion.div 
-          className="absolute top-20 left-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"
-          variants={pulseGlow}
-          animate="animate"
-        />
-        <motion.div 
-          className="absolute bottom-20 right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"
-          variants={pulseGlow}
-          animate="animate"
-          transition={{ delay: 1.5 }}
-        />
-        
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              className="inline-flex items-center gap-2 px-6 py-2 bg-white/20 backdrop-blur-md rounded-full border border-white/30 mb-8"
-            >
-              <Sparkles className="w-5 h-5" />
-              <span className="font-semibold">今すぐ無料で始める</span>
-            </motion.div>
-
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6"
-                style={{ fontSize: 'clamp(1.875rem, 5vw, 3rem)' }}>
-              新しい働き方を、今すぐ体験
-            </h2>
-            
-            <p className="text-lg sm:text-xl lg:text-2xl mb-12 text-white/90 max-w-3xl mx-auto leading-relaxed"
-               style={{ fontSize: 'clamp(1rem, 3vw, 1.5rem)' }}>
-              登録は無料。3分で完了します。<br className="hidden sm:inline" />
-              あなたの理想の働き方を見つけましょう。
-            </p>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
-            >
-              <Link to="/register/worker">
-                <motion.div
-                  whileHover={{ scale: 1.08, y: -4 }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                >
-                  <Button 
-                    size="lg" 
-                    variant="secondary"
-                    className="shadow-2xl shadow-black/20 text-lg px-12 py-6 group"
-                  >
-                    無料で登録する
-                    <ArrowRight className="w-6 h-6 ml-2 group-hover:translate-x-2 transition-transform duration-300" />
-                  </Button>
-                </motion.div>
-              </Link>
-            </motion.div>
-          </motion.div>
         </div>
       </section>
       
