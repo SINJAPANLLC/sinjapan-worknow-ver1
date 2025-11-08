@@ -8,7 +8,7 @@ final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
   throw UnimplementedError('SharedPreferences not initialized');
 });
 
-final configProvider = Provider<AppConfig>((ref) => AppConfig.prod);
+final configProvider = Provider<AppConfig>((ref) => AppConfig.dev);
 
 final apiClientProvider = Provider<ApiClient>((ref) {
   final config = ref.watch(configProvider);

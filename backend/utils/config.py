@@ -3,12 +3,14 @@ from typing import List
 
 from dotenv import load_dotenv
 from pydantic import Field, field_validator
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 load_dotenv()
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8')
+    
     SUPABASE_URL: str = Field(..., env="SUPABASE_URL")
     SUPABASE_KEY: str = Field(..., env="SUPABASE_KEY")
     STRIPE_API_KEY: str = Field(..., env="STRIPE_API_KEY")
@@ -21,11 +23,11 @@ class Settings(BaseSettings):
     JWT_EXPIRE_MINUTES: int = Field(60, env="JWT_EXPIRE_MINUTES")
     DOMAIN: str = Field(..., env="DOMAIN")
     ADMIN_EMAIL: str = Field(..., env="ADMIN_EMAIL")
-    CORS_ORIGINS: List[str] = Field(default_factory=list, env="CORS_ORIGINS")
+    CORS_ORIGINS: str = Field("", env="CORS_ORIGINS")
     ENVIRONMENT: str = Field("production", env="ENVIRONMENT")
     PORT: int = Field(8000, env="PORT")
 
-    @field_validator("CORS_ORIGINS", mode="before")
+    @field_validator("CORS_ORIGINS", mode="after")
     @classmethod
     def split_origins(cls, value):
         if isinstance(value, str):
