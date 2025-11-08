@@ -201,9 +201,9 @@ export default function ClientDashboard() {
             </div>
             {jobsLoading ? (
               <p className="text-gray-600">読み込み中...</p>
-            ) : myJobs && myJobs.items.length > 0 ? (
+            ) : myJobs && myJobs.length > 0 ? (
               <div className="space-y-4">
-                {myJobs.items.map((job) => (
+                {myJobs.map((job: any) => (
                   <div
                     key={job.id}
                     className="p-4 border border-gray-200 rounded-lg hover:border-primary transition-colors"
@@ -248,7 +248,7 @@ export default function ClientDashboard() {
                     </p>
                     <div className="flex items-center justify-between">
                       <div className="flex gap-2">
-                        {job.tags.slice(0, 3).map((tag, i) => (
+                        {job.tags?.slice(0, 3).map((tag: any, i: number) => (
                           <Badge key={i} variant="neutral" size="sm">
                             {tag}
                           </Badge>
@@ -256,7 +256,7 @@ export default function ClientDashboard() {
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <UserGroupIcon className="w-4 h-4" />
-                        <span>{getApplicationCount(job.id)}応募</span>
+                        <span>0応募</span>
                       </div>
                     </div>
                   </div>
