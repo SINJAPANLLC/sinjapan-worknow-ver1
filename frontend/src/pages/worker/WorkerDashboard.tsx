@@ -260,9 +260,9 @@ export default function WorkerDashboard() {
 
       {/* Bottom sheet */}
       <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-[1000] pb-32">
-        <div className="px-6 pt-6 pb-2">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-gray-900">
+        <div className="px-4 pt-4 pb-2">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-bold text-gray-900">
               {activeDelivery ? '配達中' : userLocation ? '現在地周辺' : '位置情報取得中...'}
             </h2>
           </div>
@@ -272,44 +272,44 @@ export default function WorkerDashboard() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-6 bg-gradient-to-br from-white via-cyan-50 to-blue-50 rounded-2xl p-5 border-2 border-[#00CED1] shadow-xl"
+              className="mb-4 bg-gradient-to-br from-white via-cyan-50 to-blue-50 rounded-xl p-3 border-2 border-[#00CED1] shadow-lg"
             >
               {/* Status Header */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className={`w-14 h-14 bg-gradient-to-br ${getStatusDisplay(activeDelivery.status).color} rounded-xl flex items-center justify-center shadow-lg`}>
+              <div className="flex items-center gap-2 mb-3">
+                <div className={`w-10 h-10 bg-gradient-to-br ${getStatusDisplay(activeDelivery.status).color} rounded-lg flex items-center justify-center shadow-md`}>
                   {(() => {
                     const StatusIcon = getStatusDisplay(activeDelivery.status).icon;
-                    return <StatusIcon className="w-7 h-7 text-white" />;
+                    return <StatusIcon className="w-5 h-5 text-white" />;
                   })()}
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs text-gray-600 font-medium">現在の状況</p>
-                  <h3 className="text-lg font-bold text-gray-900">{getStatusDisplay(activeDelivery.status).label}</h3>
+                  <p className="text-[10px] text-gray-600 font-medium">現在の状況</p>
+                  <h3 className="text-sm font-bold text-gray-900">{getStatusDisplay(activeDelivery.status).label}</h3>
                 </div>
               </div>
 
               {/* Locations */}
-              <div className="space-y-3 mb-4">
+              <div className="space-y-2 mb-3">
                 {activeDelivery.pickup_location && (
-                  <div className="flex items-start gap-3 bg-white/80 rounded-xl p-3">
-                    <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Package className="w-5 h-5 text-yellow-600" />
+                  <div className="flex items-start gap-2 bg-white/80 rounded-lg p-2">
+                    <div className="w-6 h-6 bg-yellow-100 rounded-md flex items-center justify-center flex-shrink-0">
+                      <Package className="w-3.5 h-3.5 text-yellow-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-gray-600 font-medium mb-1">受取場所</p>
-                      <p className="text-sm text-gray-900 break-keep">{activeDelivery.pickup_location}</p>
+                      <p className="text-[10px] text-gray-600 font-medium mb-0.5">受取場所</p>
+                      <p className="text-xs text-gray-900 break-keep">{activeDelivery.pickup_location}</p>
                     </div>
                   </div>
                 )}
 
                 {activeDelivery.delivery_location && (
-                  <div className="flex items-start gap-3 bg-white/80 rounded-xl p-3">
-                    <div className="w-8 h-8 bg-[#00CED1]/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-5 h-5 text-[#00CED1]" />
+                  <div className="flex items-start gap-2 bg-white/80 rounded-lg p-2">
+                    <div className="w-6 h-6 bg-[#00CED1]/20 rounded-md flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-3.5 h-3.5 text-[#00CED1]" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-gray-600 font-medium mb-1">配達先</p>
-                      <p className="text-sm text-gray-900 break-keep">{activeDelivery.delivery_location}</p>
+                      <p className="text-[10px] text-gray-600 font-medium mb-0.5">配達先</p>
+                      <p className="text-xs text-gray-900 break-keep">{activeDelivery.delivery_location}</p>
                     </div>
                   </div>
                 )}
@@ -320,7 +320,7 @@ export default function WorkerDashboard() {
                 <button
                   onClick={() => advanceStatusMutation.mutate(activeDelivery.id)}
                   disabled={advanceStatusMutation.isPending}
-                  className={`w-full py-4 rounded-xl font-bold text-lg bg-gradient-to-r ${getStatusDisplay(activeDelivery.status).color} text-white shadow-lg hover:shadow-xl transition-all disabled:opacity-50 active:scale-[0.98]`}
+                  className={`w-full py-2.5 rounded-lg font-bold text-sm bg-gradient-to-r ${getStatusDisplay(activeDelivery.status).color} text-white shadow-md hover:shadow-lg transition-all disabled:opacity-50 active:scale-[0.98]`}
                 >
                   {advanceStatusMutation.isPending ? '処理中...' : getNextActionLabel(activeDelivery.status)}
                 </button>
@@ -328,25 +328,25 @@ export default function WorkerDashboard() {
             </motion.div>
           )}
 
-          <div className="mb-6">
+          <div className="mb-4">
             {isOnline && jobs && jobs.length > 0 ? (
-              <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
+              <div className="space-y-2 mb-3 max-h-56 overflow-y-auto">
                 {jobs.slice(0, 3).map((job) => (
                   <div
                     key={job.id}
                     onClick={() => navigate(`/jobs/${job.id}`)}
-                    className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-4 border border-purple-100 cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all active:scale-[0.98]"
+                    className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-3 border border-purple-100 cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all active:scale-[0.98]"
                   >
-                    <div className="flex items-start gap-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-blue-400 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <BarChart3 className="w-6 h-6 text-white" />
+                    <div className="flex items-start gap-2">
+                      <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-blue-400 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <BarChart3 className="w-5 h-5 text-white" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-bold text-gray-900 mb-1 truncate">{job.title}</h3>
-                        <p className="text-xs text-gray-600 mb-2">{job.location}</p>
+                        <h3 className="text-xs font-bold text-gray-900 mb-0.5 truncate">{job.title}</h3>
+                        <p className="text-[10px] text-gray-600 mb-1.5">{job.location}</p>
                         <div className="flex items-center justify-between">
-                          <span className="text-lg font-bold text-[#00CED1]">¥{job.hourly_rate.toLocaleString()}/時</span>
-                          <span className="text-xs text-gray-500">{new Date(job.start_date).toLocaleDateString('ja-JP')}</span>
+                          <span className="text-sm font-bold text-[#00CED1]">¥{job.hourly_rate.toLocaleString()}/時</span>
+                          <span className="text-[10px] text-gray-500">{new Date(job.start_date).toLocaleDateString('ja-JP')}</span>
                         </div>
                       </div>
                     </div>
@@ -355,7 +355,7 @@ export default function WorkerDashboard() {
               </div>
             ) : (
               <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-2 mb-2 border border-gray-200 text-center">
-                <p className="text-xs text-gray-600">
+                <p className="text-[10px] text-gray-600">
                   {isOnline ? '現在、近くに求人はありません' : 'オンラインにすると求人が表示されます'}
                 </p>
               </div>
@@ -365,7 +365,7 @@ export default function WorkerDashboard() {
           <button
             onClick={handleToggleOnline}
             disabled={onlineStatusMutation.isPending}
-            className={`w-full py-5 rounded-2xl font-bold text-lg transition-all shadow-lg flex items-center justify-center gap-3 relative overflow-hidden disabled:opacity-70 ${
+            className={`w-full py-3 rounded-xl font-bold text-base transition-all shadow-md flex items-center justify-center gap-2 relative overflow-hidden disabled:opacity-70 ${
               isOnline
                 ? 'bg-gradient-to-r from-red-500 to-red-600 text-white'
                 : 'bg-gradient-to-r from-[#00CED1] to-[#009999] text-white hover:from-[#00D4D4] hover:to-[#00A0A0]'
@@ -378,7 +378,7 @@ export default function WorkerDashboard() {
                 transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
               />
             )}
-            <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-white animate-pulse' : 'bg-white/50'}`} />
+            <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-white animate-pulse' : 'bg-white/50'}`} />
             <span className="relative z-10">{isOnline ? 'オンライン中' : 'オンラインにする'}</span>
           </button>
         </div>
