@@ -1,32 +1,46 @@
 import qrcode
 import io
 import base64
+import secrets
 from typing import Optional
-from datetime import datetime
-from uuid import UUID
+from datetime import datetime, timedelta
 from .postgres_base import PostgresService
 
 class QRService:
     def __init__(self, db: PostgresService):
         self.db = db
+        self.token_validity_minutes = 30  # QR code valid for 30 minutes
     
-    async def get_company_qr_code(self, company_id: str) -> Optional[dict]:
-        """Get QR code for a company"""
-        query = "SELECT qr_code_secret FROM users WHERE id = %s AND role = 'company'"
-        result = await self.db.fetchone(query, (company_id,))
+    async def generate_qr_token(
+        self, 
+        assignment_id: str, 
+        company_id: str, 
+        token_type: str
+    ) -> dict:
+        """Generate a time-limited, single-use QR token for an assignment"""
+        # Generate a secure random token
+        token = secrets.token_urlsafe(32)
+        expires_at = datetime.utcnow() + timedelta(minutes=self.token_validity_minutes)
         
-        if not result or not result['qr_code_secret']:
-            # Generate new QR code secret if not exists
-            import uuid
-            qr_secret = str(uuid.uuid4())
-            update_query = "UPDATE users SET qr_code_secret = %s WHERE id = %s"
-            await self.db.execute(update_query, (qr_secret, company_id))
-        else:
-            qr_secret = result['qr_code_secret']
+        # Store token in database
+        query = """
+            INSERT INTO qr_tokens (assignment_id, company_id, token, token_type, expires_at)
+            VALUES (%s, %s, %s, %s, %s)
+            RETURNING id, token, expires_at
+        """
+        result = await self.db.fetchone(
+            query, 
+            (assignment_id, company_id, token, token_type, expires_at)
+        )
         
         # Generate QR code image
         qr = qrcode.QRCode(version=1, box_size=10, border=5)
-        qr.add_data(qr_secret)
+        qr_data = {
+            'token': token,
+            'assignment_id': assignment_id,
+            'type': token_type
+        }
+        qr.add_data(str(qr_data))
         qr.make(fit=True)
         
         img = qr.make_image(fill_color="black", back_color="white")
@@ -37,173 +51,215 @@ class QRService:
         img_str = base64.b64encode(buffer.getvalue()).decode()
         
         return {
-            'qr_code_secret': qr_secret,
-            'qr_code_image': f'data:image/png;base64,{img_str}'
+            'token': token,
+            'qr_code_image': f'data:image/png;base64,{img_str}',
+            'expires_at': expires_at.isoformat(),
+            'assignment_id': assignment_id,
+            'token_type': token_type
         }
     
-    async def check_in(self, worker_id: str, qr_code_secret: str, assignment_id: Optional[str] = None) -> dict:
-        """Worker checks in using company's QR code"""
-        # Verify QR code belongs to a valid company
-        query = "SELECT id, full_name FROM users WHERE qr_code_secret = %s AND role = 'company'"
-        company = await self.db.fetchone(query, (qr_code_secret,))
+    async def get_check_in_qr(self, assignment_id: str) -> dict:
+        """Generate check-in QR code for an assignment"""
+        # Verify assignment exists and get company
+        query = """
+            SELECT a.*, j.company_id, u.full_name as company_name
+            FROM assignments a
+            JOIN jobs j ON a.job_id = j.id
+            JOIN users u ON j.company_id = u.id
+            WHERE a.id = %s
+        """
+        assignment = await self.db.fetchone(query, (assignment_id,))
         
-        if not company:
-            raise ValueError("Invalid QR code")
+        if not assignment:
+            raise ValueError("Assignment not found")
         
-        company_id = company['id']
+        if assignment['started_at'] is not None:
+            raise ValueError("Assignment already started")
         
-        # If assignment_id provided, use it
-        if assignment_id:
-            # Verify assignment exists and belongs to worker
-            assign_query = """
-                SELECT a.*, j.company_id 
-                FROM assignments a
-                JOIN jobs j ON a.job_id = j.id
-                WHERE a.id = %s AND a.worker_id = %s
+        # Invalidate any existing unused check-in tokens for this assignment
+        await self.db.execute(
             """
-            assignment = await self.db.fetchone(assign_query, (assignment_id, worker_id))
-            
-            if not assignment:
-                raise ValueError("Assignment not found")
-            
-            if assignment['company_id'] != company_id:
-                raise ValueError("QR code does not match assignment company")
-            
-            # Update assignment with check-in time
-            update_query = """
-                UPDATE assignments 
-                SET started_at = NOW(), status = 'active' 
-                WHERE id = %s
-                RETURNING *
-            """
-            updated = await self.db.fetchone(update_query, (assignment_id,))
-            
-            return {
-                'success': True,
-                'assignment_id': assignment_id,
-                'checked_in_at': updated['started_at'].isoformat(),
-                'company_name': company['full_name']
-            }
-        else:
-            # Find active assignment for this worker and company
-            find_query = """
-                SELECT a.* 
-                FROM assignments a
-                JOIN jobs j ON a.job_id = j.id
-                WHERE a.worker_id = %s 
-                AND j.company_id = %s 
-                AND a.status = 'active'
-                AND a.started_at IS NULL
-                ORDER BY a.created_at DESC
-                LIMIT 1
-            """
-            assignment = await self.db.fetchone(find_query, (worker_id, company_id))
-            
-            if not assignment:
-                raise ValueError("No active assignment found for this company")
-            
-            # Update assignment with check-in time
-            update_query = """
-                UPDATE assignments 
-                SET started_at = NOW() 
-                WHERE id = %s
-                RETURNING *
-            """
-            updated = await self.db.fetchone(update_query, (assignment['id'],))
-            
-            return {
-                'success': True,
-                'assignment_id': assignment['id'],
-                'checked_in_at': updated['started_at'].isoformat(),
-                'company_name': company['full_name']
-            }
+            UPDATE qr_tokens 
+            SET used_at = NOW() 
+            WHERE assignment_id = %s 
+            AND token_type = 'check_in' 
+            AND used_at IS NULL
+            """,
+            (assignment_id,)
+        )
+        
+        # Generate new token
+        token_data = await self.generate_qr_token(
+            assignment_id,
+            assignment['company_id'],
+            'check_in'
+        )
+        
+        token_data['company_name'] = assignment['company_name']
+        return token_data
     
-    async def check_out(self, worker_id: str, qr_code_secret: str, assignment_id: Optional[str] = None) -> dict:
-        """Worker checks out using company's QR code"""
-        # Verify QR code belongs to a valid company
-        query = "SELECT id, full_name FROM users WHERE qr_code_secret = %s AND role = 'company'"
-        company = await self.db.fetchone(query, (qr_code_secret,))
+    async def get_check_out_qr(self, assignment_id: str) -> dict:
+        """Generate check-out QR code for an assignment"""
+        # Verify assignment exists and is checked in
+        query = """
+            SELECT a.*, j.company_id, u.full_name as company_name
+            FROM assignments a
+            JOIN jobs j ON a.job_id = j.id
+            JOIN users u ON j.company_id = u.id
+            WHERE a.id = %s
+        """
+        assignment = await self.db.fetchone(query, (assignment_id,))
         
-        if not company:
-            raise ValueError("Invalid QR code")
+        if not assignment:
+            raise ValueError("Assignment not found")
         
-        company_id = company['id']
+        if assignment['started_at'] is None:
+            raise ValueError("Assignment not checked in yet")
         
-        # If assignment_id provided, use it
-        if assignment_id:
-            # Verify assignment exists and belongs to worker
-            assign_query = """
-                SELECT a.*, j.company_id 
-                FROM assignments a
-                JOIN jobs j ON a.job_id = j.id
-                WHERE a.id = %s AND a.worker_id = %s AND a.started_at IS NOT NULL
+        if assignment['completed_at'] is not None:
+            raise ValueError("Assignment already completed")
+        
+        # Invalidate any existing unused check-out tokens for this assignment
+        await self.db.execute(
             """
-            assignment = await self.db.fetchone(assign_query, (assignment_id, worker_id))
-            
-            if not assignment:
-                raise ValueError("Assignment not found or not checked in")
-            
-            if assignment['company_id'] != company_id:
-                raise ValueError("QR code does not match assignment company")
-            
-            # Update assignment with check-out time
-            update_query = """
-                UPDATE assignments 
-                SET completed_at = NOW(), status = 'completed' 
-                WHERE id = %s
-                RETURNING *
-            """
-            updated = await self.db.fetchone(update_query, (assignment_id,))
-            
-            # Calculate hours worked
-            started_at = updated['started_at']
-            completed_at = updated['completed_at']
-            hours_worked = (completed_at - started_at).total_seconds() / 3600
-            
-            return {
-                'success': True,
-                'assignment_id': assignment_id,
-                'checked_out_at': completed_at.isoformat(),
-                'hours_worked': round(hours_worked, 2),
-                'company_name': company['full_name']
-            }
-        else:
-            # Find checked-in assignment for this worker and company
-            find_query = """
-                SELECT a.* 
-                FROM assignments a
-                JOIN jobs j ON a.job_id = j.id
-                WHERE a.worker_id = %s 
-                AND j.company_id = %s 
-                AND a.status = 'active'
-                AND a.started_at IS NOT NULL
-                AND a.completed_at IS NULL
-                ORDER BY a.started_at DESC
-                LIMIT 1
-            """
-            assignment = await self.db.fetchone(find_query, (worker_id, company_id))
-            
-            if not assignment:
-                raise ValueError("No checked-in assignment found for this company")
-            
-            # Update assignment with check-out time
-            update_query = """
-                UPDATE assignments 
-                SET completed_at = NOW(), status = 'completed' 
-                WHERE id = %s
-                RETURNING *
-            """
-            updated = await self.db.fetchone(update_query, (assignment['id'],))
-            
-            # Calculate hours worked
-            started_at = updated['started_at']
-            completed_at = updated['completed_at']
-            hours_worked = (completed_at - started_at).total_seconds() / 3600
-            
-            return {
-                'success': True,
-                'assignment_id': assignment['id'],
-                'checked_out_at': completed_at.isoformat(),
-                'hours_worked': round(hours_worked, 2),
-                'company_name': company['full_name']
-            }
+            UPDATE qr_tokens 
+            SET used_at = NOW() 
+            WHERE assignment_id = %s 
+            AND token_type = 'check_out' 
+            AND used_at IS NULL
+            """,
+            (assignment_id,)
+        )
+        
+        # Generate new token
+        token_data = await self.generate_qr_token(
+            assignment_id,
+            assignment['company_id'],
+            'check_out'
+        )
+        
+        token_data['company_name'] = assignment['company_name']
+        return token_data
+    
+    async def check_in(self, worker_id: str, token: str, assignment_id: str) -> dict:
+        """Worker checks in using time-limited QR token"""
+        # Verify token exists, is valid, and unused
+        token_query = """
+            SELECT qt.*, a.worker_id, a.started_at, j.company_id, u.full_name as company_name
+            FROM qr_tokens qt
+            JOIN assignments a ON qt.assignment_id = a.id
+            JOIN jobs j ON a.job_id = j.id
+            JOIN users u ON j.company_id = u.id
+            WHERE qt.token = %s 
+            AND qt.assignment_id = %s
+            AND qt.token_type = 'check_in'
+        """
+        token_data = await self.db.fetchone(token_query, (token, assignment_id))
+        
+        if not token_data:
+            raise ValueError("Invalid QR code or assignment")
+        
+        # Verify worker
+        if token_data['worker_id'] != worker_id:
+            raise ValueError("This assignment is not assigned to you")
+        
+        # Check if already used
+        if token_data['used_at'] is not None:
+            raise ValueError("QR code has already been used")
+        
+        # Check if expired
+        if datetime.utcnow() > token_data['expires_at']:
+            raise ValueError("QR code has expired. Please request a new one.")
+        
+        # Check if already checked in
+        if token_data['started_at'] is not None:
+            raise ValueError("Already checked in")
+        
+        # Mark token as used
+        await self.db.execute(
+            "UPDATE qr_tokens SET used_at = NOW() WHERE id = %s",
+            (token_data['id'],)
+        )
+        
+        # Update assignment with check-in time
+        update_query = """
+            UPDATE assignments 
+            SET started_at = NOW(), status = 'active' 
+            WHERE id = %s
+            RETURNING *
+        """
+        updated = await self.db.fetchone(update_query, (assignment_id,))
+        
+        return {
+            'success': True,
+            'assignment_id': assignment_id,
+            'checked_in_at': updated['started_at'].isoformat(),
+            'company_name': token_data['company_name']
+        }
+    
+    async def check_out(self, worker_id: str, token: str, assignment_id: str) -> dict:
+        """Worker checks out using time-limited QR token"""
+        # Verify token exists, is valid, and unused
+        token_query = """
+            SELECT qt.*, a.worker_id, a.started_at, a.completed_at, 
+                   j.company_id, u.full_name as company_name
+            FROM qr_tokens qt
+            JOIN assignments a ON qt.assignment_id = a.id
+            JOIN jobs j ON a.job_id = j.id
+            JOIN users u ON j.company_id = u.id
+            WHERE qt.token = %s 
+            AND qt.assignment_id = %s
+            AND qt.token_type = 'check_out'
+        """
+        token_data = await self.db.fetchone(token_query, (token, assignment_id))
+        
+        if not token_data:
+            raise ValueError("Invalid QR code or assignment")
+        
+        # Verify worker
+        if token_data['worker_id'] != worker_id:
+            raise ValueError("This assignment is not assigned to you")
+        
+        # Check if already used
+        if token_data['used_at'] is not None:
+            raise ValueError("QR code has already been used")
+        
+        # Check if expired
+        if datetime.utcnow() > token_data['expires_at']:
+            raise ValueError("QR code has expired. Please request a new one.")
+        
+        # Check if checked in
+        if token_data['started_at'] is None:
+            raise ValueError("Not checked in yet")
+        
+        # Check if already checked out
+        if token_data['completed_at'] is not None:
+            raise ValueError("Already checked out")
+        
+        # Mark token as used
+        await self.db.execute(
+            "UPDATE qr_tokens SET used_at = NOW() WHERE id = %s",
+            (token_data['id'],)
+        )
+        
+        # Update assignment with check-out time
+        update_query = """
+            UPDATE assignments 
+            SET completed_at = NOW(), status = 'completed' 
+            WHERE id = %s
+            RETURNING *
+        """
+        updated = await self.db.fetchone(update_query, (assignment_id,))
+        
+        # Calculate hours worked
+        started_at = updated['started_at']
+        completed_at = updated['completed_at']
+        hours_worked = (completed_at - started_at).total_seconds() / 3600
+        
+        return {
+            'success': True,
+            'assignment_id': assignment_id,
+            'checked_out_at': completed_at.isoformat(),
+            'hours_worked': round(hours_worked, 2),
+            'company_name': token_data['company_name']
+        }
