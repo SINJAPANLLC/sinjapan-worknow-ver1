@@ -41,6 +41,13 @@ export function Header() {
                 {isMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-neutral-200 py-1">
                     <Link
+                      to="/dashboard"
+                      className="block md:hidden px-4 py-2 text-sm text-neutral-700 hover:bg-primary-50 hover:text-primary-600"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      ダッシュボード
+                    </Link>
+                    <Link
                       to="/profile"
                       className="block px-4 py-2 text-sm text-neutral-700 hover:bg-primary-50 hover:text-primary-600"
                       onClick={() => setIsMenuOpen(false)}
