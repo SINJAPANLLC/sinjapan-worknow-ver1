@@ -6,6 +6,7 @@ import {
   CameraIcon,
   CheckCircleIcon,
   XCircleIcon,
+  MapPinIcon,
 } from '@heroicons/react/24/outline';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -29,6 +30,9 @@ export function ProfilePage() {
     address: string;
     work_style: string;
     affiliation: string;
+    preferred_prefecture: string;
+    latitude?: number;
+    longitude?: number;
   }>({
     full_name: user?.full_name || '',
     phone: user?.phone || '',
@@ -37,6 +41,9 @@ export function ProfilePage() {
     address: user?.address || '',
     work_style: user?.work_style || '',
     affiliation: user?.affiliation || '',
+    preferred_prefecture: user?.preferred_prefecture || '',
+    latitude: user?.latitude,
+    longitude: user?.longitude,
   });
 
   if (!user) return null;
@@ -98,10 +105,35 @@ export function ProfilePage() {
       address: user.address || '',
       work_style: user.work_style || '',
       affiliation: user.affiliation || '',
+      preferred_prefecture: user.preferred_prefecture || '',
+      latitude: user.latitude,
+      longitude: user.longitude,
     });
     setIsEditing(false);
     setCodeSent(false);
     setVerificationCode('');
+  };
+
+  const handleGetLocation = () => {
+    if (!navigator.geolocation) {
+      alert('お使いのブラウザは位置情報をサポートしていません');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setFormData({
+          ...formData,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+        alert('現在地を取得しました');
+      },
+      (error) => {
+        console.error('Geolocation error:', error);
+        alert('位置情報の取得に失敗しました');
+      }
+    );
   };
 
   const handleSendCode = async () => {
@@ -171,6 +203,16 @@ export function ProfilePage() {
         return '';
     }
   };
+
+  const PREFECTURES = [
+    '北海道', '青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県',
+    '茨城県', '栃木県', '群馬県', '埼玉県', '千葉県', '東京都', '神奈川県',
+    '新潟県', '富山県', '石川県', '福井県', '山梨県', '長野県', '岐阜県',
+    '静岡県', '愛知県', '三重県', '滋賀県', '京都府', '大阪府', '兵庫県',
+    '奈良県', '和歌山県', '鳥取県', '島根県', '岡山県', '広島県', '山口県',
+    '徳島県', '香川県', '愛媛県', '高知県', '福岡県', '佐賀県', '長崎県',
+    '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県'
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00A5A8] to-[#007E7A] p-4 md:p-8">
@@ -395,6 +437,69 @@ export function ProfilePage() {
                   />
                 ) : (
                   <p className="text-gray-900">{user.address || '未設定'}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  希望勤務地（都道府県）
+                </label>
+                {isEditing ? (
+                  <select
+                    value={formData.preferred_prefecture}
+                    onChange={(e) => setFormData({ ...formData, preferred_prefecture: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00CED1] focus:border-transparent"
+                  >
+                    <option value="">選択してください</option>
+                    {PREFECTURES.map((pref) => (
+                      <option key={pref} value={pref}>
+                        {pref}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <p className="text-gray-900">{user.preferred_prefecture || '未設定'}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  現在地
+                </label>
+                {isEditing ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      {formData.latitude && formData.longitude ? (
+                        <div className="flex-1 px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-600">
+                          <MapPinIcon className="w-4 h-4 inline mr-1" />
+                          緯度: {formData.latitude.toFixed(6)}, 経度: {formData.longitude.toFixed(6)}
+                        </div>
+                      ) : (
+                        <div className="flex-1 px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-500">
+                          位置情報が設定されていません
+                        </div>
+                      )}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleGetLocation}
+                      >
+                        <MapPinIcon className="w-4 h-4 mr-1" />
+                        現在地取得
+                      </Button>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      位置情報を使用して、近くの仕事を表示できます
+                    </p>
+                  </div>
+                ) : user.latitude && user.longitude ? (
+                  <p className="text-gray-900">
+                    <MapPinIcon className="w-4 h-4 inline mr-1" />
+                    設定済み（緯度: {user.latitude.toFixed(4)}, 経度: {user.longitude.toFixed(4)}）
+                  </p>
+                ) : (
+                  <p className="text-gray-900">未設定</p>
                 )}
               </div>
 
