@@ -84,7 +84,25 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
 
 ## Recent Changes (2025-11-08 - Updated)
 
-### Latest Implementations (11/08 Afternoon - QR Code Feature)
+### Latest Implementations (11/08 Evening - QR Integration)
+1. **QRコード機能の既存ページへの統合** ⭐
+   - **WorkerApplicationsPage**:
+     - assignmentデータ取得とapplicationとの紐付け（application_id経由）
+     - チェックイン/チェックアウトボタン表示（状態に応じて動的表示）
+     - assignment詳細情報（開始時刻、完了時刻）の表示
+     - QRScanPageへの直接遷移
+   - **ClientJobsManagePage**:
+     - 求人ごとのassignmentリスト表示（展開可能UI）
+     - 各assignmentに「QRコード」ボタン追加
+     - QRCodeDisplayPageへの遷移
+     - assignment詳細（ワーカーID、ステータス、開始時刻）表示
+   - **API拡張**:
+     - assignmentsAPI.listにjob_idパラメータ追加（オプション）
+   - **ビジネスフロー完成**:
+     - ワーカー：応募一覧 → チェックインボタン → QRスキャン → 勤務開始/終了
+     - クライアント：求人管理 → assignmentリスト → QRコード表示 → ワーカーがスキャン
+
+### Earlier Implementations (11/08 Afternoon - QR Code Feature)
 1. **Secure QR Code Check-in/Check-out System** ⭐
    - **Database**: qr_tokens テーブル作成（時間制限付きトークン管理）
    - **セキュリティ**:

@@ -1,20 +1,26 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
-import { applicationsAPI, type Application } from '../../lib/api';
-import { Sparkles, Zap, Flame, Bell, UserCircle, Clock, CheckCircle, XCircle, AlertCircle, BookOpen, ChevronRight } from 'lucide-react';
+import { applicationsAPI, assignmentsAPI, type Application, type Assignment } from '../../lib/api';
+import { Sparkles, Zap, Flame, Bell, UserCircle, Clock, CheckCircle, XCircle, AlertCircle, BookOpen, ChevronRight, QrCode, LogIn, LogOut } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 
 export default function ApplicationsPage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
 
   const { data: applications, isLoading } = useQuery({
     queryKey: ['applications'],
     queryFn: applicationsAPI.list,
+  });
+
+  const { data: assignments } = useQuery({
+    queryKey: ['assignments'],
+    queryFn: assignmentsAPI.list,
   });
 
   const upcomingApplications = applications?.filter(app => 
@@ -40,6 +46,10 @@ export default function ApplicationsPage() {
       default:
         return { variant: 'neutral' as const, icon: Clock, text: status };
     }
+  };
+
+  const getAssignmentForApplication = (applicationId: string): Assignment | undefined => {
+    return assignments?.find(a => a.application_id === applicationId);
   };
 
   const currentApplications = activeTab === 'upcoming' ? upcomingApplications : pastApplications;
@@ -97,6 +107,10 @@ export default function ApplicationsPage() {
             {currentApplications.map((application, index) => {
               const statusInfo = getStatusBadge(application.status);
               const StatusIcon = statusInfo.icon;
+              const assignment = getAssignmentForApplication(application.id);
+              const canCheckIn = assignment && assignment.status === 'active' && !assignment.started_at;
+              const canCheckOut = assignment && assignment.status === 'active' && assignment.started_at && !assignment.completed_at;
+              const isCompleted = assignment && assignment.completed_at;
 
               return (
                 <motion.div
@@ -109,10 +123,17 @@ export default function ApplicationsPage() {
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
                         <h3 className="font-bold text-base text-gray-900 mb-2">求人ID: {application.job_id}</h3>
-                        <Badge variant={statusInfo.variant} size="sm">
-                          <StatusIcon className="w-3.5 h-3.5 mr-1" />
-                          {statusInfo.text}
-                        </Badge>
+                        <div className="flex flex-wrap gap-2">
+                          <Badge variant={statusInfo.variant} size="sm">
+                            <StatusIcon className="w-3.5 h-3.5 mr-1" />
+                            {statusInfo.text}
+                          </Badge>
+                          {assignment && (
+                            <Badge variant={assignment.status === 'active' ? 'success' : 'neutral'} size="sm">
+                              {assignment.status === 'active' ? '進行中' : assignment.status === 'completed' ? '完了' : 'キャンセル'}
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -123,9 +144,57 @@ export default function ApplicationsPage() {
                       </div>
                     )}
 
-                    <div className="flex items-center justify-between text-xs text-gray-500">
+                    {assignment && (
+                      <div className="bg-gradient-to-r from-[#00CED1]/10 to-[#009999]/10 rounded-lg p-3 mb-3">
+                        <div className="text-xs space-y-1">
+                          {assignment.started_at && (
+                            <div className="flex items-center gap-2">
+                              <Clock className="w-3.5 h-3.5 text-[#00CED1]" />
+                              <span className="text-gray-700">
+                                開始: {new Date(assignment.started_at).toLocaleString('ja-JP')}
+                              </span>
+                            </div>
+                          )}
+                          {assignment.completed_at && (
+                            <div className="flex items-center gap-2">
+                              <CheckCircle className="w-3.5 h-3.5 text-green-600" />
+                              <span className="text-gray-700">
+                                完了: {new Date(assignment.completed_at).toLocaleString('ja-JP')}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
                       <span>応募日: {new Date(application.created_at).toLocaleDateString('ja-JP')}</span>
                     </div>
+
+                    {(canCheckIn || canCheckOut) && (
+                      <div className="flex gap-2 pt-3 border-t border-gray-200">
+                        {canCheckIn && (
+                          <Button
+                            onClick={() => navigate(`/qr-scan?assignment_id=${assignment.id}&type=check_in`)}
+                            className="flex-1 bg-gradient-to-r from-[#00CED1] to-[#009999] text-white hover:from-[#00D4D4] hover:to-[#008888]"
+                            size="sm"
+                          >
+                            <LogIn className="w-4 h-4 mr-1" />
+                            チェックイン
+                          </Button>
+                        )}
+                        {canCheckOut && (
+                          <Button
+                            onClick={() => navigate(`/qr-scan?assignment_id=${assignment.id}&type=check_out`)}
+                            className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600"
+                            size="sm"
+                          >
+                            <LogOut className="w-4 h-4 mr-1" />
+                            チェックアウト
+                          </Button>
+                        )}
+                      </div>
+                    )}
                   </Card>
                 </motion.div>
               );
