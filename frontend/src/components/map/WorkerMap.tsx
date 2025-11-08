@@ -15,19 +15,51 @@ const DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
-// Custom user location icon
+// Custom user location icon (Apple Maps style)
 const userIcon = new L.DivIcon({
   className: 'custom-user-marker',
   html: `<div style="
-    width: 24px;
-    height: 24px;
-    background: linear-gradient(135deg, #00CED1, #009999);
-    border: 3px solid white;
+    width: 20px;
+    height: 20px;
+    background: #007AFF;
+    border: 4px solid rgba(255, 255, 255, 0.95);
     border-radius: 50%;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.4), 0 0 0 1px rgba(0, 0, 0, 0.1);
   "></div>`,
-  iconSize: [24, 24],
-  iconAnchor: [12, 12],
+  iconSize: [28, 28],
+  iconAnchor: [14, 14],
+});
+
+// Custom job marker icon (Apple Maps style pin)
+const jobIcon = new L.DivIcon({
+  className: 'custom-job-marker',
+  html: `<div style="
+    position: relative;
+    width: 32px;
+    height: 40px;
+  ">
+    <div style="
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      background: #FF3B30;
+      border: 3px solid rgba(255, 255, 255, 0.95);
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      box-shadow: 0 3px 10px rgba(255, 59, 48, 0.4), 0 0 0 1px rgba(0, 0, 0, 0.1);
+    "></div>
+    <div style="
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+    "></div>
+  </div>`,
+  iconSize: [32, 40],
+  iconAnchor: [16, 40],
 });
 
 interface Job {
@@ -51,9 +83,11 @@ export default function WorkerMap({ center, jobs = [], isOnline }: WorkerMapProp
       className="h-full w-full"
       zoomControl={false}
       attributionControl={false}
+      style={{ background: '#F5F5F7' }}
     >
       <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+        maxZoom={19}
       />
       
       {/* User location marker */}
@@ -83,13 +117,13 @@ export default function WorkerMap({ center, jobs = [], isOnline }: WorkerMapProp
         ];
         
         return (
-          <Marker key={job.id} position={jobPosition}>
+          <Marker key={job.id} position={jobPosition} icon={jobIcon}>
             <Popup>
-              <div className="text-sm">
-                <p className="font-bold text-gray-900">{job.title}</p>
+              <div className="text-sm p-1">
+                <p className="font-bold text-gray-900 text-base">{job.title}</p>
                 <p className="text-xs text-gray-600 mt-1">{job.location}</p>
                 {job.hourly_rate && (
-                  <p className="text-[#00CED1] font-bold mt-2">¥{job.hourly_rate.toLocaleString()}/時</p>
+                  <p className="text-[#FF3B30] font-bold mt-2 text-base">¥{job.hourly_rate.toLocaleString()}/時</p>
                 )}
               </div>
             </Popup>
