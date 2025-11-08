@@ -13,6 +13,9 @@ export interface User {
   work_style?: string;
   affiliation?: string;
   id_document_url?: string;
+  preferred_prefecture?: string;
+  latitude?: number;
+  longitude?: number;
   created_at: string;
   updated_at: string;
 }
@@ -26,6 +29,9 @@ export interface UserUpdatePayload {
   address?: string;
   work_style?: string;
   affiliation?: string;
+  preferred_prefecture?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface Notification {
@@ -77,4 +83,83 @@ export interface RegisterData {
   password: string;
   full_name: string;
   role: 'worker' | 'company';
+}
+
+export interface BankAccount {
+  id: string;
+  user_id: string;
+  bank_name: string;
+  bank_code?: string;
+  branch_name: string;
+  branch_code?: string;
+  account_type: 'ordinary' | 'current';
+  account_number: string;
+  account_holder_name: string;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BankAccountCreate {
+  bank_name: string;
+  bank_code?: string;
+  branch_name: string;
+  branch_code?: string;
+  account_type: 'ordinary' | 'current';
+  account_number: string;
+  account_holder_name: string;
+  is_default?: boolean;
+}
+
+export interface BankAccountUpdate {
+  bank_name?: string;
+  bank_code?: string;
+  branch_name?: string;
+  branch_code?: string;
+  account_type?: 'ordinary' | 'current';
+  account_number?: string;
+  account_holder_name?: string;
+  is_default?: boolean;
+}
+
+export interface WithdrawalRequest {
+  id: string;
+  user_id: string;
+  bank_account_id: string;
+  amount: number;
+  currency: string;
+  status: 'pending' | 'processing' | 'completed' | 'rejected';
+  processed_at?: string;
+  notes?: string;
+  admin_notes?: string;
+  metadata?: Record<string, any>;
+  created_at: string;
+  updated_at: string;
+  bank_name?: string;
+  account_number?: string;
+  account_holder_name?: string;
+}
+
+export interface WithdrawalRequestCreate {
+  bank_account_id: string;
+  amount: number;
+  notes?: string;
+}
+
+export interface WithdrawalBalance {
+  available: number;
+  pending: number;
+}
+
+export interface ActivityLog {
+  id: string;
+  user_id: string;
+  action_type: string;
+  entity_type?: string;
+  entity_id?: string;
+  description: string;
+  metadata?: Record<string, any>;
+  ip_address?: string;
+  user_agent?: string;
+  created_at: string;
 }

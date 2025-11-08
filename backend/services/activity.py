@@ -96,11 +96,11 @@ class ActivityService(PostgresService):
             results = cursor.fetchall()
             return [dict(row) for row in results]
 
-    def get_by_id(self, log_id: str) -> Optional[dict]:
+    def get_by_id(self, record_id: str) -> Optional[dict]:
         with self._get_cursor() as cursor:
             cursor.execute(
                 "SELECT * FROM activity_logs WHERE id = %s",
-                (log_id,)
+                (record_id,)
             )
             result = cursor.fetchone()
             return dict(result) if result else None

@@ -15,6 +15,9 @@ from routers import (
     admin,
     files,
     phone_verification,
+    bank_accounts,
+    withdrawals,
+    activities,
 )
 
 app = FastAPI(title="WORK NOW API", version="1.0")
@@ -47,6 +50,9 @@ app.include_router(notifications.router, prefix="/notifications", tags=["Notific
 app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 app.include_router(files.router, prefix="/files", tags=["Files"])
 app.include_router(phone_verification.router, prefix="/phone", tags=["Phone Verification"])
+app.include_router(bank_accounts.router)
+app.include_router(withdrawals.router)
+app.include_router(activities.router)
 
 
 if __name__ == "__main__":
