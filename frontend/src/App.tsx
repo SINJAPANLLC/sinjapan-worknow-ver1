@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import LandingPage from './pages/public/LandingPage';
 import AboutPage from './pages/public/AboutPage';
 import TermsPage from './pages/public/TermsPage';
@@ -34,9 +34,10 @@ import { useAuthInit } from './hooks/useAuthInit';
 import { Header } from './components/layout/Header';
 import { useAuthStore } from './stores/authStore';
 
-function App() {
-  useAuthInit();
+function AppContent() {
+  const location = useLocation();
   const user = useAuthStore((state) => state.user);
+  const hideHeader = location.pathname === '/dashboard' && user?.role === 'worker';
 
   const getDashboard = () => {
     if (user?.role === 'worker') return <WorkerDashboard />;
@@ -46,8 +47,8 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
-      <Header />
+    <>
+      {!hideHeader && <Header />}
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/about" element={<AboutPage />} />
@@ -214,6 +215,16 @@ function App() {
           }
         />
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  useAuthInit();
+
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }

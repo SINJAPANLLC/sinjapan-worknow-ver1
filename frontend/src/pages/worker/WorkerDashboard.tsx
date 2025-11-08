@@ -58,7 +58,7 @@ export default function WorkerDashboard() {
     : [35.6812, 139.7671]; // Tokyo default
 
   return (
-    <div className="min-h-screen bg-gray-100 pt-16 pb-24 relative">
+    <div className="min-h-screen bg-gray-100 pb-24 relative">
       {/* Map Container */}
       <div className="absolute inset-0">
         {userLocation ? (
