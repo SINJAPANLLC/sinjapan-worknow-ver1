@@ -3,30 +3,51 @@
 ## プロジェクト概要
 即戦力マッチング&報酬プラットフォーム
 - **バックエンド**: FastAPI (Python) - ポート8000
-- **フロントエンド**: Flutter Web - ポート5000
+- **フロントエンド**: React + Vite + TypeScript - ポート5000
 - **データベース**: Supabase (PostgreSQL)
 - **決済**: Stripe Connect
-- **通知**: Firebase
+- **認証**: Supabase Auth
 
 ## 最新の変更 (2025-11-08)
 
-### ✅ セットアップ完了！
+### ✅ フロントエンドをFlutter WebからReact + Viteに再構築！
 
-両方のワークフローが正常に動作中です：
+Flutter Webの表示問題により、React + Viteに完全移行しました。
 
 #### バックエンド (FastAPI)
 - **ステータス**: ✅ 正常動作中
-- **ポート**: 8000 (0.0.0.0でリッスン)
+- **ポート**: 8000
 - **URL**: http://localhost:8000
-- **ヘルスチェック**: http://localhost:8000/health → `{"status":"ok","env":"development"}`
 - **起動コマンド**: `cd backend && python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload`
 
-#### フロントエンド (Flutter Web)
-- **ステータス**: ✅ コンパイル成功・起動中
+#### フロントエンド (React + Vite)
+- **ステータス**: ✅ 正常動作中
 - **ポート**: 5000 (0.0.0.0でリッスン)
 - **URL**: http://0.0.0.0:5000
-- **起動コマンド**: `cd frontend && flutter run -d web-server --web-port 5000 --web-hostname 0.0.0.0`
-- **APIエンドポイント**: http://localhost:8000 (ローカル接続)
+- **起動コマンド**: `cd frontend && npm run dev`
+- **技術スタック**:
+  - React 18
+  - TypeScript
+  - Vite
+  - React Router v6
+  - TanStack Query
+  - Zustand (状態管理)
+  - Tailwind CSS v3
+  - react-hook-form + zod
+  - Axios
+
+### 実装済み機能
+
+**認証シェル**:
+- ログイン画面 (`/login`)
+- 保護されたルート
+- Zustandによる認証状態管理
+- localStorage によるトークン永続化
+
+**レイアウト**:
+- メインレイアウト（ナビゲーションバー付き）
+- ダッシュボード
+- 求人ページ（基本構造）
 
 ### 修正した主な互換性問題
 
