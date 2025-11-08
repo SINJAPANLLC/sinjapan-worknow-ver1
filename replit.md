@@ -49,4 +49,14 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
 -   **Icons**: Lucide Icons, @heroicons/react
 -   **Push Notifications**: Firebase Cloud Messaging (integration ready)
 -   **Caching/Queuing**: Redis (planned)
--   **Geolocation**: Browser Geolocation API
+-   **Geolocation**: Browser Geolocation API, OpenStreetMap Nominatim API (geocoding)
+
+## Recent Changes
+
+### November 8, 2025 - Urgent Jobs & Geocoding Implementation
+-   **Urgent Jobs System**: Added `is_urgent` and `urgent_deadline` flags to jobs table. Urgent jobs are now prioritized in all job listings (ORDER BY is_urgent DESC).
+-   **Automatic Geocoding**: Integrated OpenStreetMap Nominatim API for address-to-coordinates conversion. Jobs with `location` field are automatically geocoded on creation to populate `latitude` and `longitude` for map display.
+-   **Job Card Navigation**: Worker dashboard job cards are now clickable and navigate to `/jobs/{id}` detail page with hover/active animations.
+-   **Online Workers Display**: Client dashboard now shows real-time list of online workers with auto-refresh every 30 seconds. Companies can see worker availability instantly.
+-   **Backend Enhancements**: Added `GET /auth/workers/online` endpoint for companies/admins. Updated job service to handle async geocoding.
+-   **UI Improvements**: Removed demand indicator, fixed mobile text overflow, added turquoise gradient styling (#00CED1 to #009999) for online worker cards.

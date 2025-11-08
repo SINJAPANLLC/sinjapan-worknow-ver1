@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
-import { jobsAPI } from '../../lib/api';
+import { jobsAPI, authAPI } from '../../lib/api';
 import { slideUp, fadeIn } from '../../utils/animations';
 import {
   BriefcaseIcon,
@@ -12,7 +12,7 @@ import {
   PlusIcon,
   EyeIcon,
 } from '@heroicons/react/24/outline';
-import { Sparkles, Zap, Flame, Bell, UserCircle, PlusCircle, Briefcase } from 'lucide-react';
+import { Sparkles, Zap, Flame, Bell, UserCircle, PlusCircle, Briefcase, Radio } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BottomNav } from '../../components/layout/BottomNav';
 
@@ -20,6 +20,12 @@ export default function ClientDashboard() {
   const { data: myJobs, isLoading: jobsLoading } = useQuery({
     queryKey: ['jobs', 'my'],
     queryFn: () => jobsAPI.list({ size: 10 }),
+  });
+
+  const { data: onlineWorkers } = useQuery({
+    queryKey: ['workers', 'online'],
+    queryFn: () => authAPI.getOnlineWorkers(20),
+    refetchInterval: 30000, // Refresh every 30 seconds
   });
 
   const publishedJobs = myJobs?.filter((j: any) => j.status === 'published') || [];
@@ -134,10 +140,39 @@ export default function ClientDashboard() {
             transition={{ delay: 0.3 }}
           >
             <Card className="p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">
-                最近の応募
-              </h2>
-              <p className="text-gray-600">応募情報は各求人ページから確認できます</p>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                  <Radio className="w-5 h-5 text-[#00CED1] animate-pulse" />
+                  オンライン中のワーカー
+                </h2>
+                <span className="text-sm text-gray-500">
+                  {onlineWorkers?.length || 0}人
+                </span>
+              </div>
+              
+              {onlineWorkers && onlineWorkers.length > 0 ? (
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {onlineWorkers.slice(0, 10).map((worker) => (
+                    <div
+                      key={worker.id}
+                      className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-[#00CED1]/10 to-[#009999]/10 hover:from-[#00CED1]/20 hover:to-[#009999]/20 transition-all"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#00CED1] to-[#009999] flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                        {worker.full_name?.charAt(0) || 'W'}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-gray-900 truncate">{worker.full_name}</p>
+                        <p className="text-xs text-gray-500">稼働可能</p>
+                      </div>
+                      <div className="flex-shrink-0">
+                        <div className="w-2 h-2 rounded-full bg-[#00CED1] animate-pulse"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-600 text-center py-4">現在オンラインのワーカーはいません</p>
+              )}
             </Card>
           </motion.div>
         </div>

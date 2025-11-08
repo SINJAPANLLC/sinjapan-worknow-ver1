@@ -129,13 +129,16 @@ class JobService(PostgresService):
                 cursor.execute(count_query, params)
                 total = cursor.fetchone()["total"]
                 
-                # Order by clause
-                order_clause = {
+                # Order by clause - urgent jobs always come first
+                order_clause_base = {
                     "created_at": "created_at DESC",
                     "hourly_rate": "hourly_rate DESC",
                     "hourly_rate_asc": "hourly_rate ASC",
                     "distance": "distance_km ASC" if user_lat and user_lng else "created_at DESC",
                 }.get(sort_by, "created_at DESC")
+                
+                # Always prioritize urgent jobs, then apply secondary sorting
+                order_clause = f"is_urgent DESC, {order_clause_base}"
                 
                 # Main query
                 offset = (page - 1) * size

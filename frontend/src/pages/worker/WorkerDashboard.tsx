@@ -232,7 +232,8 @@ export default function WorkerDashboard() {
                 {jobs.slice(0, 3).map((job) => (
                   <div
                     key={job.id}
-                    className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-4 border border-purple-100 cursor-pointer hover:shadow-md transition-shadow"
+                    onClick={() => navigate(`/jobs/${job.id}`)}
+                    className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-4 border border-purple-100 cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all active:scale-[0.98]"
                   >
                     <div className="flex items-start gap-3">
                       <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-blue-400 rounded-xl flex items-center justify-center flex-shrink-0">

@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import List
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from dependencies import get_auth_service, get_current_user, get_user_service
 from schemas import (
@@ -69,3 +71,18 @@ async def set_online_status(
             detail="Only workers can set online status",
         )
     return user_service.set_online_status(current_user.id, is_online)
+
+
+@router.get("/workers/online", response_model=List[UserRead])
+async def get_online_workers(
+    limit: int = Query(default=100, ge=1, le=500),
+    current_user: UserRead = Depends(get_current_user),
+    user_service: UserService = Depends(get_user_service),
+):
+    """Get list of online workers (for companies/admins)"""
+    if current_user.role not in ["company", "admin"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only companies and admins can view online workers",
+        )
+    return user_service.get_online_workers(limit=limit)
