@@ -33,14 +33,15 @@ class QRService:
             (assignment_id, company_id, token, token_type, expires_at)
         )
         
-        # Generate QR code image
+        # Generate QR code image with JSON data
         qr = qrcode.QRCode(version=1, box_size=10, border=5)
+        import json
         qr_data = {
             'token': token,
             'assignment_id': assignment_id,
             'type': token_type
         }
-        qr.add_data(str(qr_data))
+        qr.add_data(json.dumps(qr_data))
         qr.make(fit=True)
         
         img = qr.make_image(fill_color="black", back_color="white")

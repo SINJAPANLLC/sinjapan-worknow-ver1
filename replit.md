@@ -84,7 +84,29 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
 
 ## Recent Changes (2025-11-08 - Updated)
 
-### Latest Implementations (11/08 Afternoon)
+### Latest Implementations (11/08 Afternoon - QR Code Feature)
+1. **Secure QR Code Check-in/Check-out System** ⭐
+   - **Database**: qr_tokens テーブル作成（時間制限付きトークン管理）
+   - **セキュリティ**:
+     - 動的トークン生成（secrets.token_urlsafe(32)）
+     - 30分有効期限、ワンタイム使用制限
+     - assignment_id必須化
+     - JSON形式でデータ送信（eval脆弱性を排除）
+     - Company所有権チェック（他社のassignmentでQR生成不可）
+   - **バックエンド API**:
+     - GET `/qr/check-in/{assignment_id}`: チェックインQR生成
+     - GET `/qr/check-out/{assignment_id}`: チェックアウトQR生成
+     - POST `/qr/check-in`: QRスキャンでチェックイン
+     - POST `/qr/check-out`: QRスキャンでチェックアウト
+   - **フロントエンド**:
+     - QRScanPage (`/qr-scan`): html5-qrcodeでスキャン機能
+     - QRCodeDisplayPage (`/qr-code/:assignmentId`): QR表示、有効期限タイマー
+   - **ビジネスフロー**:
+     - クライアントがassignmentごとにQRコード生成
+     - ワーカーがQRスキャンでチェックイン/アウト
+     - assignmentsテーブルのstarted_at/completed_atに勤務時間記録
+
+### Earlier Implementations (11/08 Afternoon)
 1. **ApplicationsPage Redesign**
    - Replaced old coin icon with premium glassmorphism gradient design
    - Floating animated Zap icon with turquoise gradient (#00CED1 to #009999)

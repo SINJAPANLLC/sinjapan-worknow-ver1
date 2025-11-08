@@ -12,9 +12,11 @@ import ClientDashboard from './pages/client/ClientDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import WorkerJobsPage from './pages/worker/JobsPage';
 import WorkerApplicationsPage from './pages/worker/ApplicationsPage';
+import QRScanPage from './pages/worker/QRScanPage';
 import WorkStyleGuidePage from './pages/shared/WorkStyleGuidePage';
 import ClientJobCreatePage from './pages/client/JobCreatePage';
 import ClientJobsManagePage from './pages/client/JobsManagePage';
+import QRCodeDisplayPage from './pages/client/QRCodeDisplayPage';
 import { ProfilePage } from './pages/ProfilePage';
 import PaymentsPage from './pages/PaymentsPage';
 import ActivityPage from './pages/ActivityPage';
@@ -84,6 +86,22 @@ function App() {
           element={
             <ProtectedRoute>
               <WorkStyleGuidePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/qr-scan"
+          element={
+            <ProtectedRoute>
+              <QRScanPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/qr-code/:assignmentId"
+          element={
+            <ProtectedRoute>
+              <QRCodeDisplayPage />
             </ProtectedRoute>
           }
         />

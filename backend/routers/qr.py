@@ -24,6 +24,16 @@ async def get_check_in_qr(
     if current_user['role'] != 'company':
         raise HTTPException(status_code=403, detail="Only companies can generate QR codes")
     
+    # Verify assignment belongs to this company
+    verify_query = """
+        SELECT a.id FROM assignments a
+        JOIN jobs j ON a.job_id = j.id
+        WHERE a.id = %s AND j.company_id = %s
+    """
+    assignment = await db.fetchone(verify_query, (assignment_id, current_user['id']))
+    if not assignment:
+        raise HTTPException(status_code=403, detail="Assignment not found or does not belong to your company")
+    
     qr_service = QRService(db)
     try:
         result = await qr_service.get_check_in_qr(assignment_id)
@@ -42,6 +52,16 @@ async def get_check_out_qr(
     """Generate check-out QR code for an assignment (company users only)"""
     if current_user['role'] != 'company':
         raise HTTPException(status_code=403, detail="Only companies can generate QR codes")
+    
+    # Verify assignment belongs to this company
+    verify_query = """
+        SELECT a.id FROM assignments a
+        JOIN jobs j ON a.job_id = j.id
+        WHERE a.id = %s AND j.company_id = %s
+    """
+    assignment = await db.fetchone(verify_query, (assignment_id, current_user['id']))
+    if not assignment:
+        raise HTTPException(status_code=403, detail="Assignment not found or does not belong to your company")
     
     qr_service = QRService(db)
     try:
