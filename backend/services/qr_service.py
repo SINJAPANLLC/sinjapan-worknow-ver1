@@ -10,6 +10,26 @@ class QRService:
     def __init__(self, db: PostgresService):
         self.db = db
         self.token_validity_minutes = 30  # QR code valid for 30 minutes
+        
+    def _create_payment_for_assignment(self, assignment_id: str, hours_worked: float) -> None:
+        """Create payment record for completed assignment based on hours worked"""
+        from .payment_service import PaymentService
+        
+        with self.db._get_cursor() as cursor:
+            cursor.execute("""
+                SELECT j.hourly_rate
+                FROM assignments a
+                JOIN jobs j ON a.job_id = j.id
+                WHERE a.id = %s
+            """, (assignment_id,))
+            result = cursor.fetchone()
+            
+            if result and result['hourly_rate']:
+                hourly_rate = result['hourly_rate']
+                amount = int(hours_worked * hourly_rate)
+                
+                payment_service = PaymentService()
+                payment_service.create_internal_payment(assignment_id, amount)
     
     async def generate_qr_token(
         self, 
@@ -256,6 +276,12 @@ class QRService:
         started_at = updated['started_at']
         completed_at = updated['completed_at']
         hours_worked = (completed_at - started_at).total_seconds() / 3600
+        
+        # Automatically create payment for completed assignment
+        try:
+            self._create_payment_for_assignment(assignment_id, hours_worked)
+        except Exception as e:
+            print(f"Failed to create payment for assignment {assignment_id}: {str(e)}")
         
         return {
             'success': True,
