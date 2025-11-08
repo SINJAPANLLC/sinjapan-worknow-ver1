@@ -48,9 +48,9 @@ export default function JobsManagePage() {
           <div className="text-center py-12">
             <div className="inline-block w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin" />
           </div>
-        ) : jobsData?.items && jobsData.items.length > 0 ? (
+        ) : jobsData && jobsData.length > 0 ? (
           <div className="space-y-4">
-            {jobsData.items.map((job, index) => {
+            {jobsData.map((job: any, index: number) => {
               const statusInfo = getStatusBadge(job.status);
 
               return (

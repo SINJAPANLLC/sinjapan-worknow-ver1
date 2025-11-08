@@ -18,7 +18,7 @@ export default function JobsManagePage() {
     queryFn: () => jobsAPI.list(),
   });
 
-  const filteredJobs = jobsData?.items.filter((job) => {
+  const filteredJobs = jobsData?.filter((job: any) => {
     const matchesSearch =
       job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.description.toLowerCase().includes(searchQuery.toLowerCase());

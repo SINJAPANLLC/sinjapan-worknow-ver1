@@ -19,7 +19,7 @@ export default function JobsPage() {
     queryFn: () => jobsAPI.list({ status: 'published' }),
   });
 
-  const filteredJobs = jobsData?.items.filter((job) => {
+  const filteredJobs = jobsData?.filter((job: any) => {
     const matchesSearch =
       job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.description.toLowerCase().includes(searchQuery.toLowerCase());
