@@ -22,6 +22,7 @@ from routers import (
     favorites,
     job_notifications,
     qr,
+    penalties,
 )
 
 app = FastAPI(title="WORK NOW API", version="1.0")
@@ -61,6 +62,7 @@ app.include_router(messages.router)
 app.include_router(favorites.router, prefix="/favorites", tags=["Favorites"])
 app.include_router(job_notifications.router, prefix="/job-notifications", tags=["Job Notifications"])
 app.include_router(qr.router)
+app.include_router(penalties.router)
 
 
 if __name__ == "__main__":

@@ -50,6 +50,10 @@ export function ProfilePage() {
     preferred_prefecture: string;
     latitude?: number;
     longitude?: number;
+    emergency_contact_name?: string;
+    emergency_contact_phone?: string;
+    emergency_contact_relationship?: string;
+    qualifications?: string[];
   }>({
     full_name: user?.full_name || '',
     phone: user?.phone || '',
@@ -61,7 +65,19 @@ export function ProfilePage() {
     preferred_prefecture: user?.preferred_prefecture || '',
     latitude: user?.latitude,
     longitude: user?.longitude,
+    emergency_contact_name: (user as any)?.emergency_contact_name || '',
+    emergency_contact_phone: (user as any)?.emergency_contact_phone || '',
+    emergency_contact_relationship: (user as any)?.emergency_contact_relationship || '',
+    qualifications: (user as any)?.qualifications || [],
   });
+
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [newQualification, setNewQualification] = useState('');
 
   if (!user) return null;
 

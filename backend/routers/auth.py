@@ -13,10 +13,16 @@ from schemas import (
     UserRead,
     UserUpdate,
 )
+from pydantic import BaseModel
 from services.auth_service import AuthService
 from services.user_service import UserService
 
 router = APIRouter()
+
+
+class PasswordChangeRequest(BaseModel):
+    current_password: str
+    new_password: str
 
 
 @router.post("/register", response_model=TokenPair, status_code=status.HTTP_201_CREATED)
@@ -86,3 +92,26 @@ async def get_online_workers(
             detail="Only companies and admins can view online workers",
         )
     return user_service.get_online_workers(limit=limit)
+
+
+@router.put("/password/change")
+async def change_password(
+    payload: PasswordChangeRequest,
+    current_user: UserRead = Depends(get_current_user),
+    user_service: UserService = Depends(get_user_service),
+):
+    """Change user password"""
+    from passlib.context import CryptContext
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    
+    user_data = user_service.get_by_id(current_user.id)
+    if not user_data or not pwd_context.verify(payload.current_password, user_data.get("password_hash")):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password is incorrect",
+        )
+    
+    new_password_hash = pwd_context.hash(payload.new_password)
+    user_service.update(current_user.id, {"password_hash": new_password_hash})
+    
+    return {"message": "Password changed successfully"}
