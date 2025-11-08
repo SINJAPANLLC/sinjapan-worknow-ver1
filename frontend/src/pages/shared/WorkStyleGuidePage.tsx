@@ -76,7 +76,7 @@ export default function WorkStyleGuidePage() {
             <div className="w-20 h-20 bg-gradient-to-br from-[#00CED1] to-[#009999] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
               <Heart className="w-10 h-10 text-white" />
             </div>
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-[#00CED1] to-[#009999] bg-clip-text text-transparent mb-3">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-[#00CED1] to-[#009999] bg-clip-text text-transparent mb-3 break-keep">
               働き方に彩りを。採用には自由を。
             </h2>
             <p className="text-gray-700">
@@ -100,12 +100,12 @@ export default function WorkStyleGuidePage() {
                     <div className={`w-16 h-16 bg-gradient-to-br ${step.color} rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg`}>
                       <step.icon className="w-8 h-8 text-white" />
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <Badge variant="info" size="sm">STEP {step.number}</Badge>
-                        <h4 className="text-xl font-bold text-gray-900">{step.title}</h4>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-3 mb-2 flex-wrap">
+                        <Badge variant="info" size="sm" className="whitespace-nowrap">STEP {step.number}</Badge>
+                        <h4 className="text-xl font-bold text-gray-900 break-keep">{step.title}</h4>
                       </div>
-                      <p className="text-gray-700">{step.description}</p>
+                      <p className="text-gray-700 break-keep">{step.description}</p>
                     </div>
                   </div>
                 </Card>

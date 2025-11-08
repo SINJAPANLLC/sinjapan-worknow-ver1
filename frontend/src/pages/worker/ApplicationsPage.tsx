@@ -257,7 +257,7 @@ export default function ApplicationsPage() {
                   </motion.div>
                 </div>
 
-                <h2 className="text-2xl font-bold text-center bg-gradient-to-r from-[#00CED1] to-[#009999] bg-clip-text text-transparent mb-3">
+                <h2 className="text-2xl font-bold text-center bg-gradient-to-r from-[#00CED1] to-[#009999] bg-clip-text text-transparent mb-3 whitespace-nowrap">
                   {activeTab === 'upcoming' ? '今後の予定はありません' : '過去の仕事はありません'}
                 </h2>
                 <p className="text-center text-gray-700 mb-6">
