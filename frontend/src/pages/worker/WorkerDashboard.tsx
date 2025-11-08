@@ -1,9 +1,11 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { motion, AnimatePresence } from 'framer-motion';
 import { jobsAPI, authAPI } from '../../lib/api';
-import { Sparkles, Zap, Flame, Bell, UserCircle, MapPin, BarChart3, Menu, Radio } from 'lucide-react';
+import { Sparkles, Zap, Flame, Bell, UserCircle, MapPin, BarChart3, Menu, Radio, X, Settings, LogOut, HelpCircle, RefreshCw } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../stores/authStore';
 
 // Lazy load map component to avoid React 19 compatibility issues
 const MapComponent = lazy(() => import('../../components/map/WorkerMap'));
@@ -11,8 +13,13 @@ const MapComponent = lazy(() => import('../../components/map/WorkerMap'));
 export default function WorkerDashboard() {
   const [isOnline, setIsOnline] = useState(false);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [showMenu, setShowMenu] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const logout = useAuthStore((state) => state.logout);
 
-  const { data: jobs } = useQuery({
+  const { data: jobs, refetch: refetchJobs } = useQuery({
     queryKey: ['jobs', 'published'],
     queryFn: () => jobsAPI.list({ status: 'published', size: 5 }),
   });
@@ -33,6 +40,31 @@ export default function WorkerDashboard() {
     const newStatus = !isOnline;
     setIsOnline(newStatus);
     onlineStatusMutation.mutate(newStatus);
+  };
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => console.log('位置情報の取得に失敗しました:', error)
+      );
+    }
+    
+    await refetchJobs();
+    
+    setTimeout(() => setIsRefreshing(false), 500);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
   };
 
   useEffect(() => {
@@ -84,16 +116,110 @@ export default function WorkerDashboard() {
 
       {/* Top buttons */}
       <div className="absolute top-4 left-4 z-[1000]">
-        <button className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors">
+        <button 
+          onClick={() => setShowMenu(true)}
+          className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+        >
           <Menu className="w-6 h-6 text-gray-700" />
         </button>
       </div>
 
       <div className="absolute top-4 right-4 z-[1000]">
-        <button className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors">
-          <Radio className="w-6 h-6 text-gray-700" />
+        <button 
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+          className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50"
+        >
+          <RefreshCw className={`w-6 h-6 text-gray-700 ${isRefreshing ? 'animate-spin' : ''}`} />
         </button>
       </div>
+
+      {/* Side Menu */}
+      <AnimatePresence>
+        {showMenu && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowMenu(false)}
+              className="fixed inset-0 bg-black/50 z-[1200]"
+            />
+            
+            {/* Menu Panel */}
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed left-0 top-0 bottom-0 w-80 bg-white shadow-2xl z-[1300]"
+            >
+              <div className="flex flex-col h-full">
+                {/* Header */}
+                <div className="px-6 py-6 border-b border-gray-200">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-2xl font-bold text-gray-900">メニュー</h2>
+                    <button
+                      onClick={() => setShowMenu(false)}
+                      className="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors"
+                    >
+                      <X className="w-6 h-6 text-gray-600" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Menu Items */}
+                <div className="flex-1 overflow-y-auto py-4">
+                  <button
+                    onClick={() => {
+                      navigate('/settings');
+                      setShowMenu(false);
+                    }}
+                    className="w-full px-6 py-4 flex items-center gap-4 hover:bg-gray-50 transition-colors text-left"
+                  >
+                    <Settings className="w-6 h-6 text-gray-600" />
+                    <span className="text-lg text-gray-900">設定</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      navigate('/guide/work-style');
+                      setShowMenu(false);
+                    }}
+                    className="w-full px-6 py-4 flex items-center gap-4 hover:bg-gray-50 transition-colors text-left"
+                  >
+                    <HelpCircle className="w-6 h-6 text-gray-600" />
+                    <span className="text-lg text-gray-900">働き方ガイド</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      navigate('/profile');
+                      setShowMenu(false);
+                    }}
+                    className="w-full px-6 py-4 flex items-center gap-4 hover:bg-gray-50 transition-colors text-left"
+                  >
+                    <UserCircle className="w-6 h-6 text-gray-600" />
+                    <span className="text-lg text-gray-900">プロフィール</span>
+                  </button>
+                </div>
+
+                {/* Footer */}
+                <div className="p-6 border-t border-gray-200">
+                  <button
+                    onClick={handleLogout}
+                    className="w-full py-3 px-4 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-medium flex items-center justify-center gap-2 hover:from-red-600 hover:to-red-700 transition-all"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    <span>ログアウト</span>
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Bottom sheet */}
       <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-[1000] pb-32">
