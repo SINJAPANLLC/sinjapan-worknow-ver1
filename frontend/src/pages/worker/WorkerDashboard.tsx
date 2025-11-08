@@ -81,10 +81,6 @@ export default function WorkerDashboard() {
     }
   }, []);
 
-  const demandLevel = 'low';
-  const demandText = demandLevel === 'low' ? '低' : demandLevel === 'medium' ? '中' : '高';
-  const demandColor = demandLevel === 'low' ? 'bg-gray-400' : demandLevel === 'medium' ? 'bg-yellow-400' : 'bg-red-400';
-
   const defaultCenter: [number, number] = userLocation 
     ? [userLocation.lat, userLocation.lng] 
     : [35.6812, 139.7671]; // Tokyo default
@@ -231,21 +227,6 @@ export default function WorkerDashboard() {
           </div>
 
           <div className="mb-6">
-            <div className="flex items-center gap-2 mb-2">
-              <p className="text-sm text-gray-600">お仕事の需要</p>
-              <div className="flex gap-1">
-                {[1, 2, 3, 4, 5].map((bar) => (
-                  <div
-                    key={bar}
-                    className={`w-1 h-4 rounded-full ${
-                      bar <= 2 ? demandColor : 'bg-gray-200'
-                    }`}
-                  />
-                ))}
-              </div>
-              <span className="text-sm font-medium text-gray-700">{demandText}</span>
-            </div>
-
             {isOnline && jobs && jobs.length > 0 ? (
               <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
                 {jobs.slice(0, 3).map((job) => (
