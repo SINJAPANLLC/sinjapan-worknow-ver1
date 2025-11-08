@@ -111,15 +111,15 @@
     },
     {
       "name": "go_router",
-      "rootUri": "file:///home/runner/.pub-cache/hosted/pub.dev/go_router-13.2.5",
+      "rootUri": "file:///home/runner/.pub-cache/hosted/pub.dev/go_router-10.2.0",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "2.19"
     },
     {
       "name": "google_fonts",
-      "rootUri": "file:///home/runner/.pub-cache/hosted/pub.dev/google_fonts-6.3.2",
+      "rootUri": "file:///home/runner/.pub-cache/hosted/pub.dev/google_fonts-5.1.0",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "2.14"
     },
     {
       "name": "http",
