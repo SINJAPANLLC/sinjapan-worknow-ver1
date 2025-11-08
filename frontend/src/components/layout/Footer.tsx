@@ -50,7 +50,7 @@ export function Footer() {
         </div>
         
         <div className="mt-8 pt-8 border-t border-neutral-800 text-center text-sm text-neutral-500">
-          <p>&copy; {currentYear} Work Now by 合同会社SIN JAPAN. All rights reserved.</p>
+          <p>&copy; {currentYear} SIN JAPAN LLC All rights reserved.</p>
         </div>
       </div>
     </footer>

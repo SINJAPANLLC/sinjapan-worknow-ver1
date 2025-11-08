@@ -60,12 +60,12 @@ export default function WorkerRegistrationPage() {
         animate="animate"
       >
         <motion.div variants={slideUp}>
-          <Card padding="md" className="bg-white/95 backdrop-blur-sm shadow-2xl">
-            <div className="text-center mb-6">
-              <h2 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
+          <Card className="bg-white/95 backdrop-blur-sm shadow-2xl p-6">
+            <div className="text-center mb-4">
+              <h2 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-1">
                 Worker登録
               </h2>
-              <p className="text-neutral-600 text-sm">
+              <p className="text-neutral-600 text-xs">
                 即戦力として活躍しませんか？
               </p>
             </div>
@@ -80,16 +80,16 @@ export default function WorkerRegistrationPage() {
               </motion.div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                <label className="block text-xs font-medium text-neutral-700 mb-1">
                   お名前
                 </label>
                 <input
                   type="text"
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border-2 border-neutral-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-white"
+                  className="w-full px-3 py-2 text-sm rounded-lg border-2 border-neutral-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-white"
                   placeholder="山田 太郎"
                   autoComplete="name"
                   required
@@ -104,7 +104,7 @@ export default function WorkerRegistrationPage() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border-2 border-neutral-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-white"
+                  className="w-full px-3 py-2 text-sm rounded-lg border-2 border-neutral-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-white"
                   placeholder="email@example.com"
                   autoComplete="email"
                   required
@@ -119,7 +119,7 @@ export default function WorkerRegistrationPage() {
                   type="password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border-2 border-neutral-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-white"
+                  className="w-full px-3 py-2 text-sm rounded-lg border-2 border-neutral-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-white"
                   placeholder="8文字以上"
                   autoComplete="new-password"
                   required
@@ -134,7 +134,7 @@ export default function WorkerRegistrationPage() {
                   type="password"
                   value={formData.confirmPassword}
                   onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border-2 border-neutral-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-white"
+                  className="w-full px-3 py-2 text-sm rounded-lg border-2 border-neutral-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-white"
                   placeholder="もう一度入力してください"
                   autoComplete="new-password"
                   required
@@ -152,11 +152,11 @@ export default function WorkerRegistrationPage() {
               </Button>
             </form>
 
-            <div className="mt-8 pt-6 border-t border-neutral-200 text-center">
-              <p className="text-neutral-600 text-sm">
+            <div className="mt-6 pt-4 border-t border-neutral-200 text-center">
+              <p className="text-neutral-600 text-xs">
                 すでにアカウントをお持ちの方は
               </p>
-              <Link to="/login" className="inline-block mt-2 text-primary hover:text-primary-dark font-medium transition-colors">
+              <Link to="/login" className="inline-block mt-2 text-sm text-primary hover:text-primary-dark font-medium transition-colors">
                 ログイン
               </Link>
             </div>

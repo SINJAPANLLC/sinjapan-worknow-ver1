@@ -1,5 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from './pages/public/LandingPage';
+import AboutPage from './pages/public/AboutPage';
+import TermsPage from './pages/public/TermsPage';
+import PrivacyPage from './pages/public/PrivacyPage';
+import ContactPage from './pages/public/ContactPage';
 import NewLoginPage from './pages/auth/NewLoginPage';
 import WorkerRegistrationPage from './pages/auth/WorkerRegistrationPage';
 import ClientRegistrationPage from './pages/auth/ClientRegistrationPage';
@@ -30,6 +34,10 @@ function App() {
       {!isAuthenticated && <Header />}
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<NewLoginPage />} />
         <Route path="/register/worker" element={<WorkerRegistrationPage />} />
         <Route path="/register/client" element={<ClientRegistrationPage />} />
