@@ -1,11 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Badge } from '../../components/ui/Badge';
 import { jobsAPI, favoritesAPI, jobNotificationsAPI } from '../../lib/api';
-import { MapPin, Clock, Heart, ChevronDown, Sparkles, Zap, Flame, Bell, UserCircle, MapPinIcon } from 'lucide-react';
+import { MapPin, Clock, Heart, ChevronDown, Sparkles, Zap, Flame, MessageCircle, UserCircle, MapPinIcon } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
+
+const PREFECTURES = [
+  '北海道', '青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県',
+  '茨城県', '栃木県', '群馬県', '埼玉県', '千葉県', '東京都', '神奈川県',
+  '新潟県', '富山県', '石川県', '福井県', '山梨県', '長野県', '岐阜県',
+  '静岡県', '愛知県', '三重県', '滋賀県', '京都府', '大阪府', '兵庫県',
+  '奈良県', '和歌山県', '鳥取県', '島根県', '岡山県', '広島県', '山口県',
+  '徳島県', '香川県', '愛媛県', '高知県', '福岡県', '佐賀県', '長崎県',
+  '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県'
+];
 
 const DATES = [
   { label: '今日', value: 'today' },
@@ -29,6 +39,8 @@ export default function JobsPage() {
   const [selectedSort, setSelectedSort] = useState('distance');
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [notificationEnabled, setNotificationEnabled] = useState(false);
+  const [showPrefectureMenu, setShowPrefectureMenu] = useState(false);
+  const [showSortMenu, setShowSortMenu] = useState(false);
 
   // Get user location
   useEffect(() => {
@@ -136,13 +148,48 @@ export default function JobsPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00B5B5] to-[#009999] pt-16 pb-24">
       <div className="bg-white/95 backdrop-blur-sm sticky top-0 z-20 shadow-lg pt-20">
         <div className="px-4 py-3 space-y-3">
-          <button className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#00CED1]/10 to-[#009999]/10 rounded-xl hover:from-[#00CED1]/20 hover:to-[#009999]/20 transition-all border border-[#00CED1]/20">
-            <div className="flex items-center gap-2">
-              <MapPinIcon className="w-5 h-5 text-[#009999]" />
-              <span className="font-medium text-gray-900">{selectedPrefecture}</span>
-            </div>
-            <ChevronDown className="w-5 h-5 text-gray-400" />
-          </button>
+          <div className="relative">
+            <button 
+              onClick={() => setShowPrefectureMenu(!showPrefectureMenu)}
+              className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#00CED1]/10 to-[#009999]/10 rounded-xl hover:from-[#00CED1]/20 hover:to-[#009999]/20 transition-all border border-[#00CED1]/20"
+            >
+              <div className="flex items-center gap-2">
+                <MapPinIcon className="w-5 h-5 text-[#009999]" />
+                <span className="font-medium text-gray-900">{selectedPrefecture}</span>
+              </div>
+              <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${showPrefectureMenu ? 'rotate-180' : ''}`} />
+            </button>
+
+            <AnimatePresence>
+              {showPrefectureMenu && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 max-h-64 overflow-y-auto z-30"
+                >
+                  <div className="grid grid-cols-2 gap-1 p-2">
+                    {PREFECTURES.map((prefecture) => (
+                      <button
+                        key={prefecture}
+                        onClick={() => {
+                          setSelectedPrefecture(prefecture);
+                          setShowPrefectureMenu(false);
+                        }}
+                        className={`px-3 py-2 text-sm rounded-lg text-left transition-all ${
+                          selectedPrefecture === prefecture
+                            ? 'bg-gradient-to-r from-[#00CED1] to-[#009999] text-white font-medium'
+                            : 'hover:bg-gray-100 text-gray-700'
+                        }`}
+                      >
+                        {prefecture}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
             {DATES.map((date) => (
@@ -164,17 +211,52 @@ export default function JobsPage() {
             ))}
           </div>
 
-          <button className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#00CED1]/10 to-[#009999]/10 rounded-xl hover:from-[#00CED1]/20 hover:to-[#009999]/20 transition-all border border-[#00CED1]/20">
-            <div className="flex items-center gap-2">
-              <svg className="w-4 h-4 text-[#009999]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
-              </svg>
-              <span className="text-sm text-gray-700">
-                {SORT_OPTIONS.find(opt => opt.value === selectedSort)?.label}
-              </span>
-            </div>
-            <ChevronDown className="w-5 h-5 text-gray-400" />
-          </button>
+          <div className="relative">
+            <button 
+              onClick={() => setShowSortMenu(!showSortMenu)}
+              className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#00CED1]/10 to-[#009999]/10 rounded-xl hover:from-[#00CED1]/20 hover:to-[#009999]/20 transition-all border border-[#00CED1]/20"
+            >
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-[#009999]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                </svg>
+                <span className="text-sm text-gray-700">
+                  {SORT_OPTIONS.find(opt => opt.value === selectedSort)?.label}
+                </span>
+              </div>
+              <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${showSortMenu ? 'rotate-180' : ''}`} />
+            </button>
+
+            <AnimatePresence>
+              {showSortMenu && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 z-30"
+                >
+                  <div className="p-2 space-y-1">
+                    {SORT_OPTIONS.map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => {
+                          setSelectedSort(option.value);
+                          setShowSortMenu(false);
+                        }}
+                        className={`w-full px-4 py-3 text-sm rounded-lg text-left transition-all ${
+                          selectedSort === option.value
+                            ? 'bg-gradient-to-r from-[#00CED1] to-[#009999] text-white font-medium'
+                            : 'hover:bg-gray-100 text-gray-700'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
 
@@ -291,7 +373,7 @@ export default function JobsPage() {
           { label: 'さがす', path: '/jobs', icon: Sparkles },
           { label: 'はたらく', path: '/applications', icon: Zap },
           { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/messages', icon: Bell },
+          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
           { label: 'マイページ', path: '/profile', icon: UserCircle },
         ]}
       />
