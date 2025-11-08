@@ -8,33 +8,27 @@ export function Header() {
   const { user, logout } = useAuthStore();
   
   return (
-    <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-b border-neutral-200 z-50">
+    <header className="fixed top-0 left-0 right-0 bg-gradient-to-r from-primary via-primary to-primary-dark backdrop-blur-sm border-b border-primary-dark/30 z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center space-x-3">
+        <Link to="/" className="flex items-center">
           <motion.img
             src="/logo.png"
             alt="Work Now Logo"
-            className="h-10 w-auto"
+            className="h-14 w-auto"
             whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0] }}
             transition={{ duration: 0.3 }}
           />
-          <motion.div
-            className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent"
-            whileHover={{ scale: 1.05 }}
-          >
-            Work Now
-          </motion.div>
         </Link>
         
         <nav className="hidden md:flex items-center space-x-6">
           {user ? (
             <>
-              <Link to="/dashboard" className="text-neutral-700 hover:text-primary-600 transition-colors">
+              <Link to="/dashboard" className="text-white hover:text-white/80 transition-colors font-medium">
                 ダッシュボード
               </Link>
               <Menu as="div" className="relative">
-                <Menu.Button className="flex items-center space-x-2 text-neutral-700 hover:text-primary-600 transition-colors">
-                  <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center text-white font-medium">
+                <Menu.Button className="flex items-center space-x-2 text-white hover:text-white/80 transition-colors">
+                  <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white font-medium">
                     {user.full_name.charAt(0).toUpperCase()}
                   </div>
                   <span className="text-sm font-medium">{user.full_name}</span>
@@ -93,12 +87,12 @@ export function Header() {
             </>
           ) : (
             <>
-              <Link to="/login" className="text-neutral-700 hover:text-primary-600 transition-colors">
+              <Link to="/login" className="text-white hover:text-white/80 transition-colors font-medium">
                 ログイン
               </Link>
               <Link
                 to="/register/worker"
-                className="px-4 py-2 bg-gradient-primary text-white rounded-lg hover:shadow-medium transition-all"
+                className="px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition-all font-medium"
               >
                 登録
               </Link>

@@ -7,26 +7,26 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Turquoise gradient palette
+        // Dark Turquoise gradient palette (#00CED1)
         primary: {
-          DEFAULT: '#00C6A7',
-          light: '#4BE1CA',
-          dark: '#007E7A',
-          50: '#E6F9F7',
-          100: '#C2F0EB',
-          200: '#9AE7DE',
-          300: '#72DDD1',
-          400: '#4BE1CA',
-          500: '#00C6A7',
-          600: '#00A88F',
-          700: '#007E7A',
-          800: '#006664',
-          900: '#004E4E',
+          DEFAULT: '#00CED1',
+          light: '#33D9E3',
+          dark: '#009FA5',
+          50: '#E6FBFC',
+          100: '#B3F3F6',
+          200: '#80EBF0',
+          300: '#4DE3EA',
+          400: '#1ADBE4',
+          500: '#00CED1',
+          600: '#00B4B8',
+          700: '#009FA5',
+          800: '#007A7F',
+          900: '#005559',
         },
         secondary: {
-          DEFAULT: '#009F8D',
-          light: '#00C6A7',
-          dark: '#006A6C',
+          DEFAULT: '#00B4B8',
+          light: '#00CED1',
+          dark: '#007A7F',
         },
         // Neutral palette
         neutral: {
