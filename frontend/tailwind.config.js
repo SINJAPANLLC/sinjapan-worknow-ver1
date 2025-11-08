@@ -9,6 +9,9 @@ export default {
       colors: {
         // Turquoise gradient palette
         primary: {
+          DEFAULT: '#00C6A7',
+          light: '#4BE1CA',
+          dark: '#007E7A',
           50: '#E6F9F7',
           100: '#C2F0EB',
           200: '#9AE7DE',
@@ -19,6 +22,11 @@ export default {
           700: '#007E7A',
           800: '#006664',
           900: '#004E4E',
+        },
+        secondary: {
+          DEFAULT: '#009F8D',
+          light: '#00C6A7',
+          dark: '#006A6C',
         },
         // Neutral palette
         neutral: {

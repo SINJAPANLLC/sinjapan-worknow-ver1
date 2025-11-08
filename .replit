@@ -58,6 +58,10 @@ externalPort = 8000
 localPort = 8008
 externalPort = 8008
 
+[[ports]]
+localPort = 44577
+externalPort = 3000
+
 [deployment]
 deploymentTarget = "vm"
 run = ["bash", "-c", "cd backend && python -m gunicorn main:app --bind=0.0.0.0:5000 --reuse-port -k uvicorn.workers.UvicornWorker & cd frontend && flutter run -d web-server --web-port 5000 --web-hostname 0.0.0.0 --release"]

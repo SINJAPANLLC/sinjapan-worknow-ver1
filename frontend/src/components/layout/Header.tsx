@@ -10,12 +10,19 @@ export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-b border-neutral-200 z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2">
+        <Link to="/" className="flex items-center space-x-3">
+          <motion.img
+            src="/logo.png"
+            alt="Work Now Logo"
+            className="h-10 w-auto"
+            whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0] }}
+            transition={{ duration: 0.3 }}
+          />
           <motion.div
             className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent"
             whileHover={{ scale: 1.05 }}
           >
-            WORK NOW
+            Work Now
           </motion.div>
         </Link>
         

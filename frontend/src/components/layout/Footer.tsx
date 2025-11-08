@@ -7,13 +7,25 @@ export function Footer() {
     <footer className="bg-neutral-900 text-white mt-auto hidden md:block">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="col-span-1">
+          <div className="col-span-1 md:col-span-2">
             <h3 className="text-2xl font-bold bg-gradient-primary-soft bg-clip-text text-transparent mb-4">
-              WORK NOW
+              Work Now
             </h3>
-            <p className="text-neutral-400 text-sm">
+            <p className="text-neutral-400 text-sm mb-4">
               即戦力マッチング&報酬プラットフォーム
             </p>
+            <div className="text-neutral-400 text-sm space-y-1">
+              <p className="font-semibold text-neutral-300">運営会社</p>
+              <p>合同会社SIN JAPAN</p>
+              <p>〒243-0303</p>
+              <p>神奈川県愛甲郡愛川町中津7287</p>
+              <p>TEL. 050-5526-9906</p>
+              <p>
+                <a href="mailto:info@sinjapan.jp" className="hover:text-primary-400 transition-colors">
+                  MAIL. info@sinjapan.jp
+                </a>
+              </p>
+            </div>
           </div>
           
           <div>
@@ -53,7 +65,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-neutral-400">
               <li>
                 <Link to="/about" className="hover:text-primary-400 transition-colors">
-                  WORK NOWについて
+                  Work Nowについて
                 </Link>
               </li>
               <li>
@@ -76,7 +88,7 @@ export function Footer() {
         </div>
         
         <div className="mt-8 pt-8 border-t border-neutral-800 text-center text-sm text-neutral-500">
-          <p>&copy; {currentYear} WORK NOW. All rights reserved.</p>
+          <p>&copy; {currentYear} Work Now by 合同会社SIN JAPAN. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -17,7 +17,7 @@ export default function MainLayout() {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link to="/dashboard" className="text-2xl font-bold text-primary">
-                WORK NOW
+                Work Now
               </Link>
               <div className="ml-10 flex space-x-4">
                 <Link

@@ -8,10 +8,10 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+      includeAssets: ['logo.png', 'robots.txt'],
       manifest: {
-        name: 'WORK NOW',
-        short_name: 'WORK NOW',
+        name: 'Work Now',
+        short_name: 'Work Now',
         description: '即戦力マッチング&報酬プラットフォーム',
         theme_color: '#00C6A7',
         background_color: '#FFFFFF',
@@ -21,17 +21,17 @@ export default defineConfig({
         start_url: '/',
         icons: [
           {
-            src: '/pwa-192x192.png',
+            src: '/logo.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: '/pwa-512x512.png',
+            src: '/logo.png',
             sizes: '512x512',
             type: 'image/png'
           },
           {
-            src: '/pwa-512x512.png',
+            src: '/logo.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'

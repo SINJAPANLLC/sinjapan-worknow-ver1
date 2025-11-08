@@ -46,7 +46,7 @@ export default function NewLoginPage() {
             variants={slideUp}
             whileHover={{ scale: 1.05 }}
           >
-            WORK NOW
+            Work Now
           </motion.h1>
         </Link>
         
@@ -57,7 +57,7 @@ export default function NewLoginPage() {
                 ログイン
               </h2>
               <p className="text-neutral-600">
-                働くに、彩りを。
+                働き方に彩りを。採用には自由を。
               </p>
             </div>
 

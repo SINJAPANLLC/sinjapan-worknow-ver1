@@ -100,7 +100,8 @@ export default function LandingPage() {
               }}
               variants={slideUpSlow}
             >
-              働くに、彩りを。
+              働き方に彩りを。<br className="hidden sm:inline" />
+              採用には自由を。
             </motion.h1>
             
             <motion.p
@@ -169,7 +170,7 @@ export default function LandingPage() {
       </section>
       
       <section className="py-16 sm:py-24 bg-white relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-primary" />
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary-700 to-primary" />
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -181,9 +182,9 @@ export default function LandingPage() {
           >
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent"
                 style={{ fontSize: 'clamp(1.875rem, 5vw, 3rem)' }}>
-              WORK NOWの特徴
+              Work Nowの特徴
             </h2>
-            <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
+            <p className="text-neutral-600 text-base sm:text-lg max-w-2xl mx-auto">
               最先端のテクノロジーで、理想の働き方を実現します
             </p>
           </motion.div>
@@ -215,10 +216,10 @@ export default function LandingPage() {
                     >
                       <feature.icon className="w-8 h-8 text-white" strokeWidth={2.5} />
                     </motion.div>
-                    <h3 className="text-xl sm:text-2xl font-bold mb-4 text-neutral-800 group-hover:text-primary transition-colors">
+                    <h3 className="text-xl sm:text-2xl font-bold mb-4 text-neutral-800 group-hover:bg-gradient-primary group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
                       {feature.title}
                     </h3>
-                    <p className="text-neutral-600 leading-relaxed text-sm sm:text-base">
+                    <p className="text-neutral-700 leading-relaxed text-sm sm:text-base">
                       {feature.description}
                     </p>
                   </Card>
@@ -255,7 +256,7 @@ export default function LandingPage() {
                 <div className="text-4xl sm:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
                   {stat.value}
                 </div>
-                <div className="text-gray-600 font-medium">{stat.label}</div>
+                <div className="text-neutral-700 font-medium">{stat.label}</div>
               </motion.div>
             ))}
           </div>
