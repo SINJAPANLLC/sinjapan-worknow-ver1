@@ -191,8 +191,7 @@ class _AssignmentTile extends StatelessWidget {
             Text(subtitle),
             if (assignment.notes != null && assignment.notes!.isNotEmpty) ...[
               const SizedBox(height: 12),
-              Text('メモ:
-${assignment.notes!}'),
+              Text('メモ: ${assignment.notes!}'),
             ],
             const SizedBox(height: 12),
             if (isWorker)

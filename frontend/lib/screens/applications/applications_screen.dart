@@ -201,8 +201,7 @@ class _ApplicationTile extends StatelessWidget {
             Text(subtitle),
             if (application.coverLetter != null && application.coverLetter!.isNotEmpty) ...[
               const SizedBox(height: 12),
-              Text('メッセージ:
-${application.coverLetter!}'),
+              Text('メッセージ: ${application.coverLetter!}'),
             ],
             const SizedBox(height: 12),
             Row(
