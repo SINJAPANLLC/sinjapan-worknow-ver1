@@ -16,6 +16,7 @@ import ClientJobCreatePage from './pages/client/JobCreatePage';
 import ClientJobsManagePage from './pages/client/JobsManagePage';
 import { ProfilePage } from './pages/ProfilePage';
 import PaymentsPage from './pages/PaymentsPage';
+import ActivityPage from './pages/ActivityPage';
 import AdminUsersManagePage from './pages/admin/UsersManagePage';
 import AdminJobsManagePage from './pages/admin/JobsManagePage';
 import AdminStatsPage from './pages/admin/StatsPage';
@@ -89,6 +90,14 @@ function App() {
           element={
             <ProtectedRoute>
               <PaymentsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/activity"
+          element={
+            <ProtectedRoute>
+              <ActivityPage />
             </ProtectedRoute>
           }
         />
