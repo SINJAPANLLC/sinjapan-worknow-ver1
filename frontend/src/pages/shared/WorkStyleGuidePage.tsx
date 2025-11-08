@@ -10,11 +10,15 @@ import {
   Clock,
   Heart,
   Shield,
-  TrendingUp
+  TrendingUp,
+  Home,
+  Search,
+  User
 } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
+import { BottomNav } from '../../components/layout/BottomNav';
 
 const steps = [
   {
@@ -76,10 +80,10 @@ export default function WorkStyleGuidePage() {
             <div className="w-20 h-20 bg-gradient-to-br from-[#00CED1] to-[#009999] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
               <Heart className="w-10 h-10 text-white" />
             </div>
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-[#00CED1] to-[#009999] bg-clip-text text-transparent mb-3 break-keep">
-              働き方に彩りを。採用には自由を。
+            <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-[#00CED1] to-[#009999] bg-clip-text text-transparent mb-3 px-4">
+              働き方に彩りを。<br className="sm:hidden"/>採用には自由を。
             </h2>
-            <p className="text-gray-700">
+            <p className="text-sm sm:text-base text-gray-700 px-4">
               Work Nowは、あなたの働き方を自由にデザインできる新しいプラットフォームです。
             </p>
           </div>
@@ -96,16 +100,16 @@ export default function WorkStyleGuidePage() {
                 transition={{ delay: index * 0.1 }}
               >
                 <Card className="p-6 hover:shadow-lg transition-shadow">
-                  <div className="flex items-start gap-4">
+                  <div className="flex flex-col sm:flex-row items-start gap-4">
                     <div className={`w-16 h-16 bg-gradient-to-br ${step.color} rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg`}>
                       <step.icon className="w-8 h-8 text-white" />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-2 flex-wrap">
-                        <Badge variant="info" size="sm" className="whitespace-nowrap">STEP {step.number}</Badge>
-                        <h4 className="text-xl font-bold text-gray-900 break-keep">{step.title}</h4>
+                    <div className="flex-1 w-full">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge variant="info" size="sm" className="whitespace-nowrap flex-shrink-0">STEP {step.number}</Badge>
+                        <h4 className="text-lg sm:text-xl font-bold text-gray-900">{step.title}</h4>
                       </div>
-                      <p className="text-gray-700 break-keep">{step.description}</p>
+                      <p className="text-sm sm:text-base text-gray-700 leading-relaxed">{step.description}</p>
                     </div>
                   </div>
                 </Card>
@@ -197,6 +201,15 @@ export default function WorkStyleGuidePage() {
           </Link>
         </div>
       </div>
+
+      <BottomNav
+        items={[
+          { label: 'ホーム', path: '/dashboard', icon: Home },
+          { label: '求人検索', path: '/jobs', icon: Search },
+          { label: '応募履歴', path: '/applications', icon: FileText },
+          { label: 'プロフィール', path: '/profile', icon: User },
+        ]}
+      />
     </div>
   );
 }
