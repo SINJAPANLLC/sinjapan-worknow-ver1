@@ -1,4 +1,5 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, List
+from datetime import datetime
 
 from fastapi import HTTPException, status
 
@@ -52,3 +53,37 @@ class UserService(PostgresService):
         if not data:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
         return self._to_user(data)
+
+    def set_online_status(self, user_id: str, is_online: bool) -> UserRead:
+        """Set user online/offline status"""
+        with self._get_cursor() as cursor:
+            cursor.execute(
+                """
+                UPDATE users 
+                SET is_online = %s, last_online_at = %s
+                WHERE id = %s
+                RETURNING *
+                """,
+                (is_online, datetime.utcnow() if is_online else None, user_id),
+            )
+            result = cursor.fetchone()
+            if not result:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+                )
+            return self._to_user(dict(result))
+
+    def get_online_workers(self, limit: int = 100) -> List[UserRead]:
+        """Get all online workers"""
+        with self._get_cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT * FROM users 
+                WHERE role = 'worker' AND is_online = true
+                ORDER BY last_online_at DESC
+                LIMIT %s
+                """,
+                (limit,),
+            )
+            results = cursor.fetchall()
+            return [self._to_user(dict(row)) for row in results]

@@ -54,3 +54,18 @@ async def password_reset(payload: PasswordResetRequest):  # pragma: no cover - o
 @router.post("/password/reset/confirm")
 async def password_reset_confirm(payload: PasswordResetConfirm):  # pragma: no cover - out of scope
     raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Reset flow handled externally")
+
+
+@router.put("/online-status", response_model=UserRead)
+async def set_online_status(
+    is_online: bool,
+    current_user: UserRead = Depends(get_current_user),
+    user_service: UserService = Depends(get_user_service),
+):
+    """Set worker online/offline status"""
+    if current_user.role != "worker":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only workers can set online status",
+        )
+    return user_service.set_online_status(current_user.id, is_online)

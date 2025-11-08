@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect, lazy, Suspense } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { jobsAPI, applicationsAPI, assignmentsAPI } from '../../lib/api';
+import { jobsAPI, authAPI } from '../../lib/api';
 import { Sparkles, Zap, Flame, Bell, UserCircle, MapPin, BarChart3, Menu, Radio } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
+
+// Lazy load map component to avoid React 19 compatibility issues
+const MapComponent = lazy(() => import('../../components/map/WorkerMap'));
 
 export default function WorkerDashboard() {
   const [isOnline, setIsOnline] = useState(false);
@@ -14,15 +17,23 @@ export default function WorkerDashboard() {
     queryFn: () => jobsAPI.list({ status: 'published', size: 5 }),
   });
 
-  const { data: applications } = useQuery({
-    queryKey: ['applications'],
-    queryFn: applicationsAPI.list,
+  const onlineStatusMutation = useMutation({
+    mutationFn: (isOnline: boolean) => authAPI.setOnlineStatus(isOnline),
+    onSuccess: () => {
+      // Successfully updated online status
+    },
+    onError: (error) => {
+      console.error('Failed to update online status:', error);
+      // Revert UI state on error
+      setIsOnline(!isOnline);
+    },
   });
 
-  const { data: assignments } = useQuery({
-    queryKey: ['assignments'],
-    queryFn: assignmentsAPI.list,
-  });
+  const handleToggleOnline = () => {
+    const newStatus = !isOnline;
+    setIsOnline(newStatus);
+    onlineStatusMutation.mutate(newStatus);
+  };
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -42,60 +53,50 @@ export default function WorkerDashboard() {
   const demandText = demandLevel === 'low' ? '低' : demandLevel === 'medium' ? '中' : '高';
   const demandColor = demandLevel === 'low' ? 'bg-gray-400' : demandLevel === 'medium' ? 'bg-yellow-400' : 'bg-red-400';
 
+  const defaultCenter: [number, number] = userLocation 
+    ? [userLocation.lat, userLocation.lng] 
+    : [35.6812, 139.7671]; // Tokyo default
+
   return (
     <div className="min-h-screen bg-gray-100 pt-16 pb-24 relative">
-      <div className="absolute inset-0 bg-gradient-to-br from-green-100/30 via-blue-50/30 to-yellow-50/30" 
-           style={{
-             backgroundImage: `
-               linear-gradient(to right, rgba(0,0,0,0.02) 1px, transparent 1px),
-               linear-gradient(to bottom, rgba(0,0,0,0.02) 1px, transparent 1px)
-             `,
-             backgroundSize: '40px 40px'
-           }}>
+      {/* Map Container */}
+      <div className="absolute inset-0">
+        {userLocation ? (
+          <Suspense fallback={
+            <div className="absolute inset-0 bg-gradient-to-br from-green-100/30 via-blue-50/30 to-yellow-50/30 flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-16 h-16 border-4 border-[#00CED1] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                <p className="text-gray-600 font-medium">マップを読み込み中...</p>
+              </div>
+            </div>
+          }>
+            <MapComponent center={defaultCenter} jobs={jobs || []} isOnline={isOnline} />
+          </Suspense>
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-green-100/30 via-blue-50/30 to-yellow-50/30 flex items-center justify-center">
+            <div className="text-center">
+              <div className="w-16 h-16 border-4 border-[#00CED1] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+              <p className="text-gray-600 font-medium">位置情報を取得中...</p>
+            </div>
+          </div>
+        )}
       </div>
 
-      <div className="absolute top-4 left-4 z-10">
+      {/* Top buttons */}
+      <div className="absolute top-4 left-4 z-[1000]">
         <button className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors">
           <Menu className="w-6 h-6 text-gray-700" />
         </button>
       </div>
 
-      <div className="absolute top-4 right-4 z-10">
+      <div className="absolute top-4 right-4 z-[1000]">
         <button className="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors">
           <Radio className="w-6 h-6 text-gray-700" />
         </button>
       </div>
 
-      {userLocation && (
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="relative"
-          >
-            <div className="w-12 h-12 bg-gradient-to-br from-[#00CED1] to-[#009999] rounded-full shadow-lg flex items-center justify-center">
-              <div className="w-3 h-3 bg-white rounded-full" />
-            </div>
-            <motion.div
-              className="absolute inset-0 bg-[#00CED1]/30 rounded-full"
-              animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-          </motion.div>
-        </div>
-      )}
-
-      <div className="absolute top-1/4 left-1/4 z-5">
-        <div className="bg-white rounded-2xl px-4 py-2 shadow-md flex items-center gap-2">
-          <MapPin className="w-4 h-4 text-pink-500" />
-          <div>
-            <p className="text-xs text-gray-600">相模川ふれあい科学館</p>
-            <p className="text-xs font-medium text-gray-900">学園 アクアリウムさがみはら</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-20 pb-32">
+      {/* Bottom sheet */}
+      <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-[1000] pb-32">
         <div className="px-6 pt-6 pb-2">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-bold text-gray-900">
@@ -152,8 +153,9 @@ export default function WorkerDashboard() {
           </div>
 
           <button
-            onClick={() => setIsOnline(!isOnline)}
-            className={`w-full py-5 rounded-2xl font-bold text-lg transition-all shadow-lg flex items-center justify-center gap-3 relative overflow-hidden ${
+            onClick={handleToggleOnline}
+            disabled={onlineStatusMutation.isPending}
+            className={`w-full py-5 rounded-2xl font-bold text-lg transition-all shadow-lg flex items-center justify-center gap-3 relative overflow-hidden disabled:opacity-70 ${
               isOnline
                 ? 'bg-gradient-to-r from-red-500 to-red-600 text-white'
                 : 'bg-gradient-to-r from-[#00CED1] to-[#009999] text-white hover:from-[#00D4D4] hover:to-[#00A0A0]'
