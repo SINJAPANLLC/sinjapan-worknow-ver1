@@ -53,6 +53,16 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
 
 ## Recent Changes
 
+### November 8, 2025 - Wolt-Style Delivery Management System
+-   **Delivery Status Flow**: Implemented 4-stage delivery progression (pending_pickup → picking_up → in_delivery → delivered) with automatic timestamp tracking for picked_up_at and delivered_at.
+-   **Database Schema**: Extended assignments table with pickup/delivery location fields (pickup_location, delivery_location) and coordinates (pickup_lat, pickup_lng, delivery_lat, delivery_lng).
+-   **Backend APIs**: Added `GET /assignments/active/delivery` endpoint to fetch worker's current delivery, and `POST /assignments/{id}/advance-status` for status progression.
+-   **Interactive Delivery Card**: Worker dashboard displays active delivery card with current status, pickup/delivery locations, and one-tap action button to advance status.
+-   **Route Visualization**: Integrated Leaflet Routing Machine to display turn-by-turn delivery route on map from pickup location to delivery destination with turquoise (#00CED1) route line.
+-   **Custom Map Markers**: Apple Maps-style markers for pickup (orange) and delivery (turquoise) locations with distinct styling.
+-   **Real-time Updates**: Delivery status auto-refreshes every 5 seconds, ensuring workers see latest assignment state.
+-   **Status-Based Actions**: Dynamic button labels ("商品受取に向かう", "商品を受け取った", "配達完了") guide workers through each delivery stage.
+
 ### November 8, 2025 - Urgent Jobs & Geocoding Implementation
 -   **Urgent Jobs System**: Added `is_urgent` and `urgent_deadline` flags to jobs table. Urgent jobs are now prioritized in all job listings (ORDER BY is_urgent DESC).
 -   **Automatic Geocoding**: Integrated OpenStreetMap Nominatim API for address-to-coordinates conversion. Jobs with `location` field are automatically geocoded on creation to populate `latitude` and `longitude` for map display.
