@@ -52,7 +52,7 @@ async def create_job(
 ) -> JobRead:
     if current_user.role != UserRole.COMPANY:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only companies can post jobs")
-    return job_service.create_job(current_user.id, payload)
+    return await job_service.create_job(current_user.id, payload)
 
 
 @router.patch("/{job_id}", response_model=JobRead)

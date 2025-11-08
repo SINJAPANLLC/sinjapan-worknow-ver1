@@ -25,6 +25,11 @@ class JobBase(TimestampedModel):
     tags: List[str] = []
     starts_at: Optional[datetime] = None
     ends_at: Optional[datetime] = None
+    prefecture: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    is_urgent: bool = False
+    urgent_deadline: Optional[datetime] = None
 
 
 class JobCreate(BaseModel):
@@ -37,6 +42,11 @@ class JobCreate(BaseModel):
     tags: List[str] = []
     starts_at: Optional[datetime] = None
     ends_at: Optional[datetime] = None
+    prefecture: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    is_urgent: bool = False
+    urgent_deadline: Optional[datetime] = None
 
 
 class JobUpdate(BaseModel):
@@ -50,6 +60,11 @@ class JobUpdate(BaseModel):
     tags: Optional[List[str]] = None
     starts_at: Optional[datetime] = None
     ends_at: Optional[datetime] = None
+    prefecture: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    is_urgent: Optional[bool] = None
+    urgent_deadline: Optional[datetime] = None
 
 
 class JobRead(JobBase):

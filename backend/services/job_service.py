@@ -6,6 +6,7 @@ from fastapi import HTTPException, status
 from schemas import JobCreate, JobList, JobRead, JobStatus, JobUpdate
 
 from .postgres_base import PostgresService
+from .geocoding_service import GeocodingService
 
 
 class JobService(PostgresService):
@@ -30,10 +31,17 @@ class JobService(PostgresService):
     def _to_job(self, data: Dict) -> JobRead:
         return JobRead(**data)
 
-    def create_job(self, company_id: str, payload: JobCreate) -> JobRead:
+    async def create_job(self, company_id: str, payload: JobCreate) -> JobRead:
         record = payload.dict()
         record["company_id"] = company_id
         record["status"] = JobStatus.DRAFT.value
+        
+        # Auto-geocode if location is provided but coordinates are not
+        if record.get("location") and not (record.get("latitude") and record.get("longitude")):
+            coords = await GeocodingService.geocode_address(record["location"])
+            if coords:
+                record["latitude"], record["longitude"] = coords
+        
         created = self.insert(record)
         return self._to_job(created)
 
