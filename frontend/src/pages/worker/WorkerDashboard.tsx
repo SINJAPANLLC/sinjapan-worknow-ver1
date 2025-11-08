@@ -2,7 +2,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { jobsAPI, authAPI, assignmentsAPI } from '../../lib/api';
-import { Sparkles, Zap, Flame, Bell, UserCircle, MapPin, BarChart3, Menu, Radio, X, Settings, LogOut, HelpCircle, RefreshCw, Package, Navigation, CheckCircle } from 'lucide-react';
+import { Sparkles, Zap, Flame, MessageCircle, UserCircle, MapPin, BarChart3, Menu, Radio, X, Settings, LogOut, HelpCircle, RefreshCw, Package, Navigation, CheckCircle } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
@@ -390,7 +390,7 @@ export default function WorkerDashboard() {
             { label: 'さがす', path: '/jobs', icon: Sparkles },
             { label: 'はたらく', path: '/applications', icon: Zap },
             { label: 'Now', path: '/dashboard', icon: Flame },
-            { label: 'メッセージ', path: '/notifications', icon: Bell },
+            { label: 'メッセージ', path: '/messages', icon: MessageCircle },
             { label: 'マイページ', path: '/profile', icon: UserCircle },
           ]}
         />
