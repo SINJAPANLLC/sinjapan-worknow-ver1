@@ -43,7 +43,7 @@ export default function WorkerDashboard() {
   const demandColor = demandLevel === 'low' ? 'bg-gray-400' : demandLevel === 'medium' ? 'bg-yellow-400' : 'bg-red-400';
 
   return (
-    <div className="min-h-screen bg-gray-100 pb-20 relative">
+    <div className="min-h-screen bg-gray-100 pt-16 pb-24 relative">
       <div className="absolute inset-0 bg-gradient-to-br from-green-100/30 via-blue-50/30 to-yellow-50/30" 
            style={{
              backgroundImage: `

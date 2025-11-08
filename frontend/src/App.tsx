@@ -21,6 +21,7 @@ import AdminUsersManagePage from './pages/admin/UsersManagePage';
 import AdminJobsManagePage from './pages/admin/JobsManagePage';
 import AdminStatsPage from './pages/admin/StatsPage';
 import { NotificationsPage } from './pages/NotificationsPage';
+import MessagesPage from './pages/shared/MessagesPage';
 import SettingsPage from './pages/shared/SettingsPage';
 import JobDetailPage from './pages/shared/JobDetailPage';
 import MainLayout from './components/layout/MainLayout';
@@ -149,6 +150,14 @@ function App() {
           element={
             <ProtectedRoute>
               <NotificationsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/messages"
+          element={
+            <ProtectedRoute>
+              <MessagesPage />
             </ProtectedRoute>
           }
         />

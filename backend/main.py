@@ -18,6 +18,7 @@ from routers import (
     bank_accounts,
     withdrawals,
     activities,
+    messages,
 )
 
 app = FastAPI(title="WORK NOW API", version="1.0")
@@ -53,6 +54,7 @@ app.include_router(phone_verification.router, prefix="/phone", tags=["Phone Veri
 app.include_router(bank_accounts.router)
 app.include_router(withdrawals.router)
 app.include_router(activities.router)
+app.include_router(messages.router)
 
 
 if __name__ == "__main__":

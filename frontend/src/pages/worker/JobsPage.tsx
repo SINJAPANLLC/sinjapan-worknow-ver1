@@ -47,7 +47,7 @@ export default function JobsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00B5B5] to-[#009999] pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00B5B5] to-[#009999] pt-16 pb-24">
       <div className="bg-white/95 backdrop-blur-sm sticky top-0 z-20 shadow-lg pt-20">
         <div className="px-4 py-3 space-y-3">
           <button className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#00CED1]/10 to-[#009999]/10 rounded-xl hover:from-[#00CED1]/20 hover:to-[#009999]/20 transition-all border border-[#00CED1]/20">

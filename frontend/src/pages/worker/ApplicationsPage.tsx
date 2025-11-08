@@ -45,7 +45,7 @@ export default function ApplicationsPage() {
   const currentApplications = activeTab === 'upcoming' ? upcomingApplications : pastApplications;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00B5B5] to-[#009999] pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00B5B5] to-[#009999] pt-16 pb-24">
       <div className="bg-white/95 backdrop-blur-sm pt-20 pb-0 sticky top-0 z-20 shadow-lg">
         <h1 className="text-2xl font-bold text-center bg-gradient-to-r from-[#00CED1] to-[#009999] bg-clip-text text-transparent py-4">はたらく</h1>
         
