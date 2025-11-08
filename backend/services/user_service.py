@@ -5,10 +5,10 @@ from fastapi import HTTPException, status
 from schemas import UserCreate, UserRead, UserUpdate
 from utils.security import hash_password
 
-from .base import SupabaseService
+from .postgres_base import PostgresService
 
 
-class UserService(SupabaseService):
+class UserService(PostgresService):
     def __init__(self) -> None:
         super().__init__("users")
 
@@ -16,28 +16,20 @@ class UserService(SupabaseService):
         return UserRead(**data)
 
     def get_by_email(self, email: str) -> Optional[UserRead]:
-        response = (
-            self._table()
-            .select("*")
-            .eq("email", email)
-            .limit(1)
-            .execute()
-        )
-        if not response.data:
-            return None
-        return self._to_user(response.data[0])
+        with self._get_cursor() as cursor:
+            cursor.execute("SELECT * FROM users WHERE email = %s LIMIT 1", (email,))
+            result = cursor.fetchone()
+            if not result:
+                return None
+            return self._to_user(dict(result))
 
     def get_by_email_raw(self, email: str) -> Optional[Dict]:
-        response = (
-            self._table()
-            .select("*")
-            .eq("email", email)
-            .limit(1)
-            .execute()
-        )
-        if not response.data:
-            return None
-        return response.data[0]
+        with self._get_cursor() as cursor:
+            cursor.execute("SELECT * FROM users WHERE email = %s LIMIT 1", (email,))
+            result = cursor.fetchone()
+            if not result:
+                return None
+            return dict(result)
 
     def create_user(self, payload: UserCreate) -> UserRead:
         if self.get_by_email(payload.email):

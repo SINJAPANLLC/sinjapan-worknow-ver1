@@ -1,0 +1,106 @@
+# ログ確認（15秒待つ）
+sleep 15 && pm2 logs sinjapan-manager --lines 30
+[PM2] Applying action restartProcessId on app [sinjapan-manager](ids: [ 11 ])
+[PM2] [sinjapan-manager](11) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 5  │ logimatch          │ fork     │ 0    │ online    │ 0%       │ 57.8mb   │
+│ 0  │ only-u             │ cluster  │ 8    │ online    │ 0%       │ 198.4mb  │
+│ 11 │ sinjapan-manager   │ fork     │ 142  │ online    │ 0%       │ 18.5mb   │
+│ 2  │ sinjapan-poker     │ fork     │ 3    │ online    │ 0%       │ 1.2gb    │
+│ 7  │ sinjapan-school    │ fork     │ 0    │ online    │ 0%       │ 92.1mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 5  │ logimatch          │ fork     │ 0    │ online    │ 0%       │ 57.8mb   │
+│ 0  │ only-u             │ cluster  │ 8    │ online    │ 0%       │ 198.4mb  │
+│ 11 │ sinjapan-manager   │ fork     │ 142  │ online    │ 0%       │ 55.4mb   │
+│ 2  │ sinjapan-poker     │ fork     │ 3    │ online    │ 0%       │ 1.2gb    │
+│ 7  │ sinjapan-school    │ fork     │ 0    │ online    │ 0%       │ 92.1mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[TAILING] Tailing last 30 lines for [sinjapan-manager] process (change the value with --lines option)
+/root/.pm2/logs/sinjapan-manager-out-11.log last 30 lines:
+/root/.pm2/logs/sinjapan-manager-error-11.log last 30 lines:
+11|sinjapa | /var/www/sinjapan-manager/server/vite.ts:74
+11|sinjapa |     throw new Error(
+11|sinjapa |           ^
+11|sinjapa | 
+11|sinjapa | 
+11|sinjapa | Error: Could not find the build directory: /var/www/sinjapan-manager/server/public, make sure to build the client first
+11|sinjapa |     at serveStatic (/var/www/sinjapan-manager/server/vite.ts:74:11)
+11|sinjapa |     at <anonymous> (/var/www/sinjapan-manager/server/index.ts:56:5)
+11|sinjapa | 
+11|sinjapa | Node.js v20.19.5
+11|sinjapa | /var/www/sinjapan-manager/server/vite.ts:74
+11|sinjapa |     throw new Error(
+11|sinjapa |           ^
+11|sinjapa | 
+11|sinjapa | 
+11|sinjapa | Error: Could not find the build directory: /var/www/sinjapan-manager/server/public, make sure to build the client first
+11|sinjapa |     at serveStatic (/var/www/sinjapan-manager/server/vite.ts:74:11)
+11|sinjapa |     at <anonymous> (/var/www/sinjapan-manager/server/index.ts:56:5)
+11|sinjapa | 
+11|sinjapa | Node.js v20.19.5
+11|sinjapa | /var/www/sinjapan-manager/server/vite.ts:74
+11|sinjapa |     throw new Error(
+11|sinjapa |           ^
+11|sinjapa | 
+11|sinjapa | 
+11|sinjapa | Error: Could not find the build directory: /var/www/sinjapan-manager/server/public, make sure to build the client first
+11|sinjapa |     at serveStatic (/var/www/sinjapan-manager/server/vite.ts:74:11)
+11|sinjapa |     at <anonymous> (/var/www/sinjapan-manager/server/index.ts:56:5)
+11|sinjapa | 
+11|sinjapa | Node.js v20.19.5
+
+11|sinjapan-manager  | /var/www/sinjapan-manager/server/vite.ts:74
+11|sinjapan-manager  |     throw new Error(
+11|sinjapan-manager  |           ^
+11|sinjapan-manager  | Error: Could not find the build directory: /var/www/sinjapan-manager/server/public, make sure to build the client first
+11|sinjapan-manager  |     at serveStatic (/var/www/sinjapan-manager/server/vite.ts:74:11)
+11|sinjapan-manager  |     at <anonymous> (/var/www/sinjapan-manager/server/index.ts:56:5)
+11|sinjapan-manager  | Node.js v20.19.5
+11|sinjapan-manager  | /var/www/sinjapan-manager/server/vite.ts:74
+11|sinjapan-manager  |     throw new Error(
+11|sinjapan-manager  |           ^
+11|sinjapan-manager  | Error: Could not find the build directory: /var/www/sinjapan-manager/server/public, make sure to build the client first
+11|sinjapan-manager  |     at serveStatic (/var/www/sinjapan-manager/server/vite.ts:74:11)
+11|sinjapan-manager  |     at <anonymous> (/var/www/sinjapan-manager/server/index.ts:56:5)
+11|sinjapan-manager  | Node.js v20.19.5
+11|sinjapan-manager  | /var/www/sinjapan-manager/server/vite.ts:74
+11|sinjapan-manager  |     throw new Error(
+11|sinjapan-manager  |           ^
+11|sinjapan-manager  | Error: Could not find the build directory: /var/www/sinjapan-manager/server/public, make sure to build the client first
+11|sinjapan-manager  |     at serveStatic (/var/www/sinjapan-manager/server/vite.ts:74:11)
+11|sinjapan-manager  |     at <anonymous> (/var/www/sinjapan-manager/server/index.ts:56:5)
+11|sinjapan-manager  | Node.js v20.19.5
+11|sinjapan-manager  | /var/www/sinjapan-manager/server/vite.ts:74
+11|sinjapan-manager  |     throw new Error(
+11|sinjapan-manager  |           ^
+11|sinjapan-manager  | Error: Could not find the build directory: /var/www/sinjapan-manager/server/public, make sure to build the client first
+11|sinjapan-manager  |     at serveStatic (/var/www/sinjapan-manager/server/vite.ts:74:11)
+11|sinjapan-manager  |     at <anonymous> (/var/www/sinjapan-manager/server/index.ts:56:5)
+11|sinjapan-manager  | Node.js v20.19.5
+11|sinjapan-manager  | /var/www/sinjapan-manager/server/vite.ts:74
+11|sinjapan-manager  |     throw new Error(
+11|sinjapan-manager  |           ^
+11|sinjapan-manager  | Error: Could not find the build directory: /var/www/sinjapan-manager/server/public, make sure to build the client first
+11|sinjapan-manager  |     at serveStatic (/var/www/sinjapan-manager/server/vite.ts:74:11)
+11|sinjapan-manager  |     at <anonymous> (/var/www/sinjapan-manager/server/index.ts:56:5)
+11|sinjapan-manager  | Node.js v20.19.5
+11|sinjapan-manager  | /var/www/sinjapan-manager/server/vite.ts:74
+11|sinjapan-manager  |     throw new Error(
+11|sinjapan-manager  |           ^
+11|sinjapan-manager  | Error: Could not find the build directory: /var/www/sinjapan-manager/server/public, make sure to build the client first
+11|sinjapan-manager  |     at serveStatic (/var/www/sinjapan-manager/server/vite.ts:74:11)
+11|sinjapan-manager  |     at <anonymous> (/var/www/sinjapan-manager/server/index.ts:56:5)
+11|sinjapan-manager  | Node.js v20.19.5
+11|sinjapan-manager  | /var/www/sinjapan-manager/server/vite.ts:74
+11|sinjapan-manager  |     throw new Error(
+11|sinjapan-manager  |           ^
+11|sinjapan-manager  | Error: Could not find the build directory: /var/www/sinjapan-manager/server/public, make sure to build the client first
+11|sinjapan-manager  |     at serveStatic (/var/www/sinjapan-manager/server/vite.ts:74:11)
+11|sinjapan-manager  |     at <anonymous> (/var/www/sinjapan-manager/server/index.ts:56:5)
+11|sinjapan-manager  | Node.js v20.19.5
+1

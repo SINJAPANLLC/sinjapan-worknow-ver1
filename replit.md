@@ -68,7 +68,7 @@ Flutter Webの表示問題により、React + Viteに完全移行しました。
 ### 作成したファイル（React）
 - `frontend/src/stores/authStore.ts` - Zustand認証ストア
 - `frontend/src/lib/api.ts` - Axios APIクライアント
-- `frontend/src/lib/supabase.ts` - Supabaseクライアント
+- `frontend/src/lib/supabase.ts` - Supabaseクライアント（将来の拡張用）
 - `frontend/src/hooks/useAuthInit.ts` - 認証初期化フック
 - `frontend/src/components/layout/MainLayout.tsx` - メインレイアウト
 - `frontend/src/components/layout/ProtectedRoute.tsx` - 保護されたルート
@@ -76,10 +76,34 @@ Flutter Webの表示問題により、React + Viteに完全移行しました。
 - `frontend/src/pages/dashboard/DashboardPage.tsx` - ダッシュボード
 - `frontend/src/pages/jobs/JobsPage.tsx` - 求人リスト
 
+### 作成したファイル（Backend - PostgreSQL対応）
+- `backend/services/postgres_base.py` - PostgreSQL用ベースサービスクラス
+- PostgreSQL接続プール実装（`backend/utils/database.py`に追加）
+
+## データベース
+
+**Replit PostgreSQL** を使用中：
+- `DATABASE_URL` 環境変数で自動接続
+- `users` テーブル作成済み
+- **Adminユーザー**: info@sinjapan.jp / Kazuya8008 ✅
+
+### テーブル構造
+```sql
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  full_name TEXT NOT NULL,
+  role TEXT NOT NULL CHECK (role IN ('worker', 'company', 'admin')),
+  avatar_url TEXT,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
 ## 環境変数 (backend/.env)
 ```
-SUPABASE_URL=https://example.supabase.co
-SUPABASE_KEY=your-supabase-key-here
 STRIPE_API_KEY=sk_test_example
 STRIPE_CONNECT_CLIENT_ID=ca_example
 STRIPE_WEBHOOK_SECRET=whsec_example
@@ -89,10 +113,11 @@ REDIS_URL=redis://localhost:6379/0
 JWT_SECRET=dev-jwt-secret-change-in-production-to-secure-random-string
 JWT_EXPIRE_MINUTES=60
 DOMAIN=https://7524a68e-8e69-403f-ac49-a8fd6d71de3a-00-2pcpdci634d4b.pike.replit.dev
-ADMIN_EMAIL=admin@example.com
+ADMIN_EMAIL=info@sinjapan.jp
 CORS_ORIGINS=https://7524a68e-8e69-403f-ac49-a8fd6d71de3a-00-2pcpdci634d4b.pike.replit.dev,http://localhost:5000,http://0.0.0.0:5000
 ENVIRONMENT=development
 PORT=8000
+# DATABASE_URL は自動的に設定されます（Replit PostgreSQL）
 ```
 
 ## デプロイ設定
