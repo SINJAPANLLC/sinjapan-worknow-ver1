@@ -34,7 +34,7 @@ export default function ProfilePage() {
     : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary via-primary-dark to-gray-900 pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-primary via-primary-dark to-gray-900 pt-20 pb-24">
       <div className="container mx-auto px-4 py-8">
         <motion.div {...fadeIn}>
           <h1 className="text-3xl font-bold mb-2 text-white">プロフィール</h1>
