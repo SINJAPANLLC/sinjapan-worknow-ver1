@@ -12,10 +12,10 @@ export function Header() {
       <div className="container mx-auto px-4 h-24 md:h-28 flex items-center justify-between">
         <Link to="/" className="flex items-center">
           <motion.img
-            src="/logo.png"
-            alt="Work Now Logo"
-            className="h-20 md:h-24 w-auto"
-            whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0] }}
+            src="/logo-new.jpg"
+            alt="Work Now in Japan Logo"
+            className="h-12 md:h-16 w-auto rounded-md"
+            whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.3 }}
           />
         </Link>
