@@ -1,0 +1,21 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "FastAPI + Flutter を中核に、Stripe Connect / Firebase / Supabase を組み合わせた即戦力マッチング&報酬プラットフォームです。詳細要件は `docs/requirements.md`、RLS サンプルは `docs/supabase_policies.sql` を参照してください。",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@headlessui/react": "^2.2.9",
+    "framer-motion": "^12.23.24",
+    "vite-plugin-pwa": "^1.1.0",
+    "workbox-window": "^7.3.0"
+  }
+}

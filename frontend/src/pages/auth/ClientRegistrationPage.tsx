@@ -1,0 +1,208 @@
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useAuthStore } from '../../stores/authStore';
+import { Button } from '../../components/ui/Button';
+import { Card } from '../../components/ui/Card';
+import { slideUp, staggerChildren } from '../../utils/animations';
+
+export default function ClientRegistrationPage() {
+  const navigate = useNavigate();
+  const register = useAuthStore((state) => state.register);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    fullName: '',
+    companyName: '',
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('パスワードが一致しません');
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError('パスワードは8文字以上で入力してください');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await register({
+        email: formData.email,
+        password: formData.password,
+        full_name: formData.fullName,
+        role: 'company',
+      });
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.response?.data?.detail || '登録に失敗しました');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden py-12">
+      <div className="absolute inset-0 bg-gradient-primary opacity-10" />
+      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
+      
+      <motion.div
+        className="relative z-10 w-full max-w-md px-4"
+        variants={staggerChildren}
+        initial="initial"
+        animate="animate"
+      >
+        <Link to="/" className="flex justify-center mb-8">
+          <motion.h1
+            className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent"
+            variants={slideUp}
+            whileHover={{ scale: 1.05 }}
+          >
+            WORK NOW
+          </motion.h1>
+        </Link>
+        
+        <motion.div variants={slideUp}>
+          <Card padding="lg">
+            <div className="text-center mb-8">
+              <div className="inline-block p-3 bg-primary-100 rounded-full mb-4">
+                <span className="text-3xl">🏢</span>
+              </div>
+              <h2 className="text-2xl font-bold text-neutral-800 mb-2">
+                クライアント登録
+              </h2>
+              <p className="text-neutral-600">
+                即戦力を探しませんか？
+              </p>
+            </div>
+
+            {error && (
+              <motion.div
+                className="mb-6 p-4 bg-danger/10 border border-danger/20 rounded-lg text-danger text-sm"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                {error}
+              </motion.div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  会社名・団体名
+                </label>
+                <input
+                  type="text"
+                  value={formData.companyName}
+                  onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                  className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                  placeholder="株式会社サンプル"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  担当者名
+                </label>
+                <input
+                  type="text"
+                  value={formData.fullName}
+                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                  placeholder="山田 太郎"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  メールアドレス
+                </label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                  placeholder="email@example.com"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  パスワード
+                </label>
+                <input
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                  placeholder="8文字以上"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  パスワード（確認）
+                </label>
+                <input
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                  className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                  placeholder="もう一度入力してください"
+                  required
+                />
+              </div>
+
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                fullWidth
+                loading={loading}
+              >
+                クライアントとして登録
+              </Button>
+            </form>
+
+            <div className="mt-8 pt-6 border-t border-neutral-200 text-center">
+              <p className="text-neutral-600 text-sm">
+                すでにアカウントをお持ちの方は
+              </p>
+              <Link to="/login" className="inline-block mt-2 text-primary-600 hover:text-primary-700 font-medium">
+                ログイン
+              </Link>
+            </div>
+          </Card>
+        </motion.div>
+
+        <motion.p
+          className="mt-6 text-center text-neutral-500 text-sm"
+          variants={slideUp}
+        >
+          登録することで、
+          <Link to="/terms" className="text-primary-600 hover:underline mx-1">
+            利用規約
+          </Link>
+          と
+          <Link to="/privacy" className="text-primary-600 hover:underline mx-1">
+            プライバシーポリシー
+          </Link>
+          に同意したものとみなされます。
+        </motion.p>
+      </motion.div>
+    </div>
+  );
+}
