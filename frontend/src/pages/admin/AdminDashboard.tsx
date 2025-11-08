@@ -12,6 +12,8 @@ import {
   ArrowTrendingUpIcon,
   ArrowTrendingDownIcon,
 } from '@heroicons/react/24/outline';
+import { LayoutDashboard, Users, Briefcase, BarChart3 } from 'lucide-react';
+import { BottomNav } from '../../components/layout/BottomNav';
 
 export default function AdminDashboard() {
   const { data: stats, isLoading } = useQuery({
@@ -213,6 +215,13 @@ export default function AdminDashboard() {
           </>
         )}
       </div>
+      
+      <BottomNav items={[
+        { label: 'ダッシュボード', path: '/dashboard', icon: LayoutDashboard },
+        { label: 'ユーザー', path: '/admin/users', icon: Users },
+        { label: '求人', path: '/admin/jobs', icon: Briefcase },
+        { label: '統計', path: '/admin/stats', icon: BarChart3 },
+      ]} />
     </div>
   );
 }

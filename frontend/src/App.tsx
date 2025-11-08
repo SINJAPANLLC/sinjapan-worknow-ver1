@@ -10,7 +10,18 @@ import ClientRegistrationPage from './pages/auth/ClientRegistrationPage';
 import WorkerDashboard from './pages/worker/WorkerDashboard';
 import ClientDashboard from './pages/client/ClientDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
-import JobsPage from './pages/jobs/JobsPage';
+import WorkerJobsPage from './pages/worker/JobsPage';
+import WorkerApplicationsPage from './pages/worker/ApplicationsPage';
+import WorkerProfilePage from './pages/worker/ProfilePage';
+import ClientJobCreatePage from './pages/client/JobCreatePage';
+import ClientJobsManagePage from './pages/client/JobsManagePage';
+import ClientProfilePage from './pages/client/ProfilePage';
+import AdminUsersManagePage from './pages/admin/UsersManagePage';
+import AdminJobsManagePage from './pages/admin/JobsManagePage';
+import AdminStatsPage from './pages/admin/StatsPage';
+import NotificationsPage from './pages/shared/NotificationsPage';
+import SettingsPage from './pages/shared/SettingsPage';
+import JobDetailPage from './pages/shared/JobDetailPage';
 import MainLayout from './components/layout/MainLayout';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import { useAuthInit } from './hooks/useAuthInit';
@@ -19,7 +30,6 @@ import { useAuthStore } from './stores/authStore';
 
 function App() {
   useAuthInit();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const user = useAuthStore((state) => state.user);
 
   const getDashboard = () => {
@@ -49,16 +59,98 @@ function App() {
             </ProtectedRoute>
           }
         />
+        
         <Route
           path="/jobs"
           element={
             <ProtectedRoute>
-              <MainLayout />
+              <WorkerJobsPage />
             </ProtectedRoute>
           }
-        >
-          <Route index element={<JobsPage />} />
-        </Route>
+        />
+        <Route
+          path="/applications"
+          element={
+            <ProtectedRoute>
+              <WorkerApplicationsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              {user?.role === 'worker' ? <WorkerProfilePage /> : user?.role === 'company' ? <ClientProfilePage /> : <Navigate to="/dashboard" />}
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/jobs/new"
+          element={
+            <ProtectedRoute>
+              <ClientJobCreatePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs/manage"
+          element={
+            <ProtectedRoute>
+              <ClientJobsManagePage />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute>
+              <AdminUsersManagePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/jobs"
+          element={
+            <ProtectedRoute>
+              <AdminJobsManagePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/stats"
+          element={
+            <ProtectedRoute>
+              <AdminStatsPage />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <NotificationsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <SettingsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs/:id"
+          element={
+            <ProtectedRoute>
+              <JobDetailPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

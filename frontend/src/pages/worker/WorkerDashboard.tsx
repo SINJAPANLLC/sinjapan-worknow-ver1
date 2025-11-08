@@ -246,6 +246,13 @@ export default function WorkerDashboard() {
           </Card>
         </motion.div>
       </div>
+      
+      <BottomNav items={[
+        { label: 'ホーム', path: '/dashboard', icon: Home },
+        { label: '求人検索', path: '/jobs', icon: Search },
+        { label: '応募履歴', path: '/applications', icon: FileText },
+        { label: 'プロフィール', path: '/profile', icon: User },
+      ]} />
     </div>
   );
 }

@@ -1,11 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { LucideIcon } from 'lucide-react';
 
 export interface NavItem {
   label: string;
   path: string;
-  icon: LucideIcon;
+  icon: React.ComponentType<any>;
 }
 
 interface BottomNavProps {

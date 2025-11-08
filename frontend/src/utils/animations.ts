@@ -6,13 +6,13 @@ export const fadeIn = {
 
 export const slideUp = {
   initial: { y: 20, opacity: 0 },
-  animate: { y: 0, opacity: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+  animate: { y: 0, opacity: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as any } },
   exit: { y: -20, opacity: 0 },
 };
 
 export const slideUpSlow = {
   initial: { y: 40, opacity: 0 },
-  animate: { y: 0, opacity: 1, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
+  animate: { y: 0, opacity: 1, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as any } },
 };
 
 export const slideDown = {
@@ -35,7 +35,7 @@ export const slideRight = {
 
 export const scaleIn = {
   initial: { scale: 0.95, opacity: 0 },
-  animate: { scale: 1, opacity: 1, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+  animate: { scale: 1, opacity: 1, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as any } },
   exit: { scale: 0.95, opacity: 0 },
 };
 

@@ -12,7 +12,9 @@ import {
   PlusIcon,
   EyeIcon,
 } from '@heroicons/react/24/outline';
+import { Home, PlusCircle, Briefcase, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { BottomNav } from '../../components/layout/BottomNav';
 
 export default function ClientDashboard() {
   const { data: myJobs, isLoading: jobsLoading } = useQuery({
@@ -288,6 +290,13 @@ export default function ClientDashboard() {
           </Card>
         </motion.div>
       </div>
+      
+      <BottomNav items={[
+        { label: 'ホーム', path: '/dashboard', icon: Home },
+        { label: '求人作成', path: '/jobs/new', icon: PlusCircle },
+        { label: '求人管理', path: '/jobs/manage', icon: Briefcase },
+        { label: 'プロフィール', path: '/profile', icon: User },
+      ]} />
     </div>
   );
 }
