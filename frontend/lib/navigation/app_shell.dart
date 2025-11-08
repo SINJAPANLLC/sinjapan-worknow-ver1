@@ -32,7 +32,7 @@ final appShellRouterProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: 'home',
+                path: '/home',
                 builder: (context, state) => const HomeScreen(),
               ),
             ],
@@ -40,7 +40,7 @@ final appShellRouterProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: 'jobs',
+                path: '/jobs',
                 builder: (context, state) => const JobListScreen(),
               ),
             ],
@@ -48,7 +48,7 @@ final appShellRouterProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: 'applications',
+                path: '/applications',
                 builder: (context, state) => const ApplicationsScreen(),
               ),
             ],
@@ -56,7 +56,7 @@ final appShellRouterProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: 'notifications',
+                path: '/notifications',
                 builder: (context, state) => const NotificationsScreen(),
               ),
             ],
@@ -64,7 +64,7 @@ final appShellRouterProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: 'profile',
+                path: '/profile',
                 builder: (context, state) => const ProfileScreen(),
               ),
             ],
