@@ -16,6 +16,7 @@
     "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",
     "framer-motion": "^12.23.24",
+    "lucide-react": "^0.553.0",
     "vite-plugin-pwa": "^1.1.0",
     "workbox-window": "^7.3.0"
   }
