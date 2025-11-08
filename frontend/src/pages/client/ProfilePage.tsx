@@ -5,7 +5,7 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { authAPI, paymentsAPI, reviewsAPI } from '../../lib/api';
 import { slideUp, fadeIn } from '../../utils/animations';
-import { Sparkles, Zap, Flame, Bell, UserCircle, Mail, Calendar, Shield, CreditCard, TrendingUp, Star } from 'lucide-react';
+import { Sparkles, Zap, Flame, MessageCircle, UserCircle, Mail, Calendar, Shield, CreditCard, TrendingUp, Star } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 
 export default function ProfilePage() {
@@ -228,7 +228,7 @@ export default function ProfilePage() {
           { label: 'さがす', path: '/jobs/manage', icon: Sparkles },
           { label: 'はたらく', path: '/jobs/new', icon: Zap },
           { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
           { label: 'マイページ', path: '/profile', icon: UserCircle },
         ]}
       />

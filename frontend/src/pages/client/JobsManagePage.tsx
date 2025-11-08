@@ -8,7 +8,7 @@ import { Button } from '../../components/ui/Button';
 import { jobsAPI, assignmentsAPI, reviewsAPI, type Assignment } from '../../lib/api';
 import { useAuthStore } from '../../stores/authStore';
 import { slideUp, fadeIn } from '../../utils/animations';
-import { Sparkles, Zap, Flame, Bell, UserCircle, Eye, Edit, Trash2, Users, QrCode, PlusCircle, Briefcase, ChevronDown, ChevronUp, Star } from 'lucide-react';
+import { Sparkles, Zap, Flame, MessageCircle, UserCircle, Eye, Edit, Trash2, Users, QrCode, PlusCircle, Briefcase, ChevronDown, ChevronUp, Star } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 
 export default function JobsManagePage() {
@@ -250,7 +250,7 @@ export default function JobsManagePage() {
           { label: 'さがす', path: '/jobs/manage', icon: Sparkles },
           { label: 'はたらく', path: '/jobs/new', icon: Zap },
           { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
           { label: 'マイページ', path: '/profile', icon: UserCircle },
         ]}
       />

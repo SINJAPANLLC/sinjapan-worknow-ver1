@@ -6,7 +6,7 @@ import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { jobsAPI } from '../../lib/api';
 import { slideUp, fadeIn } from '../../utils/animations';
-import { Sparkles, Zap, Flame, Bell, UserCircle, Search, Eye, Edit, Trash2, UserPlus } from 'lucide-react';
+import { Sparkles, Zap, Flame, MessageCircle, UserCircle, Search, Eye, Edit, Trash2, UserPlus } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 
 export default function JobsManagePage() {
@@ -160,7 +160,7 @@ export default function JobsManagePage() {
           { label: 'さがす', path: '/admin/users', icon: Sparkles },
           { label: 'はたらく', path: '/admin/jobs', icon: Zap },
           { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
           { label: 'マイページ', path: '/admin/stats', icon: UserCircle },
         ]}
       />

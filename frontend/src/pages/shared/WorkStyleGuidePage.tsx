@@ -209,7 +209,7 @@ export default function WorkStyleGuidePage() {
           { label: 'さがす', path: '/jobs', icon: Sparkles },
           { label: 'はたらく', path: '/applications', icon: Zap },
           { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
           { label: 'マイページ', path: '/profile', icon: UserCircle },
         ]}
       />

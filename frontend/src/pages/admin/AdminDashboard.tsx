@@ -12,7 +12,7 @@ import {
   ArrowTrendingUpIcon,
   ArrowTrendingDownIcon,
 } from '@heroicons/react/24/outline';
-import { Sparkles, Zap, Flame, Bell, UserCircle, Users, Briefcase, BarChart3 } from 'lucide-react';
+import { Sparkles, Zap, Flame, MessageCircle, UserCircle, Users, Briefcase, BarChart3 } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 
 export default function AdminDashboard() {
@@ -220,7 +220,7 @@ export default function AdminDashboard() {
         { label: 'さがす', path: '/admin/users', icon: Sparkles },
         { label: 'はたらく', path: '/admin/jobs', icon: Zap },
         { label: 'Now', path: '/dashboard', icon: Flame },
-        { label: 'メッセージ', path: '/notifications', icon: Bell },
+        { label: 'メッセージ', path: '/messages', icon: MessageCircle },
         { label: 'マイページ', path: '/admin/stats', icon: UserCircle },
       ]} />
     </div>

@@ -195,7 +195,7 @@ export default function StatsPage() {
           { label: 'さがす', path: '/admin/users', icon: Sparkles },
           { label: 'はたらく', path: '/admin/jobs', icon: Zap },
           { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
           { label: 'マイページ', path: '/admin/stats', icon: UserCircle },
         ]}
       />

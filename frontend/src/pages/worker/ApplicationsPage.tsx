@@ -7,7 +7,7 @@ import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { applicationsAPI, assignmentsAPI, reviewsAPI, type Application, type Assignment } from '../../lib/api';
 import { useAuthStore } from '../../stores/authStore';
-import { Sparkles, Zap, Flame, Bell, UserCircle, Clock, CheckCircle, XCircle, AlertCircle, BookOpen, ChevronRight, QrCode, LogIn, LogOut, Star } from 'lucide-react';
+import { Sparkles, Zap, Flame, MessageCircle, UserCircle, Clock, CheckCircle, XCircle, AlertCircle, BookOpen, ChevronRight, QrCode, LogIn, LogOut, Star } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 
 export default function ApplicationsPage() {
@@ -310,7 +310,7 @@ export default function ApplicationsPage() {
           { label: 'さがす', path: '/jobs', icon: Sparkles },
           { label: 'はたらく', path: '/applications', icon: Zap },
           { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
           { label: 'マイページ', path: '/profile', icon: UserCircle },
         ]}
       />

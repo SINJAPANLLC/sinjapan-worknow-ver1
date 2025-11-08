@@ -5,7 +5,7 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { notificationsAPI } from '../../lib/api';
 import { slideUp, fadeIn } from '../../utils/animations';
-import { Bell, Check, Trash2, CheckCheck, AlertCircle, Info, Briefcase, DollarSign, Sparkles, Zap, Flame, UserCircle } from 'lucide-react';
+import { MessageCircle, Check, Trash2, CheckCheck, AlertCircle, Info, Briefcase, DollarSign, Sparkles, Zap, Flame, UserCircle } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 import { useAuthStore } from '../../stores/authStore';
 
@@ -160,7 +160,7 @@ export default function NotificationsPage() {
           { label: 'さがす', path: user.role === 'worker' ? '/jobs' : user.role === 'company' ? '/jobs/manage' : '/admin/users', icon: Sparkles },
           { label: 'はたらく', path: user.role === 'worker' ? '/applications' : user.role === 'company' ? '/jobs/new' : '/admin/jobs', icon: Zap },
           { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
           { label: 'マイページ', path: user.role === 'admin' ? '/admin/stats' : '/profile', icon: UserCircle },
         ]}
       />

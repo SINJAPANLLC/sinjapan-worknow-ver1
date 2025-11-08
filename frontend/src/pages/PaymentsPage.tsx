@@ -17,7 +17,7 @@ import {
   withdrawalsAPI,
   paymentsAPI
 } from '../lib/api';
-import { Sparkles, Zap, Flame, Bell, UserCircle } from 'lucide-react';
+import { Sparkles, Zap, Flame, MessageCircle, UserCircle } from 'lucide-react';
 import { BottomNav } from '../components/layout/BottomNav';
 import type { 
   BankAccount, 
@@ -57,7 +57,7 @@ export default function PaymentsPage() {
           { label: 'さがす', path: user.role === 'worker' ? '/jobs' : user.role === 'company' ? '/jobs/manage' : '/admin/users', icon: Sparkles },
           { label: 'はたらく', path: user.role === 'worker' ? '/applications' : user.role === 'company' ? '/jobs/new' : '/admin/jobs', icon: Zap },
           { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
           { label: 'マイページ', path: user.role === 'admin' ? '/admin/stats' : '/profile', icon: UserCircle },
         ]}
       />

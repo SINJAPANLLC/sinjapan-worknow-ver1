@@ -12,7 +12,7 @@ import {
   PlusIcon,
   EyeIcon,
 } from '@heroicons/react/24/outline';
-import { Sparkles, Zap, Flame, Bell, UserCircle, PlusCircle, Briefcase, Radio } from 'lucide-react';
+import { Sparkles, Zap, Flame, MessageCircle, UserCircle, PlusCircle, Briefcase, Radio } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BottomNav } from '../../components/layout/BottomNav';
 
@@ -278,7 +278,7 @@ export default function ClientDashboard() {
         { label: 'さがす', path: '/jobs/manage', icon: Sparkles },
         { label: 'はたらく', path: '/jobs/new', icon: Zap },
         { label: 'Now', path: '/dashboard', icon: Flame },
-        { label: 'メッセージ', path: '/notifications', icon: Bell },
+        { label: 'メッセージ', path: '/messages', icon: MessageCircle },
         { label: 'マイページ', path: '/profile', icon: UserCircle },
       ]} />
     </div>

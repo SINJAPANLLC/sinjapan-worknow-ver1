@@ -4,7 +4,7 @@ import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { slideUp, fadeIn } from '../../utils/animations';
-import { Sparkles, Zap, Flame, Bell, UserCircle, Search, Edit, Trash2, Shield, CheckCircle, XCircle } from 'lucide-react';
+import { Sparkles, Zap, Flame, MessageCircle, UserCircle, Search, Edit, Trash2, Shield, CheckCircle, XCircle } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 
 export default function UsersManagePage() {
@@ -150,7 +150,7 @@ export default function UsersManagePage() {
           { label: 'さがす', path: '/admin/users', icon: Sparkles },
           { label: 'はたらく', path: '/admin/jobs', icon: Zap },
           { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
           { label: 'マイページ', path: '/admin/stats', icon: UserCircle },
         ]}
       />
