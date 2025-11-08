@@ -4,6 +4,7 @@ import { Badge } from '../components/ui/Badge';
 import { useAuthStore } from '../stores/authStore';
 import { BottomNav } from '../components/layout/BottomNav';
 import { AlertTriangle, XCircle, Ban } from 'lucide-react';
+import { penaltiesAPI } from '../lib/api';
 
 interface Penalty {
   id: string;
@@ -33,14 +34,7 @@ export function PenaltiesPage() {
 
   const { data, isLoading } = useQuery({
     queryKey: ['penalties'],
-    queryFn: async () => {
-      const token = localStorage.getItem('access_token');
-      const res = await fetch('/api/penalties/', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (!res.ok) throw new Error('Failed to fetch penalties');
-      return res.json();
-    },
+    queryFn: () => penaltiesAPI.list(),
   });
 
   const penalties: Penalty[] = data?.items || [];

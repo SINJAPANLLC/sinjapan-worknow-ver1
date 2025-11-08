@@ -53,6 +53,18 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
 
 ## Recent Changes
 
+### November 8, 2025 - Automatic Payment System & Profile Enhancements
+-   **Automatic Payment Creation**: Implemented automatic payment creation when assignments are completed. System calculates hourly_rate × hours_worked and creates internal payment records with status='succeeded'.
+-   **Payment Flow**: QR check-out and assignment status update (to 'completed' or 'delivered') both trigger automatic payment creation via `_auto_create_payment_if_needed()` method.
+-   **Payment Service**: Added `create_internal_payment()` method for Stripe-free internal payments. All payments now tracked in database with proper assignment linking.
+-   **Balance Integration**: Worker balance (出金可能残高) automatically reflects completed assignment payments. WithdrawalService calculates: SUM(succeeded payments) - SUM(completed/processing withdrawals).
+-   **Emergency Contact Fields**: Added emergency_contact_name, emergency_contact_phone, emergency_contact_relationship to users table and ProfilePage.
+-   **Qualifications System**: Added qualifications (text array) to users table for storing worker certifications.
+-   **Penalty System**: Created penalties table with types (warning/suspension/ban), penalty points, expiration dates. Built PenaltiesPage for workers to view their penalty history.
+-   **Password Change API**: Implemented PUT /auth/password/change endpoint for secure password updates with current password verification.
+-   **Support Page**: Created SupportPage with FAQ section, contact methods (email/phone), and chat support placeholder.
+-   **Profile Improvements**: Extended ProfilePage to include emergency contact forms, qualifications management, and password change functionality.
+
 ### November 8, 2025 - Wolt-Style Delivery Management System
 -   **Delivery Status Flow**: Implemented 4-stage delivery progression (pending_pickup → picking_up → in_delivery → delivered) with automatic timestamp tracking for picked_up_at and delivered_at.
 -   **Database Schema**: Extended assignments table with pickup/delivery location fields (pickup_location, delivery_location) and coordinates (pickup_lat, pickup_lng, delivery_lat, delivery_lng).
