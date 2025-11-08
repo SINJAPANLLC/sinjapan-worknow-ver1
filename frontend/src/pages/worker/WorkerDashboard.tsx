@@ -1,8 +1,8 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { jobsAPI, authAPI } from '../../lib/api';
-import { Sparkles, Zap, Flame, Bell, UserCircle, MapPin, BarChart3, Menu, Radio, X, Settings, LogOut, HelpCircle, RefreshCw } from 'lucide-react';
+import { jobsAPI, authAPI, assignmentsAPI } from '../../lib/api';
+import { Sparkles, Zap, Flame, Bell, UserCircle, MapPin, BarChart3, Menu, Radio, X, Settings, LogOut, HelpCircle, RefreshCw, Package, Navigation, CheckCircle } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
@@ -24,6 +24,12 @@ export default function WorkerDashboard() {
     queryFn: () => jobsAPI.list({ status: 'published', size: 5 }),
   });
 
+  const { data: activeDelivery, refetch: refetchDelivery } = useQuery({
+    queryKey: ['active-delivery'],
+    queryFn: () => assignmentsAPI.getActiveDelivery(),
+    refetchInterval: 5000,
+  });
+
   const onlineStatusMutation = useMutation({
     mutationFn: (isOnline: boolean) => authAPI.setOnlineStatus(isOnline),
     onSuccess: () => {
@@ -42,6 +48,13 @@ export default function WorkerDashboard() {
     onlineStatusMutation.mutate(newStatus);
   };
 
+  const advanceStatusMutation = useMutation({
+    mutationFn: (assignmentId: string) => assignmentsAPI.advanceStatus(assignmentId),
+    onSuccess: () => {
+      refetchDelivery();
+    },
+  });
+
   const handleRefresh = async () => {
     setIsRefreshing(true);
     
@@ -57,9 +70,37 @@ export default function WorkerDashboard() {
       );
     }
     
-    await refetchJobs();
+    await Promise.all([refetchJobs(), refetchDelivery()]);
     
     setTimeout(() => setIsRefreshing(false), 500);
+  };
+
+  const getStatusDisplay = (status: string) => {
+    switch (status) {
+      case 'pending_pickup':
+        return { label: '商品受取待ち', color: 'from-yellow-400 to-orange-400', icon: Package };
+      case 'picking_up':
+        return { label: '商品受取中', color: 'from-blue-400 to-cyan-400', icon: Navigation };
+      case 'in_delivery':
+        return { label: '配達中', color: 'from-[#00CED1] to-[#009999]', icon: Navigation };
+      case 'delivered':
+        return { label: '配達完了', color: 'from-green-400 to-emerald-400', icon: CheckCircle };
+      default:
+        return { label: status, color: 'from-gray-400 to-gray-500', icon: Package };
+    }
+  };
+
+  const getNextActionLabel = (status: string) => {
+    switch (status) {
+      case 'pending_pickup':
+        return '商品受取に向かう';
+      case 'picking_up':
+        return '商品を受け取った';
+      case 'in_delivery':
+        return '配達完了';
+      default:
+        return '次へ';
+    }
   };
 
   const handleLogout = () => {
@@ -98,7 +139,7 @@ export default function WorkerDashboard() {
               </div>
             </div>
           }>
-            <MapComponent center={defaultCenter} jobs={jobs || []} isOnline={isOnline} />
+            <MapComponent center={defaultCenter} jobs={jobs || []} isOnline={isOnline} activeDelivery={activeDelivery} />
           </Suspense>
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-green-100/30 via-blue-50/30 to-yellow-50/30 flex items-center justify-center">
@@ -222,9 +263,70 @@ export default function WorkerDashboard() {
         <div className="px-6 pt-6 pb-2">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-bold text-gray-900">
-              {userLocation ? '現在地周辺' : '位置情報取得中...'}
+              {activeDelivery ? '配達中' : userLocation ? '現在地周辺' : '位置情報取得中...'}
             </h2>
           </div>
+
+          {/* Active Delivery Card */}
+          {activeDelivery && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 bg-gradient-to-br from-white via-cyan-50 to-blue-50 rounded-2xl p-5 border-2 border-[#00CED1] shadow-xl"
+            >
+              {/* Status Header */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className={`w-14 h-14 bg-gradient-to-br ${getStatusDisplay(activeDelivery.status).color} rounded-xl flex items-center justify-center shadow-lg`}>
+                  {(() => {
+                    const StatusIcon = getStatusDisplay(activeDelivery.status).icon;
+                    return <StatusIcon className="w-7 h-7 text-white" />;
+                  })()}
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs text-gray-600 font-medium">現在の状況</p>
+                  <h3 className="text-lg font-bold text-gray-900">{getStatusDisplay(activeDelivery.status).label}</h3>
+                </div>
+              </div>
+
+              {/* Locations */}
+              <div className="space-y-3 mb-4">
+                {activeDelivery.pickup_location && (
+                  <div className="flex items-start gap-3 bg-white/80 rounded-xl p-3">
+                    <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Package className="w-5 h-5 text-yellow-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-gray-600 font-medium mb-1">受取場所</p>
+                      <p className="text-sm text-gray-900 break-keep">{activeDelivery.pickup_location}</p>
+                    </div>
+                  </div>
+                )}
+
+                {activeDelivery.delivery_location && (
+                  <div className="flex items-start gap-3 bg-white/80 rounded-xl p-3">
+                    <div className="w-8 h-8 bg-[#00CED1]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-5 h-5 text-[#00CED1]" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-gray-600 font-medium mb-1">配達先</p>
+                      <p className="text-sm text-gray-900 break-keep">{activeDelivery.delivery_location}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Action Button */}
+              {activeDelivery.status !== 'delivered' && (
+                <button
+                  onClick={() => advanceStatusMutation.mutate(activeDelivery.id)}
+                  disabled={advanceStatusMutation.isPending}
+                  className={`w-full py-4 rounded-xl font-bold text-lg bg-gradient-to-r ${getStatusDisplay(activeDelivery.status).color} text-white shadow-lg hover:shadow-xl transition-all disabled:opacity-50 active:scale-[0.98]`}
+                >
+                  {advanceStatusMutation.isPending ? '処理中...' : getNextActionLabel(activeDelivery.status)}
+                </button>
+              )}
+            </motion.div>
+          )}
 
           <div className="mb-6">
             {isOnline && jobs && jobs.length > 0 ? (

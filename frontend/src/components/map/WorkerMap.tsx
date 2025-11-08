@@ -1,6 +1,9 @@
-import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-routing-machine';
+import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
+import { useEffect } from 'react';
 
 // Fix Leaflet default icon issue
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -69,13 +72,120 @@ interface Job {
   hourly_rate?: number;
 }
 
+interface Assignment {
+  id: string;
+  status: string;
+  pickup_location?: string;
+  delivery_location?: string;
+  pickup_lat?: number;
+  pickup_lng?: number;
+  delivery_lat?: number;
+  delivery_lng?: number;
+}
+
 interface WorkerMapProps {
   center: [number, number];
   jobs?: Job[];
   isOnline: boolean;
+  activeDelivery?: Assignment | null;
 }
 
-export default function WorkerMap({ center, jobs = [], isOnline }: WorkerMapProps) {
+function RoutingControl({ pickup, delivery }: { pickup: [number, number]; delivery: [number, number] }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!map) return;
+
+    const routingControl = L.Routing.control({
+      waypoints: [L.latLng(pickup[0], pickup[1]), L.latLng(delivery[0], delivery[1])],
+      routeWhileDragging: false,
+      addWaypoints: false,
+      fitSelectedRoutes: true,
+      showAlternatives: false,
+      lineOptions: {
+        styles: [{ color: '#00CED1', weight: 6, opacity: 0.8 }],
+        extendToWaypoints: true,
+        missingRouteTolerance: 0,
+      },
+      createMarker: () => null,
+      show: false,
+    } as any).addTo(map);
+
+    return () => {
+      if (map && routingControl) {
+        map.removeControl(routingControl);
+      }
+    };
+  }, [map, pickup, delivery]);
+
+  return null;
+}
+
+// Pickup marker icon
+const pickupIcon = new L.DivIcon({
+  className: 'custom-pickup-marker',
+  html: `<div style="
+    position: relative;
+    width: 36px;
+    height: 44px;
+  ">
+    <div style="
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      background: #FF9500;
+      border: 3px solid rgba(255, 255, 255, 0.95);
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      box-shadow: 0 3px 10px rgba(255, 149, 0, 0.5), 0 0 0 1px rgba(0, 0, 0, 0.1);
+    "></div>
+    <div style="
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+    "></div>
+  </div>`,
+  iconSize: [36, 44],
+  iconAnchor: [18, 44],
+});
+
+// Delivery marker icon
+const deliveryIcon = new L.DivIcon({
+  className: 'custom-delivery-marker',
+  html: `<div style="
+    position: relative;
+    width: 36px;
+    height: 44px;
+  ">
+    <div style="
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      background: #00CED1;
+      border: 3px solid rgba(255, 255, 255, 0.95);
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      box-shadow: 0 3px 10px rgba(0, 206, 209, 0.5), 0 0 0 1px rgba(0, 0, 0, 0.1);
+    "></div>
+    <div style="
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+    "></div>
+  </div>`,
+  iconSize: [36, 44],
+  iconAnchor: [18, 44],
+});
+
+export default function WorkerMap({ center, jobs = [], isOnline, activeDelivery }: WorkerMapProps) {
   return (
     <MapContainer
       center={center}
@@ -108,8 +218,34 @@ export default function WorkerMap({ center, jobs = [], isOnline }: WorkerMapProp
         }}
       />
 
+      {/* Delivery route and markers */}
+      {activeDelivery && activeDelivery.pickup_lat && activeDelivery.pickup_lng && activeDelivery.delivery_lat && activeDelivery.delivery_lng && (
+        <>
+          <Marker position={[activeDelivery.pickup_lat, activeDelivery.pickup_lng]} icon={pickupIcon}>
+            <Popup>
+              <div className="text-sm p-1">
+                <p className="font-bold text-orange-600 text-base">受取場所</p>
+                <p className="text-xs text-gray-900 mt-1">{activeDelivery.pickup_location}</p>
+              </div>
+            </Popup>
+          </Marker>
+          <Marker position={[activeDelivery.delivery_lat, activeDelivery.delivery_lng]} icon={deliveryIcon}>
+            <Popup>
+              <div className="text-sm p-1">
+                <p className="font-bold text-[#00CED1] text-base">配達先</p>
+                <p className="text-xs text-gray-900 mt-1">{activeDelivery.delivery_location}</p>
+              </div>
+            </Popup>
+          </Marker>
+          <RoutingControl 
+            pickup={[activeDelivery.pickup_lat, activeDelivery.pickup_lng]} 
+            delivery={[activeDelivery.delivery_lat, activeDelivery.delivery_lng]} 
+          />
+        </>
+      )}
+
       {/* Job markers */}
-      {isOnline && jobs.slice(0, 5).map((job, index) => {
+      {!activeDelivery && isOnline && jobs.slice(0, 5).map((job, index) => {
         const offset = 0.01 * (index + 1);
         const jobPosition: [number, number] = [
           center[0] + (Math.random() - 0.5) * offset,

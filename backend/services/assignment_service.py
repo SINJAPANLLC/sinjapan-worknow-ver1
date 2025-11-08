@@ -87,25 +87,18 @@ class AssignmentService(PostgresService):
         return self._to_assignment(data)
 
     def get_active_delivery(self, worker_id: str) -> Optional[AssignmentRead]:
-        query = """
-            SELECT * FROM assignments
-            WHERE worker_id = %s
-            AND status IN ('pending_pickup', 'picking_up', 'in_delivery')
-            ORDER BY created_at DESC
-            LIMIT 1
-        """
-        conn = self.get_connection()
-        try:
-            cursor = conn.cursor()
-            cursor.execute(query, (worker_id,))
-            columns = [desc[0] for desc in cursor.description]
+        with self._get_cursor() as cursor:
+            cursor.execute("""
+                SELECT * FROM assignments
+                WHERE worker_id = %s
+                AND status IN ('pending_pickup', 'picking_up', 'in_delivery')
+                ORDER BY created_at DESC
+                LIMIT 1
+            """, (worker_id,))
             row = cursor.fetchone()
             if row:
-                data = dict(zip(columns, row))
-                return self._to_assignment(data)
+                return self._to_assignment(dict(row))
             return None
-        finally:
-            conn.close()
 
     def advance_delivery_status(self, assignment_id: str) -> AssignmentRead:
         assignment = self.get_assignment(assignment_id)
