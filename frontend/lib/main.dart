@@ -38,7 +38,7 @@ class WorkNowApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [Locale('ja'), Locale('en')],
-      builder: (context, child) => _AuthInitializer(child: child!),
+      builder: (context, child) => _AuthInitializer(child: child),
     );
   }
 }
@@ -46,7 +46,7 @@ class WorkNowApp extends ConsumerWidget {
 class _AuthInitializer extends ConsumerStatefulWidget {
   const _AuthInitializer({required this.child});
 
-  final Widget child;
+  final Widget? child;
 
   @override
   ConsumerState<_AuthInitializer> createState() => _AuthInitializerState();
@@ -60,5 +60,5 @@ class _AuthInitializerState extends ConsumerState<_AuthInitializer> {
   }
 
   @override
-  Widget build(BuildContext context) => widget.child;
+  Widget build(BuildContext context) => widget.child ?? const SizedBox.shrink();
 }
