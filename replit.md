@@ -82,7 +82,39 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
 -   **Caching/Queuing**: Redis (planned for caching)
 -   **Geolocation**: Browser Geolocation API
 
-## Recent Changes (2025-11-08)
+## Recent Changes (2025-11-08 - Updated)
+
+### Latest Implementations (11/08 Afternoon)
+1. **ApplicationsPage Redesign**
+   - Replaced old coin icon with premium glassmorphism gradient design
+   - Floating animated Zap icon with turquoise gradient (#00CED1 to #009999)
+   - Dual CTAs: "おすすめ求人を見る" and "ガイドで準備する"
+   - Added contextual tips card with BookOpen icon
+   - Empty state aligned with brand design guidelines
+
+2. **Work Style Guide Page** (`/guide/work-style`)
+   - Comprehensive onboarding guide for new workers
+   - 4-step process flow (応募 → 面接 → 働く → 即時報酬)
+   - Benefits section highlighting platform features
+   - FAQ accordion with common questions
+   - Premium turquoise gradient hero section
+   - Framer Motion staggered card animations
+   - Integrated with ApplicationsPage and navigation
+
+3. **Job Filtering System Enhancements**
+   - **Critical Bug Fix**: Date filter now properly converts all dates to ISO format
+   - Previously only "today" worked, now all date selections (9日, 10日, etc.) function correctly
+   - Notification preferences hydrated from backend on page load
+   - Prefecture + date + sort filters work in combination
+   - Distance-based sorting uses haversine formula
+
+4. **Complete Feature Set**
+   - Job filters: Prefecture (47 prefectures), Date range, Sort (distance/rate/newest)
+   - Favorites: Database-backed, heart icon toggle, persistent across sessions
+   - Job notifications: Per-prefecture/date preferences with status sync
+   - Geolocation: Automatic distance calculation for job sorting
+
+## Recent Changes (2025-11-08 - Morning)
 
 ### Implemented Features
 1. **Bank Account Management System**
