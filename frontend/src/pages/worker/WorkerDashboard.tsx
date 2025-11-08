@@ -175,15 +175,17 @@ export default function WorkerDashboard() {
         </div>
       </div>
 
-      <BottomNav
-        items={[
-          { label: 'さがす', path: '/jobs', icon: Sparkles },
-          { label: 'はたらく', path: '/applications', icon: Zap },
-          { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/notifications', icon: Bell },
-          { label: 'マイページ', path: '/profile', icon: UserCircle },
-        ]}
-      />
+      <div className="fixed bottom-0 left-0 right-0 z-[1100]">
+        <BottomNav
+          items={[
+            { label: 'さがす', path: '/jobs', icon: Sparkles },
+            { label: 'はたらく', path: '/applications', icon: Zap },
+            { label: 'Now', path: '/dashboard', icon: Flame },
+            { label: 'メッセージ', path: '/notifications', icon: Bell },
+            { label: 'マイページ', path: '/profile', icon: UserCircle },
+          ]}
+        />
+      </div>
     </div>
   );
 }
