@@ -11,6 +11,10 @@ class AssignmentStatus(str, Enum):
     ACTIVE = "active"
     COMPLETED = "completed"
     CANCELLED = "cancelled"
+    PENDING_PICKUP = "pending_pickup"
+    PICKING_UP = "picking_up"
+    IN_DELIVERY = "in_delivery"
+    DELIVERED = "delivered"
 
 
 class AssignmentBase(TimestampedModel):
@@ -22,6 +26,14 @@ class AssignmentBase(TimestampedModel):
     completed_at: Optional[datetime] = None
     notes: Optional[str] = Field(default=None, max_length=2000)
     metadata: Optional[dict] = None
+    pickup_location: Optional[str] = None
+    delivery_location: Optional[str] = None
+    pickup_lat: Optional[float] = None
+    pickup_lng: Optional[float] = None
+    delivery_lat: Optional[float] = None
+    delivery_lng: Optional[float] = None
+    picked_up_at: Optional[datetime] = None
+    delivered_at: Optional[datetime] = None
 
 
 class AssignmentCreate(BaseModel):
@@ -36,6 +48,14 @@ class AssignmentUpdate(BaseModel):
     completed_at: Optional[datetime] = None
     notes: Optional[str] = Field(default=None, max_length=2000)
     metadata: Optional[dict] = None
+    pickup_location: Optional[str] = None
+    delivery_location: Optional[str] = None
+    pickup_lat: Optional[float] = None
+    pickup_lng: Optional[float] = None
+    delivery_lat: Optional[float] = None
+    delivery_lng: Optional[float] = None
+    picked_up_at: Optional[datetime] = None
+    delivered_at: Optional[datetime] = None
 
 
 class AssignmentRead(AssignmentBase):
