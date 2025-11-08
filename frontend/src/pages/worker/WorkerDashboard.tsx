@@ -95,15 +95,17 @@ export default function WorkerDashboard() {
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-20 pb-4">
+      <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-20 pb-32">
         <div className="px-6 pt-6 pb-2">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-gray-900">Sagami</h2>
+            <h2 className="text-2xl font-bold text-gray-900">
+              {userLocation ? '現在地周辺' : '位置情報取得中...'}
+            </h2>
           </div>
 
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-2">
-              <p className="text-sm text-gray-600">配達の需要</p>
+              <p className="text-sm text-gray-600">お仕事の需要</p>
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((bar) => (
                   <div
@@ -117,37 +119,56 @@ export default function WorkerDashboard() {
               <span className="text-sm font-medium text-gray-700">{demandText}</span>
             </div>
 
-            <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-4 flex items-center gap-3 mb-4 border border-purple-100">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-blue-400 rounded-xl flex items-center justify-center flex-shrink-0">
-                <BarChart3 className="w-6 h-6 text-white" />
+            {isOnline && jobs && jobs.length > 0 ? (
+              <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
+                {jobs.slice(0, 3).map((job) => (
+                  <div
+                    key={job.id}
+                    className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-4 border border-purple-100 cursor-pointer hover:shadow-md transition-shadow"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-blue-400 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <BarChart3 className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-sm font-bold text-gray-900 mb-1 truncate">{job.title}</h3>
+                        <p className="text-xs text-gray-600 mb-2">{job.location}</p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-lg font-bold text-[#00CED1]">¥{job.hourly_rate.toLocaleString()}/時</span>
+                          <span className="text-xs text-gray-500">{new Date(job.start_date).toLocaleDateString('ja-JP')}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="flex-1">
-                <p className="text-sm text-gray-900 font-medium">
-                  11/9は1件あたりの報酬が通常時より… 次から：9:00
+            ) : (
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-4 mb-4 border border-gray-200 text-center">
+                <p className="text-sm text-gray-600">
+                  {isOnline ? '現在、近くに求人はありません' : 'オンラインにすると求人が表示されます'}
                 </p>
               </div>
-              <button className="text-gray-400">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
+            )}
           </div>
 
           <button
             onClick={() => setIsOnline(!isOnline)}
-            className={`w-full py-5 rounded-2xl font-bold text-lg transition-all shadow-lg flex items-center justify-center gap-3 ${
+            className={`w-full py-5 rounded-2xl font-bold text-lg transition-all shadow-lg flex items-center justify-center gap-3 relative overflow-hidden ${
               isOnline
                 ? 'bg-gradient-to-r from-red-500 to-red-600 text-white'
                 : 'bg-gradient-to-r from-[#00CED1] to-[#009999] text-white hover:from-[#00D4D4] hover:to-[#00A0A0]'
             }`}
           >
-            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </div>
-            <span>{isOnline ? 'オフラインにする' : 'オンラインにする'}</span>
+            {isOnline && (
+              <motion.div
+                className="absolute inset-0 bg-white/20"
+                animate={{ x: ['-100%', '100%'] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+              />
+            )}
+            <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-white animate-pulse' : 'bg-white/50'}`} />
+            <span className="relative z-10">{isOnline ? 'オンライン中' : 'オンラインにする'}</span>
+            {isOnline && <span className="text-xs opacity-75 absolute bottom-1 right-4 relative z-10">タップでオフラインに</span>}
           </button>
         </div>
       </div>
