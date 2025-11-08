@@ -1,4 +1,6 @@
+from typing import Optional
 from pydantic import BaseModel, EmailStr, Field
+from .user import UserRead
 
 
 class RegisterRequest(BaseModel):
@@ -18,6 +20,7 @@ class TokenPair(BaseModel):
     refresh_token: str
     token_type: str = "bearer"
     expires_in: int
+    user: Optional[UserRead] = None
 
 
 class RefreshTokenRequest(BaseModel):

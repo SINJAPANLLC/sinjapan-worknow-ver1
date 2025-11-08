@@ -56,4 +56,5 @@ class AuthService:
             access_token=access_token,
             refresh_token=refresh_token,
             expires_in=self.access_token_expire_minutes * 60,
+            user=user,
         )
