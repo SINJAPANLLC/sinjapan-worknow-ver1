@@ -1,0 +1,33 @@
+name: work_now
+description: WORK NOW フロントエンド (Flutter)
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.1.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  http: ^1.2.0
+  intl: ^0.19.0
+  flutter_riverpod: ^2.4.10
+  go_router: ^13.2.2
+  shared_preferences: ^2.2.2
+  google_fonts: ^6.1.0
+  flutter_animate: ^4.3.0
+  lottie: ^2.7.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - lib/assets/lang/
+    - lib/assets/lottie/
+    - lib/assets/logo.png
