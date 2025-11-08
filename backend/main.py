@@ -1,6 +1,8 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 from utils.config import CFG
 from routers import (
     auth,
@@ -11,6 +13,8 @@ from routers import (
     reviews,
     notifications,
     admin,
+    files,
+    phone_verification,
 )
 
 app = FastAPI(title="WORK NOW API", version="1.0")
@@ -22,6 +26,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+UPLOAD_DIR = Path("uploads")
+UPLOAD_DIR.mkdir(exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 
 
 @app.get("/health")
@@ -37,6 +45,8 @@ app.include_router(payments.router, prefix="/payments", tags=["Payments"])
 app.include_router(reviews.router, prefix="/reviews", tags=["Reviews"])
 app.include_router(notifications.router, prefix="/notifications", tags=["Notifications"])
 app.include_router(admin.router, prefix="/admin", tags=["Admin"])
+app.include_router(files.router, prefix="/files", tags=["Files"])
+app.include_router(phone_verification.router, prefix="/phone", tags=["Phone Verification"])
 
 
 if __name__ == "__main__":

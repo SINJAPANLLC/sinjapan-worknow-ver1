@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/public/LandingPage';
 import AboutPage from './pages/public/AboutPage';
 import TermsPage from './pages/public/TermsPage';
@@ -12,14 +12,13 @@ import ClientDashboard from './pages/client/ClientDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import WorkerJobsPage from './pages/worker/JobsPage';
 import WorkerApplicationsPage from './pages/worker/ApplicationsPage';
-import WorkerProfilePage from './pages/worker/ProfilePage';
 import ClientJobCreatePage from './pages/client/JobCreatePage';
 import ClientJobsManagePage from './pages/client/JobsManagePage';
-import ClientProfilePage from './pages/client/ProfilePage';
+import { ProfilePage } from './pages/ProfilePage';
 import AdminUsersManagePage from './pages/admin/UsersManagePage';
 import AdminJobsManagePage from './pages/admin/JobsManagePage';
 import AdminStatsPage from './pages/admin/StatsPage';
-import NotificationsPage from './pages/shared/NotificationsPage';
+import { NotificationsPage } from './pages/NotificationsPage';
 import SettingsPage from './pages/shared/SettingsPage';
 import JobDetailPage from './pages/shared/JobDetailPage';
 import MainLayout from './components/layout/MainLayout';
@@ -80,7 +79,7 @@ function App() {
           path="/profile"
           element={
             <ProtectedRoute>
-              {user?.role === 'worker' ? <WorkerProfilePage /> : user?.role === 'company' ? <ClientProfilePage /> : <Navigate to="/dashboard" />}
+              <ProfilePage />
             </ProtectedRoute>
           }
         />

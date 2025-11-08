@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from dependencies import get_auth_service, get_current_user
+from dependencies import get_auth_service, get_current_user, get_user_service
 from schemas import (
     LoginRequest,
     PasswordResetConfirm,
@@ -9,8 +9,10 @@ from schemas import (
     RegisterRequest,
     TokenPair,
     UserRead,
+    UserUpdate,
 )
 from services.auth_service import AuthService
+from services.user_service import UserService
 
 router = APIRouter()
 
@@ -33,6 +35,15 @@ async def refresh(payload: RefreshTokenRequest, auth_service: AuthService = Depe
 @router.get("/me", response_model=UserRead)
 async def me(current_user: UserRead = Depends(get_current_user)):
     return current_user
+
+
+@router.put("/profile", response_model=UserRead)
+async def update_profile(
+    payload: UserUpdate,
+    current_user: UserRead = Depends(get_current_user),
+    user_service: UserService = Depends(get_user_service),
+):
+    return user_service.update_user(current_user.id, payload)
 
 
 @router.post("/password/reset")

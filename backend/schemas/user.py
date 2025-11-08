@@ -1,3 +1,4 @@
+from datetime import date
 from enum import Enum
 from typing import Optional
 
@@ -12,12 +13,27 @@ class UserRole(str, Enum):
     ADMIN = "admin"
 
 
+class Gender(str, Enum):
+    MALE = "male"
+    FEMALE = "female"
+    OTHER = "other"
+    PREFER_NOT_TO_SAY = "prefer_not_to_say"
+
+
 class UserBase(TimestampedModel):
     email: EmailStr
     full_name: str
     role: UserRole
     avatar_url: Optional[str] = None
     is_active: bool = True
+    phone: Optional[str] = None
+    phone_verified: bool = False
+    date_of_birth: Optional[date] = None
+    gender: Optional[Gender] = None
+    address: Optional[str] = None
+    work_style: Optional[str] = None
+    affiliation: Optional[str] = None
+    id_document_url: Optional[str] = None
 
 
 class UserCreate(BaseModel):
@@ -31,6 +47,14 @@ class UserUpdate(BaseModel):
     full_name: Optional[str] = Field(default=None, max_length=100)
     avatar_url: Optional[str] = None
     is_active: Optional[bool] = None
+    phone: Optional[str] = None
+    phone_verified: Optional[bool] = None
+    date_of_birth: Optional[date] = None
+    gender: Optional[Gender] = None
+    address: Optional[str] = None
+    work_style: Optional[str] = None
+    affiliation: Optional[str] = None
+    id_document_url: Optional[str] = None
 
 
 class UserRead(UserBase):

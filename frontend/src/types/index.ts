@@ -3,10 +3,39 @@ export interface User {
   email: string;
   full_name: string;
   role: 'worker' | 'company' | 'admin';
-  phone?: string;
   avatar_url?: string;
-  bio?: string;
-  skills?: string[];
+  is_active: boolean;
+  phone?: string;
+  phone_verified: boolean;
+  date_of_birth?: string;
+  gender?: 'male' | 'female' | 'other' | 'prefer_not_to_say';
+  address?: string;
+  work_style?: string;
+  affiliation?: string;
+  id_document_url?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UserUpdatePayload {
+  full_name?: string;
+  avatar_url?: string;
+  phone?: string;
+  date_of_birth?: string;
+  gender?: 'male' | 'female' | 'other' | 'prefer_not_to_say';
+  address?: string;
+  work_style?: string;
+  affiliation?: string;
+}
+
+export interface Notification {
+  id: string;
+  user_id: string;
+  type: 'application' | 'assignment' | 'payment' | 'system';
+  title: string;
+  body: string;
+  data?: Record<string, any>;
+  read_at?: string;
   created_at: string;
   updated_at: string;
 }

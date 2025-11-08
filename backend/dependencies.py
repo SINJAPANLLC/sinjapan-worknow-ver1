@@ -3,12 +3,17 @@ from fastapi.security import OAuth2PasswordBearer
 
 from schemas import UserRead, UserRole
 from services.auth_service import AuthService
+from services.user_service import UserService
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 def get_auth_service() -> AuthService:
     return AuthService()
+
+
+def get_user_service() -> UserService:
+    return UserService()
 
 
 def get_current_user(
