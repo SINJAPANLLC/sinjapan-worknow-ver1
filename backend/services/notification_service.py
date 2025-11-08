@@ -13,13 +13,13 @@ from schemas import (
 )
 from utils.firebase import send_push_notification
 
-from .base import SupabaseService
+from .postgres_base import PostgresService
 
 
-class NotificationService(SupabaseService):
+class NotificationService(PostgresService):
     def __init__(self) -> None:
         super().__init__("notifications")
-        self.tokens = SupabaseService("device_tokens")
+        self.tokens = PostgresService("device_tokens")
 
     def _to_notification(self, data: Dict) -> NotificationRead:
         return NotificationRead(**data)
@@ -66,27 +66,25 @@ class NotificationService(SupabaseService):
         return self._to_notification(updated)
 
     def register_token(self, payload: DeviceTokenCreate) -> DeviceTokenRead:
-        existing = (
-            self.tokens._table()
-            .select("*")
-            .eq("token", payload.token)
-            .limit(1)
-            .execute()
-        )
-        if existing.data:
-            record = self.tokens.update(existing.data[0]["id"], payload.dict())
-        else:
-            record = self.tokens.insert(payload.dict())
+        with self.tokens._get_cursor() as cursor:
+            cursor.execute(
+                "SELECT * FROM device_tokens WHERE token = %s LIMIT 1",
+                (payload.token,)
+            )
+            existing = cursor.fetchone()
+            if existing:
+                record = self.tokens.update(existing["id"], payload.dict())
+            else:
+                record = self.tokens.insert(payload.dict())
         return self._to_token(record)
 
     def _push_notification(self, notification: NotificationRead) -> None:
-        tokens_response = (
-            self.tokens._table()
-            .select("token")
-            .eq("user_id", notification.user_id)
-            .execute()
-        )
-        tokens = [row["token"] for row in tokens_response.data or []]
+        with self.tokens._get_cursor() as cursor:
+            cursor.execute(
+                "SELECT token FROM device_tokens WHERE user_id = %s",
+                (notification.user_id,)
+            )
+            tokens = [row["token"] for row in cursor.fetchall()]
         for token in tokens:
             send_push_notification(
                 token=token,

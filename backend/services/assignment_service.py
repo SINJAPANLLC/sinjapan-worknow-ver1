@@ -14,11 +14,11 @@ from schemas import (
 )
 
 from .application_service import ApplicationService
-from .base import SupabaseService
+from .postgres_base import PostgresService
 from .job_service import JobService
 
 
-class AssignmentService(SupabaseService):
+class AssignmentService(PostgresService):
     def __init__(
         self,
         application_service: Optional[ApplicationService] = None,

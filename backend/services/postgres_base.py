@@ -98,14 +98,21 @@ class PostgresService:
 
     def update(self, record_id: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         with self._get_cursor() as cursor:
-            set_clauses = ', '.join([f"{key} = %s" for key in payload.keys()])
-            set_clauses += ', updated_at = NOW()'
-            values = list(payload.values()) + [record_id]
-            
-            cursor.execute(
-                f"UPDATE {self.table_name} SET {set_clauses} WHERE id = %s RETURNING *",
-                values
-            )
+            if not payload:
+                # If payload is empty, only update the updated_at timestamp
+                cursor.execute(
+                    f"UPDATE {self.table_name} SET updated_at = NOW() WHERE id = %s RETURNING *",
+                    (record_id,)
+                )
+            else:
+                set_clauses = ', '.join([f"{key} = %s" for key in payload.keys()])
+                set_clauses += ', updated_at = NOW()'
+                values = list(payload.values()) + [record_id]
+                
+                cursor.execute(
+                    f"UPDATE {self.table_name} SET {set_clauses} WHERE id = %s RETURNING *",
+                    values
+                )
             result = cursor.fetchone()
             if not result:
                 raise ValueError(f"Record with id {record_id} not found")

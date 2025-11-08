@@ -5,11 +5,11 @@ from fastapi import HTTPException, status
 from schemas import ReviewCreate, ReviewList, ReviewRead, ReviewUpdate
 
 from .assignment_service import AssignmentService
-from .base import SupabaseService
+from .postgres_base import PostgresService
 from .job_service import JobService
 
 
-class ReviewService(SupabaseService):
+class ReviewService(PostgresService):
     def __init__(
         self,
         assignment_service: Optional[AssignmentService] = None,

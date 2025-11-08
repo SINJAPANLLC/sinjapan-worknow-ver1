@@ -4,10 +4,10 @@ from fastapi import HTTPException, status
 
 from schemas import JobCreate, JobList, JobRead, JobStatus, JobUpdate
 
-from .base import SupabaseService
+from .postgres_base import PostgresService
 
 
-class JobService(SupabaseService):
+class JobService(PostgresService):
     def __init__(self) -> None:
         super().__init__("jobs")
 

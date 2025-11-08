@@ -11,11 +11,11 @@ from schemas import (
     JobStatus,
 )
 
-from .base import SupabaseService
+from .postgres_base import PostgresService
 from .job_service import JobService
 
 
-class ApplicationService(SupabaseService):
+class ApplicationService(PostgresService):
     def __init__(self, job_service: Optional[JobService] = None) -> None:
         super().__init__("applications")
         self.jobs = job_service or JobService()
@@ -27,16 +27,14 @@ class ApplicationService(SupabaseService):
         job = self.jobs.get_job(payload.job_id)
         if job.status == JobStatus.CLOSED:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Job closed")
-        existing = (
-            self._table()
-            .select("id")
-            .eq("job_id", payload.job_id)
-            .eq("worker_id", worker_id)
-            .limit(1)
-            .execute()
-        )
-        if existing.data:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Already applied")
+        with self._get_cursor() as cursor:
+            cursor.execute(
+                f"SELECT id FROM {self.table_name} WHERE job_id = %s AND worker_id = %s LIMIT 1",
+                (payload.job_id, worker_id)
+            )
+            existing = cursor.fetchone()
+            if existing:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Already applied")
         record = payload.dict()
         record["worker_id"] = worker_id
         record["status"] = ApplicationStatus.PENDING.value

@@ -1,13 +1,12 @@
 from datetime import datetime, timedelta
 
-from supabase import Client
-
-from utils.database import get_supabase_client
+from utils.database import get_pg_connection, release_pg_connection
+from psycopg2.extras import RealDictCursor
 
 
 class AdminService:
     def __init__(self) -> None:
-        self.client: Client = get_supabase_client()
+        pass
 
     def get_dashboard_stats(self) -> dict:
         users = self._count("users")
@@ -24,27 +23,39 @@ class AdminService:
         }
 
     def _count(self, table: str) -> int:
-        response = self.client.table(table).select("id", count="exact").execute()
-        return response.count or 0
+        conn = get_pg_connection()
+        try:
+            cursor = conn.cursor(cursor_factory=RealDictCursor)
+            cursor.execute(f"SELECT COUNT(*) as count FROM {table}")
+            result = cursor.fetchone()
+            return result['count'] if result else 0
+        finally:
+            cursor.close()
+            release_pg_connection(conn)
 
     def _sum_payments(self) -> int:
-        response = (
-            self.client.table("payments")
-            .select("amount,status")
-            .eq("status", "succeeded")
-            .execute()
-        )
-        amounts = [item.get("amount", 0) for item in response.data or []]
-        return sum(amounts)
+        conn = get_pg_connection()
+        try:
+            cursor = conn.cursor(cursor_factory=RealDictCursor)
+            cursor.execute(
+                "SELECT amount FROM payments WHERE status = 'succeeded'"
+            )
+            amounts = [row['amount'] for row in cursor.fetchall()]
+            return sum(amounts)
+        finally:
+            cursor.close()
+            release_pg_connection(conn)
 
     def _recent(self, table: str) -> list:
         last_week = (datetime.utcnow() - timedelta(days=7)).isoformat()
-        response = (
-            self.client.table(table)
-            .select("*")
-            .gte("created_at", last_week)
-            .order("created_at", desc=True)
-            .limit(5)
-            .execute()
-        )
-        return response.data or []
+        conn = get_pg_connection()
+        try:
+            cursor = conn.cursor(cursor_factory=RealDictCursor)
+            cursor.execute(
+                f"SELECT * FROM {table} WHERE created_at >= %s ORDER BY created_at DESC LIMIT 5",
+                (last_week,)
+            )
+            return [dict(row) for row in cursor.fetchall()]
+        finally:
+            cursor.close()
+            release_pg_connection(conn)

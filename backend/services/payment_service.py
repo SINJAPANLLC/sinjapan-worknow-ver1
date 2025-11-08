@@ -5,11 +5,11 @@ from fastapi import HTTPException, status
 from schemas import PaymentCreate, PaymentList, PaymentRead, PaymentStatus, PaymentUpdate
 
 from .assignment_service import AssignmentService
-from .base import SupabaseService
+from .postgres_base import PostgresService
 from .stripe_service import StripeService
 
 
-class PaymentService(SupabaseService):
+class PaymentService(PostgresService):
     def __init__(
         self,
         stripe_service: Optional[StripeService] = None,
@@ -43,19 +43,18 @@ class PaymentService(SupabaseService):
         return self._to_payment(updated)
 
     def update_by_intent(self, intent_id: str, status_value: str, transfer_id: Optional[str] = None) -> None:
-        response = (
-            self._table()
-            .select("id")
-            .eq("stripe_payment_intent_id", intent_id)
-            .limit(1)
-            .execute()
-        )
-        if not response.data:
-            return
-        update_data: Dict = {"status": status_value}
-        if transfer_id:
-            update_data["stripe_transfer_id"] = transfer_id
-        self.update(response.data[0]["id"], update_data)
+        with self._get_cursor() as cursor:
+            cursor.execute(
+                f"SELECT id FROM {self.table_name} WHERE stripe_payment_intent_id = %s LIMIT 1",
+                (intent_id,)
+            )
+            result = cursor.fetchone()
+            if not result:
+                return
+            update_data: Dict = {"status": status_value}
+            if transfer_id:
+                update_data["stripe_transfer_id"] = transfer_id
+            self.update(result["id"], update_data)
 
     def list_payments(
         self,
