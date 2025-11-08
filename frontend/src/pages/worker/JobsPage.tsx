@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Badge } from '../../components/ui/Badge';
-import { jobsAPI } from '../../lib/api';
+import { jobsAPI, favoritesAPI, jobNotificationsAPI } from '../../lib/api';
 import { MapPin, Clock, Heart, ChevronDown, Sparkles, Zap, Flame, Bell, UserCircle, MapPinIcon } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 
@@ -18,32 +18,118 @@ const DATES = [
 
 const SORT_OPTIONS = [
   { label: '現在地から近い順', value: 'distance' },
-  { label: '時給が高い順', value: 'hourly_rate_desc' },
-  { label: '新着順', value: 'newest' },
-  { label: '応募が少ない順', value: 'least_applications' },
+  { label: '時給が高い順', value: 'hourly_rate' },
+  { label: '新着順', value: 'created_at' },
 ];
 
 export default function JobsPage() {
+  const queryClient = useQueryClient();
   const [selectedPrefecture, setSelectedPrefecture] = useState('神奈川県');
   const [selectedDate, setSelectedDate] = useState('today');
   const [selectedSort, setSelectedSort] = useState('distance');
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [notificationEnabled, setNotificationEnabled] = useState(false);
 
+  // Get user location
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => console.log('位置情報の取得に失敗しました:', error)
+      );
+    }
+  }, []);
+
+  // Convert selected date to ISO format
+  const getDateString = () => {
+    if (selectedDate === 'today') {
+      return new Date().toISOString().split('T')[0];
+    } else {
+      // For dates like '9', '10', '11', etc., construct the date
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth() + 1; // Current month (1-12)
+      const day = parseInt(selectedDate);
+      return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    }
+  };
+
+  // Fetch jobs with filters
   const { data: jobsData, isLoading } = useQuery({
-    queryKey: ['jobs', 'published'],
-    queryFn: () => jobsAPI.list({ status: 'published' }),
+    queryKey: ['jobs', 'published', selectedPrefecture, selectedDate, selectedSort, userLocation],
+    queryFn: () => jobsAPI.list({ 
+      status: 'published',
+      prefecture: selectedPrefecture,
+      date: getDateString(),
+      sort: selectedSort,
+      user_lat: userLocation?.lat,
+      user_lng: userLocation?.lng,
+    }),
+  });
+
+  // Fetch user's favorites
+  const { data: favoritesData } = useQuery({
+    queryKey: ['favorites'],
+    queryFn: favoritesAPI.list,
+  });
+
+  const favorites = new Set(favoritesData || []);
+
+  // Toggle favorite mutation
+  const toggleFavoriteMutation = useMutation({
+    mutationFn: (jobId: string) => {
+      if (favorites.has(jobId)) {
+        return favoritesAPI.remove(jobId);
+      } else {
+        return favoritesAPI.add(jobId);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+      queryClient.invalidateQueries({ queryKey: ['jobs'] });
+    },
+  });
+
+  // Fetch notification status
+  const { data: notificationData } = useQuery({
+    queryKey: ['job-notification', getDateString(), selectedPrefecture],
+    queryFn: () => jobNotificationsAPI.get({
+      target_date: getDateString(),
+      prefecture: selectedPrefecture,
+    }),
+  });
+
+  // Update notification enabled state when data changes
+  useEffect(() => {
+    if (notificationData) {
+      setNotificationEnabled(notificationData.enabled);
+    }
+  }, [notificationData]);
+
+  // Notification toggle mutation
+  const notificationMutation = useMutation({
+    mutationFn: (enabled: boolean) => jobNotificationsAPI.set({
+      target_date: getDateString(),
+      prefecture: selectedPrefecture,
+      enabled,
+    }),
+    onSuccess: () => {
+      setNotificationEnabled(!notificationEnabled);
+      queryClient.invalidateQueries({ queryKey: ['job-notification'] });
+    },
   });
 
   const toggleFavorite = (jobId: string) => {
-    setFavorites(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(jobId)) {
-        newSet.delete(jobId);
-      } else {
-        newSet.add(jobId);
-      }
-      return newSet;
-    });
+    toggleFavoriteMutation.mutate(jobId);
+  };
+
+  const toggleNotification = () => {
+    notificationMutation.mutate(!notificationEnabled);
   };
 
   return (
@@ -95,12 +181,19 @@ export default function JobsPage() {
       <div className="px-4 py-4">
         <div className="mb-4 flex items-center justify-between bg-white/90 backdrop-blur-sm rounded-xl p-3 shadow-sm">
           <p className="text-sm font-medium text-gray-900">
-            2025年11月8日
+            {new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-600">この日の新しい募集を通知</span>
-            <button className="px-3 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors">
-              OFF
+            <button 
+              onClick={toggleNotification}
+              className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+                notificationEnabled 
+                  ? 'text-white bg-[#00CED1]' 
+                  : 'text-gray-600 bg-gray-100 hover:bg-gray-200'
+              }`}
+            >
+              {notificationEnabled ? 'ON' : 'OFF'}
             </button>
           </div>
         </div>
@@ -132,6 +225,7 @@ export default function JobsPage() {
                         toggleFavorite(job.id);
                       }}
                       className="absolute top-2 right-2 z-10 w-10 h-10 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all shadow-lg hover:scale-110"
+                      disabled={toggleFavoriteMutation.isPending}
                     >
                       <Heart
                         className={`w-5 h-5 transition-colors ${
@@ -165,7 +259,10 @@ export default function JobsPage() {
                         </div>
                         <div className="flex items-center gap-1 text-xs text-gray-600">
                           <MapPin className="w-3.5 h-3.5 flex-shrink-0 text-[#00CED1]" />
-                          <span className="truncate">{job.location || '愛甲郡愛川町'} • 0.6km</span>
+                          <span className="truncate">
+                            {job.location || '愛甲郡愛川町'}
+                            {job.distance_km && ` • ${job.distance_km.toFixed(1)}km`}
+                          </span>
                         </div>
                       </div>
 
@@ -194,7 +291,7 @@ export default function JobsPage() {
           { label: 'さがす', path: '/jobs', icon: Sparkles },
           { label: 'はたらく', path: '/applications', icon: Zap },
           { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'メッセージ', path: '/messages', icon: Bell },
           { label: 'マイページ', path: '/profile', icon: UserCircle },
         ]}
       />

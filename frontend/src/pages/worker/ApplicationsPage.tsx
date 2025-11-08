@@ -6,7 +6,7 @@ import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { applicationsAPI, type Application } from '../../lib/api';
-import { Sparkles, Zap, Flame, Bell, UserCircle, Clock, CheckCircle, XCircle, AlertCircle, BookOpen } from 'lucide-react';
+import { Sparkles, Zap, Flame, Bell, UserCircle, Clock, CheckCircle, XCircle, AlertCircle, BookOpen, ChevronRight } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 
 export default function ApplicationsPage() {
@@ -135,54 +135,78 @@ export default function ApplicationsPage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="py-8"
+            className="py-8 px-4"
           >
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-white mb-3">
-                {activeTab === 'upcoming' ? '今後の予定はありません' : '過去の仕事はありません'}
-              </h2>
-              <p className="text-white/90 mb-6">
-                次のお仕事を探してみましょう。
-              </p>
-              <Link to="/jobs">
-                <Button 
-                  variant="primary" 
-                  className="bg-gradient-to-r from-[#00CED1] to-[#009999] hover:from-[#00D4D4] hover:to-[#008888] text-white px-8 py-3 rounded-xl shadow-lg"
-                >
-                  仕事をさがす
-                </Button>
-              </Link>
-            </div>
-
-            <div className="flex justify-center mb-8">
-              <svg className="w-64 h-48" viewBox="0 0 200 150" fill="none">
-                <ellipse cx="100" cy="120" rx="80" ry="15" fill="#E5E7EB" opacity="0.5"/>
-                <path d="M30 100 Q50 80 70 100 L130 100 Q150 80 170 100" fill="#D1D5DB"/>
-                <g transform="translate(80, 50)">
-                  <circle cx="15" cy="35" r="20" fill="none" stroke="#FCD34D" strokeWidth="4"/>
-                  <circle cx="55" cy="35" r="20" fill="none" stroke="#D1D5DB" strokeWidth="4"/>
-                  <path d="M15 15 L35 25 L55 15" fill="none" stroke="#FCD34D" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M35 25 L35 35" stroke="#FCD34D" strokeWidth="3" strokeLinecap="round"/>
-                  <rect x="32" y="30" width="6" height="12" rx="1" fill="#FCD34D"/>
-                  <circle cx="8" cy="35" r="3" fill="#1E40AF"/>
-                  <circle cx="22" cy="35" r="3" fill="#1E40AF"/>
-                  <circle cx="48" cy="35" r="3" fill="#6B7280"/>
-                  <circle cx="62" cy="35" r="3" fill="#6B7280"/>
-                </g>
-              </svg>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 flex items-center gap-4 shadow-lg border-2 border-[#00CED1]">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#00CED1] to-[#009999] rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                <div className="w-12 h-16 bg-white rounded-lg flex items-center justify-center relative">
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-6 h-8 bg-gradient-to-br from-[#00CED1] to-[#009999] rounded" />
-                  <BookOpen className="w-6 h-6 text-gray-600 relative z-10" />
+            <div className="relative mb-8 overflow-hidden rounded-3xl bg-white/95 backdrop-blur-sm p-8 shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#00CED1]/10 via-[#00B5B5]/10 to-[#009999]/10" />
+              
+              <motion.div
+                className="relative"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                <div className="flex justify-center mb-6">
+                  <motion.div
+                    className="relative w-32 h-32"
+                    animate={{
+                      y: [0, -10, 0],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#00CED1] to-[#009999] rounded-full opacity-20 blur-xl" />
+                    <div className="absolute inset-2 bg-gradient-to-br from-[#00CED1] to-[#009999] rounded-full flex items-center justify-center shadow-2xl">
+                      <Zap className="w-16 h-16 text-white" />
+                    </div>
+                  </motion.div>
                 </div>
-              </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-xl bg-gradient-to-r from-[#00CED1] to-[#009999] bg-clip-text text-transparent mb-1">Work Now</h3>
-                <p className="text-sm text-gray-700 font-medium">かんたん</p>
-                <p className="text-lg font-bold text-gray-900">働きかたガイド</p>
+
+                <h2 className="text-2xl font-bold text-center bg-gradient-to-r from-[#00CED1] to-[#009999] bg-clip-text text-transparent mb-3">
+                  {activeTab === 'upcoming' ? '今後の予定はありません' : '過去の仕事はありません'}
+                </h2>
+                <p className="text-center text-gray-700 mb-6">
+                  次のお仕事を探してみましょう。<br/>
+                  今すぐ働いて、即時報酬を手に入れよう！
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Link to="/jobs" className="flex-1 sm:flex-none">
+                    <Button 
+                      variant="primary" 
+                      className="w-full bg-gradient-to-r from-[#00CED1] to-[#009999] hover:from-[#00D4D4] hover:to-[#008888] text-white px-8 py-4 rounded-xl shadow-lg font-bold"
+                    >
+                      おすすめ求人を見る
+                    </Button>
+                  </Link>
+                  <Link to="/guide/work-style" className="flex-1 sm:flex-none">
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-2 border-[#00CED1] text-[#00CED1] hover:bg-[#00CED1]/10 px-8 py-4 rounded-xl font-bold"
+                    >
+                      ガイドで準備する
+                    </Button>
+                  </Link>
+                </div>
+              </motion.div>
+            </div>
+
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#00CED1] to-[#009999] rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                  <BookOpen className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-lg bg-gradient-to-r from-[#00CED1] to-[#009999] bg-clip-text text-transparent mb-2">Work Now の使い方</h3>
+                  <p className="text-sm text-gray-700 mb-3">初めての方でも安心。働き方ガイドで詳しく説明しています。</p>
+                  <Link to="/guide/work-style" className="text-sm font-semibold text-[#00CED1] hover:text-[#009999] flex items-center gap-1">
+                    詳しく見る
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </div>
               </div>
             </div>
           </motion.div>

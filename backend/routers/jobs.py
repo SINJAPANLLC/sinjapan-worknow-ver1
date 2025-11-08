@@ -16,11 +16,27 @@ def get_job_service() -> JobService:
 @router.get("/", response_model=JobList)
 async def list_jobs(
     status_filter: Optional[JobStatus] = Query(default=None, alias="status"),
+    prefecture: Optional[str] = Query(default=None),
+    date: Optional[str] = Query(default=None),
+    sort_by: Optional[str] = Query(default="created_at", alias="sort"),
+    user_lat: Optional[float] = Query(default=None),
+    user_lng: Optional[float] = Query(default=None),
     page: int = Query(default=1, ge=1),
     size: int = Query(default=20, ge=1, le=100),
     job_service: JobService = Depends(get_job_service),
+    current_user: Optional[UserRead] = Depends(get_current_user),
 ) -> JobList:
-    return job_service.list_jobs(status_filter=status_filter, page=page, size=size)
+    return job_service.list_jobs(
+        status_filter=status_filter,
+        prefecture=prefecture,
+        date=date,
+        sort_by=sort_by,
+        user_lat=user_lat,
+        user_lng=user_lng,
+        user_id=current_user.id if current_user else None,
+        page=page,
+        size=size
+    )
 
 
 @router.get("/{job_id}", response_model=JobRead)

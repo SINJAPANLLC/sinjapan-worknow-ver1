@@ -19,6 +19,8 @@ from routers import (
     withdrawals,
     activities,
     messages,
+    favorites,
+    job_notifications,
 )
 
 app = FastAPI(title="WORK NOW API", version="1.0")
@@ -55,6 +57,8 @@ app.include_router(bank_accounts.router)
 app.include_router(withdrawals.router)
 app.include_router(activities.router)
 app.include_router(messages.router)
+app.include_router(favorites.router, prefix="/favorites", tags=["Favorites"])
+app.include_router(job_notifications.router, prefix="/job-notifications", tags=["Job Notifications"])
 
 
 if __name__ == "__main__":

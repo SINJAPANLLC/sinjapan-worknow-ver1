@@ -12,6 +12,7 @@ import ClientDashboard from './pages/client/ClientDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import WorkerJobsPage from './pages/worker/JobsPage';
 import WorkerApplicationsPage from './pages/worker/ApplicationsPage';
+import WorkStyleGuidePage from './pages/shared/WorkStyleGuidePage';
 import ClientJobCreatePage from './pages/client/JobCreatePage';
 import ClientJobsManagePage from './pages/client/JobsManagePage';
 import { ProfilePage } from './pages/ProfilePage';
@@ -75,6 +76,14 @@ function App() {
           element={
             <ProtectedRoute>
               <WorkerApplicationsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/guide/work-style"
+          element={
+            <ProtectedRoute>
+              <WorkStyleGuidePage />
             </ProtectedRoute>
           }
         />
