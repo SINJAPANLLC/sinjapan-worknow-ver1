@@ -31,7 +31,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      {!isAuthenticated && <Header />}
+      <Header />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/about" element={<AboutPage />} />
