@@ -13,7 +13,9 @@ import {
   MagnifyingGlassIcon,
   UserCircleIcon
 } from '@heroicons/react/24/outline';
+import { Home, Search, FileText, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { BottomNav } from '../../components/layout/BottomNav';
 
 export default function WorkerDashboard() {
   const { data: jobs, isLoading: jobsLoading } = useQuery({
