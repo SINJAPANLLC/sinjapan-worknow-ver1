@@ -22,19 +22,8 @@ export default function ClientDashboard() {
     queryFn: () => jobsAPI.list({ size: 10 }),
   });
 
-  const { data: applications } = useQuery({
-    queryKey: ['applications'],
-    queryFn: () => applicationsAPI.list(),
-  });
-
-  const publishedJobs = myJobs?.items.filter((j) => j.status === 'published') || [];
-  const draftJobs = myJobs?.items.filter((j) => j.status === 'draft') || [];
-  const totalApplications = applications?.length || 0;
-  const pendingReviews = applications?.filter((a) => a.status === 'pending').length || 0;
-
-  const getApplicationCount = (jobId: string) => {
-    return applications?.filter((app) => app.job_id === jobId).length || 0;
-  };
+  const publishedJobs = myJobs?.filter((j: any) => j.status === 'published') || [];
+  const draftJobs = myJobs?.filter((j: any) => j.status === 'draft') || [];
 
   const stats = [
     {
@@ -53,15 +42,15 @@ export default function ClientDashboard() {
     },
     {
       icon: UserGroupIcon,
-      label: '総応募数',
-      value: totalApplications,
+      label: '総求人数',
+      value: myJobs?.length || 0,
       color: 'text-secondary',
       bgColor: 'bg-secondary/10',
     },
     {
       icon: EyeIcon,
-      label: '未確認',
-      value: pendingReviews,
+      label: '今月',
+      value: 0,
       color: 'text-primary-dark',
       bgColor: 'bg-primary-dark/10',
     },
