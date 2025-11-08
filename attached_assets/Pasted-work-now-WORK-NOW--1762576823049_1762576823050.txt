@@ -1,0 +1,297 @@
+work now
+
+# =====================================================
+# WORK NOW｜働くに、彩りを — 完全商用版ビルドスクリプト
+# Replit → Hostinger (FastAPI + Flutter + Stripe Connect)
+# =====================================================
+
+echo "🚀 WORK NOW｜Production Setup"
+
+# -----------------------------------------------------
+# 0️⃣ ディレクトリ構成
+# -----------------------------------------------------
+mkdir -p worknow/{backend/{routers,services,utils,logs,systemd},frontend/lib/{core,screens/{home,jobs,wallet,profile,notifications},assets/{lang,lottie}},deploy}
+touch worknow/README.md
+
+# -----------------------------------------------------
+# 1️⃣ バックエンド依存
+# -----------------------------------------------------
+cat > worknow/backend/requirements.txt <<'REQ'
+fastapi
+uvicorn[standard]
+python-dotenv
+supabase-py
+stripe
+firebase-admin
+gunicorn
+python-jose[cryptography]
+passlib[bcrypt]
+redis
+aiofiles
+python-multipart
+pydantic
+requests
+certbot
+certbot-nginx
+REQ
+
+# -----------------------------------------------------
+# 2️⃣ 環境変数テンプレート (.env.example)
+# -----------------------------------------------------
+cat > worknow/backend/.env.example <<'ENV'
+# === Supabase ===
+SUPABASE_URL=https://xxxxx.supabase.co
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR...
+
+# === Stripe Connect ===
+STRIPE_API_KEY=sk_live_123
+STRIPE_CONNECT_CLIENT_ID=ca_XXXX
+STRIPE_WEBHOOK_SECRET=whsec_XXXX
+STRIPE_PLATFORM_FEE=10
+
+# === Firebase ===
+FIREBASE_KEY=AAAAXYZ123...
+
+# === Redis ===
+REDIS_URL=redis://localhost:6379/0
+
+# === JWT ===
+JWT_SECRET=YOUR_RANDOM_64_CHAR_STRING
+JWT_EXPIRE_MINUTES=60
+
+# === APP ===
+DOMAIN=https://worknow.jp
+ADMIN_EMAIL=admin@worknow.jp
+CORS_ORIGINS=["https://worknow.jp"]
+
+# === SYSTEM ===
+ENVIRONMENT=production
+PORT=8000
+ENV
+
+# -----------------------------------------------------
+# 3️⃣ バックエンドメイン(main.py)
+# -----------------------------------------------------
+cat > worknow/backend/main.py <<'PY'
+import uvicorn
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from utils.config import CFG
+from routers import auth, jobs, applications, assignments, payments, reviews, notifications, admin
+
+app = FastAPI(title="WORK NOW API", version="1.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=CFG["CORS_ORIGINS"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/health")
+async def health():
+    return {"status": "ok", "env": CFG["ENVIRONMENT"]}
+
+app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+app.include_router(jobs.router, prefix="/jobs", tags=["Jobs"])
+app.include_router(applications.router, prefix="/applications", tags=["Applications"])
+app.include_router(assignments.router, prefix="/assignments", tags=["Assignments"])
+app.include_router(payments.router, prefix="/payments", tags=["Payments"])
+app.include_router(reviews.router, prefix="/reviews", tags=["Reviews"])
+app.include_router(notifications.router, prefix="/notifications", tags=["Notifications"])
+app.include_router(admin.router, prefix="/admin", tags=["Admin"])
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=int(CFG["PORT"]), reload=True)
+PY
+
+# -----------------------------------------------------
+# 4️⃣ Stripe Connect 決済 (router/payments.py)
+# -----------------------------------------------------
+cat > worknow/backend/routers/payments.py <<'PY'
+from fastapi import APIRouter, Request, HTTPException
+from services.stripe_service import StripeService
+stripe_service = StripeService()
+router = APIRouter()
+
+@router.post("/create-account")
+def create_account(email: str):
+    return stripe_service.create_connect_account(email)
+
+@router.post("/create-intent")
+def create_payment(amount: int, worker_stripe_account: str):
+    return stripe_service.create_payment_intent(amount, worker_stripe_account)
+
+@router.post("/webhook")
+async def stripe_webhook(request: Request):
+    payload = await request.body()
+    sig_header = request.headers.get("Stripe-Signature")
+    return stripe_service.webhook(payload, sig_header)
+PY
+
+cat > worknow/backend/services/stripe_service.py <<'PY'
+import stripe, json
+from utils.config import CFG
+from fastapi import HTTPException
+
+class StripeService:
+    def __init__(self):
+        stripe.api_key = CFG["STRIPE_API_KEY"]
+
+    def create_connect_account(self, email: str):
+        try:
+            account = stripe.Account.create(
+                type="express",
+                country="JP",
+                email=email,
+                capabilities={"transfers": {"requested": True}},
+                business_type="individual",
+            )
+            link = stripe.AccountLink.create(
+                account=account.id,
+                refresh_url=f"{CFG['DOMAIN']}/reauth",
+                return_url=f"{CFG['DOMAIN']}/complete",
+                type="account_onboarding",
+            )
+            return {"account_id": account.id, "onboard_url": link.url}
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=str(e))
+
+    def create_payment_intent(self, amount: int, worker_stripe_account: str):
+        try:
+            return stripe.PaymentIntent.create(
+                amount=amount,
+                currency="jpy",
+                payment_method_types=["card"],
+                application_fee_amount=int(amount * CFG["STRIPE_PLATFORM_FEE"] / 100),
+                transfer_data={"destination": worker_stripe_account},
+            )
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=str(e))
+
+    def webhook(self, payload: bytes, sig_header: str):
+        try:
+            event = stripe.Webhook.construct_event(
+                payload, sig_header, CFG["STRIPE_WEBHOOK_SECRET"]
+            )
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=str(e))
+        print(json.dumps(event, indent=2))
+        return {"ok": True}
+PY
+
+# -----------------------------------------------------
+# 5️⃣ systemd 自動起動設定
+# -----------------------------------------------------
+cat > worknow/backend/systemd/worknow.service <<'SERVICE'
+[Unit]
+Description=WORK NOW FastAPI Service
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/root/worknow/backend
+ExecStart=/usr/bin/gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+SERVICE
+
+# -----------------------------------------------------
+# 6️⃣ Nginx SSL 設定
+# -----------------------------------------------------
+cat > worknow/backend/systemd/worknow.nginx.conf <<'NGX'
+server {
+    listen 80;
+    server_name worknow.jp;
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+NGX
+
+# -----------------------------------------------------
+# 7️⃣ デプロイスクリプト（Hostinger用）
+# -----------------------------------------------------
+cat > worknow/deploy/deploy.sh <<'DEPLOY'
+#!/bin/bash
+set -e
+apt update -y
+apt install -y python3-pip nginx certbot python3-certbot-nginx redis-server
+pip install -r /root/worknow/backend/requirements.txt
+
+cp /root/worknow/backend/systemd/worknow.service /etc/systemd/system/
+systemctl enable worknow
+systemctl start worknow
+
+cp /root/worknow/backend/systemd/worknow.nginx.conf /etc/nginx/sites-available/worknow
+ln -sf /etc/nginx/sites-available/worknow /etc/nginx/sites-enabled/worknow
+nginx -t && systemctl restart nginx
+
+certbot --nginx -d worknow.jp --non-interactive --agree-tos -m admin@worknow.jp
+echo "✅ Deployment complete: https://worknow.jp"
+DEPLOY
+
+chmod +x worknow/deploy/deploy.sh
+
+# -----------------------------------------------------
+# 8️⃣ Flutter UI生成（ターコイズグラデーション）
+# -----------------------------------------------------
+cat > worknow/frontend/lib/main.dart <<'DART'
+import 'package:flutter/material.dart';
+void main() => runApp(const WorkNowApp());
+class WorkNowApp extends StatelessWidget {
+  const WorkNowApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'WORK NOW',
+      theme: ThemeData(
+        useMaterial3: true,
+        colorSchemeSeed: const Color(0xFF00C9D2),
+        scaffoldBackgroundColor: Colors.white,
+      ),
+      home: const SplashScreen(),
+    );
+  }
+}
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+  @override
+  State<SplashScreen> createState() => _SplashState();
+}
+class _SplashState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 2), () {});
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF00C9D2), Color(0xFF007A7A)],
+            begin: Alignment.topLeft, end: Alignment.bottomRight),
+        ),
+        child: const Center(
+          child: Text('WORK NOW｜働くに、彩りを。',
+            style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+        ),
+      ),
+    );
+  }
+}
+DART
+
+# -----------------------------------------------------
+# 9️⃣ 起動
+# -----------------------------------------------------
+echo "✅ 完成：WORK NOW 商用環境 ready."
+echo "➡ Replitでテスト後、Hostingerに push /deploy/deploy.sh 実行。"
