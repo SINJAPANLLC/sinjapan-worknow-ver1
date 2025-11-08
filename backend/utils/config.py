@@ -2,7 +2,8 @@ from functools import lru_cache
 from typing import List
 
 from dotenv import load_dotenv
-from pydantic import BaseSettings, Field, validator
+from pydantic import Field, field_validator
+from pydantic_settings import BaseSettings
 
 load_dotenv()
 
@@ -24,8 +25,9 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = Field("production", env="ENVIRONMENT")
     PORT: int = Field(8000, env="PORT")
 
-    @validator("CORS_ORIGINS", pre=True)
-    def split_origins(cls, value):  # noqa: D417 - args explained by pydantic
+    @field_validator("CORS_ORIGINS", mode="before")
+    @classmethod
+    def split_origins(cls, value):
         if isinstance(value, str):
             value = value.strip()
             if value.startswith("[") and value.endswith("]"):
@@ -41,4 +43,4 @@ def get_settings() -> Settings:
     return Settings()
 
 
-CFG = get_settings().dict()
+CFG = get_settings().model_dump()
