@@ -15,6 +15,7 @@ import WorkerApplicationsPage from './pages/worker/ApplicationsPage';
 import ClientJobCreatePage from './pages/client/JobCreatePage';
 import ClientJobsManagePage from './pages/client/JobsManagePage';
 import { ProfilePage } from './pages/ProfilePage';
+import PaymentsPage from './pages/PaymentsPage';
 import AdminUsersManagePage from './pages/admin/UsersManagePage';
 import AdminJobsManagePage from './pages/admin/JobsManagePage';
 import AdminStatsPage from './pages/admin/StatsPage';
@@ -80,6 +81,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payments"
+          element={
+            <ProtectedRoute>
+              <PaymentsPage />
             </ProtectedRoute>
           }
         />
