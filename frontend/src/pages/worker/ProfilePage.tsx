@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
-import { authAPI, paymentsAPI } from '../../lib/api';
+import { authAPI, paymentsAPI, reviewsAPI } from '../../lib/api';
 import { slideUp, fadeIn } from '../../utils/animations';
-import { Home, Search, FileText, User, Mail, Calendar, Shield, CreditCard, ExternalLink } from 'lucide-react';
+import { Home, Search, FileText, User, Mail, Calendar, Shield, CreditCard, ExternalLink, Star } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 import { useState } from 'react';
 
@@ -20,6 +20,12 @@ export default function ProfilePage() {
   const { data: payments } = useQuery({
     queryKey: ['payments'],
     queryFn: () => paymentsAPI.list(),
+  });
+
+  const { data: receivedReviews } = useQuery({
+    queryKey: ['reviews', 'received', user?.id],
+    queryFn: () => reviewsAPI.list({ reviewee_id: user?.id }),
+    enabled: !!user?.id,
   });
 
   const handleConnectStripe = async () => {
@@ -41,6 +47,10 @@ export default function ProfilePage() {
   const totalEarnings = payments?.items
     .filter((p) => p.status === 'completed')
     .reduce((sum, p) => sum + p.amount, 0) || 0;
+
+  const averageRating = receivedReviews && receivedReviews.length > 0
+    ? receivedReviews.reduce((sum, r) => sum + r.rating, 0) / receivedReviews.length
+    : 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary via-primary-dark to-gray-900 pb-20">
@@ -114,6 +124,86 @@ export default function ProfilePage() {
             </motion.div>
 
             <motion.div {...slideUp} style={{ animationDelay: '0.2s' }}>
+              <Card>
+                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                  <Star className="w-6 h-6 mr-2 text-yellow-500" />
+                  受け取ったレビュー
+                </h3>
+
+                {receivedReviews && receivedReviews.length > 0 ? (
+                  <>
+                    <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-6 mb-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-sm text-gray-600 mb-1">平均評価</div>
+                          <div className="flex items-center">
+                            <span className="text-3xl font-bold text-gray-900 mr-2">
+                              {averageRating.toFixed(1)}
+                            </span>
+                            <div className="flex">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <Star
+                                  key={star}
+                                  className={`w-6 h-6 ${
+                                    star <= Math.round(averageRating)
+                                      ? 'text-yellow-500 fill-yellow-500'
+                                      : 'text-gray-300'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-2xl font-bold text-gray-900">{receivedReviews.length}</div>
+                          <div className="text-sm text-gray-600">件のレビュー</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                      {receivedReviews.slice(0, 5).map((review) => (
+                        <div key={review.id} className="border border-gray-200 rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <Star
+                                  key={star}
+                                  className={`w-4 h-4 ${
+                                    star <= review.rating
+                                      ? 'text-yellow-500 fill-yellow-500'
+                                      : 'text-gray-300'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                            <span className="text-xs text-gray-500">
+                              {new Date(review.created_at).toLocaleDateString('ja-JP')}
+                            </span>
+                          </div>
+                          {review.comment && (
+                            <p className="text-sm text-gray-700">{review.comment}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {receivedReviews.length > 5 && (
+                      <p className="text-sm text-gray-500 text-center mt-3">
+                        他{receivedReviews.length - 5}件のレビュー
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <Star className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                    <p>まだレビューがありません</p>
+                  </div>
+                )}
+              </Card>
+            </motion.div>
+
+            <motion.div {...slideUp} style={{ animationDelay: '0.3s' }}>
               <Card>
                 <h3 className="text-xl font-bold text-gray-900 mb-4">アカウント設定</h3>
                 <div className="space-y-3">
