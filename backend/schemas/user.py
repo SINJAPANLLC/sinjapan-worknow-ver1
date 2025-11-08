@@ -34,6 +34,9 @@ class UserBase(TimestampedModel):
     work_style: Optional[str] = None
     affiliation: Optional[str] = None
     id_document_url: Optional[str] = None
+    preferred_prefecture: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
 
 class UserCreate(BaseModel):
@@ -55,6 +58,9 @@ class UserUpdate(BaseModel):
     work_style: Optional[str] = None
     affiliation: Optional[str] = None
     id_document_url: Optional[str] = None
+    preferred_prefecture: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
 
 class UserRead(UserBase):

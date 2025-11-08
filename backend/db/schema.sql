@@ -15,6 +15,17 @@ create table if not exists public.users (
     role text not null check (role in ('worker', 'company', 'admin')),
     avatar_url text,
     is_active boolean not null default true,
+    phone text,
+    phone_verified boolean not null default false,
+    date_of_birth date,
+    gender text check (gender in ('male', 'female', 'other', 'prefer_not_to_say')),
+    address text,
+    work_style text,
+    affiliation text,
+    id_document_url text,
+    preferred_prefecture text,
+    latitude numeric(10, 7),
+    longitude numeric(10, 7),
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now()
 );
@@ -158,6 +169,66 @@ create table if not exists public.device_tokens (
 create index if not exists idx_device_tokens_user_id on public.device_tokens (user_id);
 
 -- =====================================================
+-- BANK ACCOUNTS
+-- =====================================================
+create table if not exists public.bank_accounts (
+    id uuid primary key default uuid_generate_v4(),
+    user_id uuid not null references public.users (id) on delete cascade,
+    bank_name text not null,
+    bank_code text,
+    branch_name text not null,
+    branch_code text,
+    account_type text not null check (account_type in ('ordinary', 'current')),
+    account_number text not null,
+    account_holder_name text not null,
+    is_default boolean not null default false,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+create index if not exists idx_bank_accounts_user_id on public.bank_accounts (user_id);
+
+-- =====================================================
+-- WITHDRAWAL REQUESTS
+-- =====================================================
+create table if not exists public.withdrawal_requests (
+    id uuid primary key default uuid_generate_v4(),
+    user_id uuid not null references public.users (id) on delete cascade,
+    bank_account_id uuid not null references public.bank_accounts (id) on delete cascade,
+    amount integer not null check (amount >= 100),
+    currency text not null default 'JPY',
+    status text not null default 'pending' check (
+        status in ('pending', 'processing', 'completed', 'rejected')
+    ),
+    processed_at timestamptz,
+    notes text,
+    admin_notes text,
+    metadata jsonb default '{}'::jsonb,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+create index if not exists idx_withdrawal_requests_user_id on public.withdrawal_requests (user_id);
+create index if not exists idx_withdrawal_requests_status on public.withdrawal_requests (status);
+
+-- =====================================================
+-- ACTIVITY LOGS
+-- =====================================================
+create table if not exists public.activity_logs (
+    id uuid primary key default uuid_generate_v4(),
+    user_id uuid not null references public.users (id) on delete cascade,
+    action_type text not null,
+    entity_type text,
+    entity_id uuid,
+    description text not null,
+    metadata jsonb default '{}'::jsonb,
+    ip_address text,
+    user_agent text,
+    created_at timestamptz not null default now()
+);
+create index if not exists idx_activity_logs_user_id on public.activity_logs (user_id);
+create index if not exists idx_activity_logs_action_type on public.activity_logs (action_type);
+create index if not exists idx_activity_logs_created_at on public.activity_logs (created_at desc);
+
+-- =====================================================
 -- TRIGGERS FOR UPDATED_AT
 -- =====================================================
 do $$
@@ -223,6 +294,20 @@ begin
     if not found then
         create trigger set_updated_at_notifications
         before update on public.notifications
+        for each row execute function public.set_updated_at();
+    end if;
+
+    perform 1 from information_schema.triggers where trigger_name = 'set_updated_at_bank_accounts';
+    if not found then
+        create trigger set_updated_at_bank_accounts
+        before update on public.bank_accounts
+        for each row execute function public.set_updated_at();
+    end if;
+
+    perform 1 from information_schema.triggers where trigger_name = 'set_updated_at_withdrawal_requests';
+    if not found then
+        create trigger set_updated_at_withdrawal_requests
+        before update on public.withdrawal_requests
         for each row execute function public.set_updated_at();
     end if;
 end $$;
