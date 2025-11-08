@@ -147,8 +147,8 @@ export default function MessagesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
-      <div className="bg-gradient-to-r from-[#00CED1] to-[#009999] text-white px-6 py-6 shadow-lg pt-20">
+    <div className="min-h-screen bg-gray-50 pb-24 pt-16">
+      <div className="bg-gradient-to-r from-[#00CED1] to-[#009999] text-white px-6 py-6 shadow-lg">
         <h1 className="text-2xl font-bold">メッセージ</h1>
         <p className="text-sm text-white/80 mt-1">チャットで連絡を取りましょう</p>
       </div>
