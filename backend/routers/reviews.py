@@ -17,6 +17,7 @@ def get_review_service() -> ReviewService:
 async def list_reviews(
     assignment_id: Optional[str] = Query(default=None),
     reviewee_id: Optional[str] = Query(default=None),
+    reviewer_id: Optional[str] = Query(default=None),
     page: int = Query(default=1, ge=1),
     size: int = Query(default=20, ge=1, le=100),
     review_service: ReviewService = Depends(get_review_service),
@@ -24,6 +25,7 @@ async def list_reviews(
     return review_service.list_reviews(
         assignment_id=assignment_id,
         reviewee_id=reviewee_id,
+        reviewer_id=reviewer_id,
         page=page,
         size=size,
     )

@@ -47,6 +47,7 @@ class ReviewService(PostgresService):
         *,
         assignment_id: Optional[str] = None,
         reviewee_id: Optional[str] = None,
+        reviewer_id: Optional[str] = None,
         page: int = 1,
         size: int = 20,
     ) -> ReviewList:
@@ -55,6 +56,8 @@ class ReviewService(PostgresService):
             filters["assignment_id"] = assignment_id
         if reviewee_id:
             filters["reviewee_id"] = reviewee_id
+        if reviewer_id:
+            filters["reviewer_id"] = reviewer_id
         start = (page - 1) * size
         end = start + size - 1
         response = self.list(filters=filters, range_=(start, end), order=("created_at", "desc"))

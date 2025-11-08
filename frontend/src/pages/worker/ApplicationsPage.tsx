@@ -5,13 +5,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
-import { applicationsAPI, assignmentsAPI, type Application, type Assignment } from '../../lib/api';
-import { Sparkles, Zap, Flame, Bell, UserCircle, Clock, CheckCircle, XCircle, AlertCircle, BookOpen, ChevronRight, QrCode, LogIn, LogOut } from 'lucide-react';
+import { applicationsAPI, assignmentsAPI, reviewsAPI, type Application, type Assignment } from '../../lib/api';
+import { useAuthStore } from '../../stores/authStore';
+import { Sparkles, Zap, Flame, Bell, UserCircle, Clock, CheckCircle, XCircle, AlertCircle, BookOpen, ChevronRight, QrCode, LogIn, LogOut, Star } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 
 export default function ApplicationsPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
+  const { user } = useAuthStore();
 
   const { data: applications, isLoading } = useQuery({
     queryKey: ['applications'],
@@ -21,6 +23,12 @@ export default function ApplicationsPage() {
   const { data: assignments } = useQuery({
     queryKey: ['assignments'],
     queryFn: assignmentsAPI.list,
+  });
+
+  const { data: myReviews } = useQuery({
+    queryKey: ['my-reviews', user?.id],
+    queryFn: () => reviewsAPI.list({ reviewer_id: user?.id }),
+    enabled: !!user?.id,
   });
 
   const upcomingApplications = applications?.filter(app => 
@@ -50,6 +58,10 @@ export default function ApplicationsPage() {
 
   const getAssignmentForApplication = (applicationId: string): Assignment | undefined => {
     return assignments?.find(a => a.application_id === applicationId);
+  };
+
+  const hasReviewed = (assignmentId: string): boolean => {
+    return myReviews?.some(r => r.assignment_id === assignmentId) || false;
   };
 
   const currentApplications = activeTab === 'upcoming' ? upcomingApplications : pastApplications;
@@ -111,6 +123,7 @@ export default function ApplicationsPage() {
               const canCheckIn = assignment && assignment.status === 'active' && !assignment.started_at;
               const canCheckOut = assignment && assignment.status === 'active' && assignment.started_at && !assignment.completed_at;
               const isCompleted = assignment && assignment.completed_at;
+              const canReview = assignment && assignment.status === 'completed' && !hasReviewed(assignment.id);
 
               return (
                 <motion.div
@@ -171,7 +184,7 @@ export default function ApplicationsPage() {
                       <span>応募日: {new Date(application.created_at).toLocaleDateString('ja-JP')}</span>
                     </div>
 
-                    {(canCheckIn || canCheckOut) && (
+                    {(canCheckIn || canCheckOut || canReview) && (
                       <div className="flex gap-2 pt-3 border-t border-gray-200">
                         {canCheckIn && (
                           <Button
@@ -191,6 +204,16 @@ export default function ApplicationsPage() {
                           >
                             <LogOut className="w-4 h-4 mr-1" />
                             チェックアウト
+                          </Button>
+                        )}
+                        {canReview && (
+                          <Button
+                            onClick={() => navigate(`/review?assignment_id=${assignment.id}`)}
+                            className="flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600"
+                            size="sm"
+                          >
+                            <Star className="w-4 h-4 mr-1" />
+                            レビューする
                           </Button>
                         )}
                       </div>

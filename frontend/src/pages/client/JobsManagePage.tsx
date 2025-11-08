@@ -5,14 +5,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
-import { jobsAPI, assignmentsAPI, type Assignment } from '../../lib/api';
+import { jobsAPI, assignmentsAPI, reviewsAPI, type Assignment } from '../../lib/api';
+import { useAuthStore } from '../../stores/authStore';
 import { slideUp, fadeIn } from '../../utils/animations';
-import { Sparkles, Zap, Flame, Bell, UserCircle, Eye, Edit, Trash2, Users, QrCode, PlusCircle, Briefcase, ChevronDown, ChevronUp } from 'lucide-react';
+import { Sparkles, Zap, Flame, Bell, UserCircle, Eye, Edit, Trash2, Users, QrCode, PlusCircle, Briefcase, ChevronDown, ChevronUp, Star } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 
 export default function JobsManagePage() {
   const navigate = useNavigate();
   const [expandedJobId, setExpandedJobId] = useState<string | null>(null);
+  const { user } = useAuthStore();
   
   const { data: jobsData, isLoading } = useQuery({
     queryKey: ['jobs', 'my'],
@@ -25,8 +27,18 @@ export default function JobsManagePage() {
     enabled: !!jobsData && jobsData.length > 0,
   });
 
+  const { data: myReviews } = useQuery({
+    queryKey: ['my-reviews', user?.id],
+    queryFn: () => reviewsAPI.list({ reviewer_id: user?.id }),
+    enabled: !!user?.id,
+  });
+
   const getAssignmentsForJob = (jobId: string): Assignment[] => {
     return allAssignments?.filter(a => a.job_id === jobId) || [];
+  };
+
+  const hasReviewed = (assignmentId: string): boolean => {
+    return myReviews?.some(r => r.assignment_id === assignmentId) || false;
   };
 
   const getStatusBadge = (status: string) => {
@@ -184,16 +196,28 @@ export default function JobsManagePage() {
                                     )}
                                   </div>
                                 </div>
-                                {assignment.status === 'active' && (
-                                  <Button
-                                    onClick={() => navigate(`/qr-code/${assignment.id}`)}
-                                    className="bg-gradient-to-r from-[#00CED1] to-[#009999] text-white hover:from-[#00D4D4] hover:to-[#008888]"
-                                    size="sm"
-                                  >
-                                    <QrCode className="w-4 h-4 mr-1" />
-                                    QRコード
-                                  </Button>
-                                )}
+                                <div className="flex gap-2">
+                                  {assignment.status === 'active' && (
+                                    <Button
+                                      onClick={() => navigate(`/qr-code/${assignment.id}`)}
+                                      className="bg-gradient-to-r from-[#00CED1] to-[#009999] text-white hover:from-[#00D4D4] hover:to-[#008888]"
+                                      size="sm"
+                                    >
+                                      <QrCode className="w-4 h-4 mr-1" />
+                                      QRコード
+                                    </Button>
+                                  )}
+                                  {assignment.status === 'completed' && !hasReviewed(assignment.id) && (
+                                    <Button
+                                      onClick={() => navigate(`/review?assignment_id=${assignment.id}`)}
+                                      className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600"
+                                      size="sm"
+                                    >
+                                      <Star className="w-4 h-4 mr-1" />
+                                      レビュー
+                                    </Button>
+                                  )}
+                                </div>
                               </div>
                             ))}
                           </motion.div>
