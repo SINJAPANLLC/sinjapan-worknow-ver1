@@ -65,19 +65,19 @@ export default function LandingPage() {
       icon: Compass,
       title: '自由な働き方',
       description: 'いつでも、どこでも、好きな仕事を選べる',
-      gradient: 'from-[#33D9E3] via-[#3D8BEB] to-[#1F4FC9]',
+      gradient: 'from-primary via-primary-dark to-secondary',
     },
     {
       icon: Wallet,
       title: '即日報酬',
       description: '働いた分だけ、すぐに受け取れる',
-      gradient: 'from-[#5EEAD4] via-[#2ECC9A] to-[#0D7A5C]',
+      gradient: 'from-primary via-primary-dark to-secondary',
     },
     {
       icon: ShieldCheck,
       title: '信頼できるマッチング',
       description: '企業との安心・安全なつながり',
-      gradient: 'from-[#4C9BBF] via-[#2563EB] to-[#1E3A8A]',
+      gradient: 'from-primary via-primary-dark to-secondary',
     },
   ];
 
@@ -152,7 +152,7 @@ export default function LandingPage() {
                     variant="secondary"
                     className="w-full sm:w-auto shadow-2xl shadow-white/20 group"
                   >
-                    ワーカーとして登録
+                    Workerとして登録
                     <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </motion.div>
@@ -168,7 +168,7 @@ export default function LandingPage() {
                     variant="outline" 
                     className="w-full sm:w-auto bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 hover:border-white/50 shadow-xl"
                   >
-                    クライアントとして登録
+                    Clientとして登録
                   </Button>
                 </motion.div>
               </Link>
@@ -234,7 +234,7 @@ export default function LandingPage() {
                   >
                     <feature.icon className="w-10 h-10 text-white" strokeWidth={2.25} />
                   </motion.div>
-                  <h3 className="text-xl sm:text-2xl font-bold mb-4 text-neutral-800 group-hover:text-primary transition-all duration-300">
+                  <h3 className="text-xl sm:text-2xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent group-hover:scale-105 transition-all duration-300">
                     {feature.title}
                   </h3>
                   <p className="text-neutral-600 leading-relaxed text-sm sm:text-base font-medium">

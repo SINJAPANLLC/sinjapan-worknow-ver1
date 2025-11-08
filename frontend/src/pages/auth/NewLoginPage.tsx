@@ -30,8 +30,7 @@ export default function NewLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-primary opacity-10" />
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-primary via-primary-dark to-secondary">
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
       
       <motion.div
@@ -40,23 +39,13 @@ export default function NewLoginPage() {
         initial="initial"
         animate="animate"
       >
-        <Link to="/" className="flex justify-center mb-8">
-          <motion.h1
-            className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent"
-            variants={slideUp}
-            whileHover={{ scale: 1.05 }}
-          >
-            Work Now
-          </motion.h1>
-        </Link>
-        
         <motion.div variants={slideUp}>
-          <Card padding="lg">
+          <Card padding="lg" className="bg-white/95 backdrop-blur-sm shadow-2xl">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-neutral-800 mb-2">
+              <h2 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
                 ログイン
               </h2>
-              <p className="text-neutral-600">
+              <p className="text-neutral-600 text-sm">
                 働き方に彩りを。採用には自由を。
               </p>
             </div>
@@ -81,8 +70,9 @@ export default function NewLoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-neutral-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-white"
                   placeholder="email@example.com"
+                  autoComplete="email"
                   required
                 />
               </div>
@@ -96,18 +86,19 @@ export default function NewLoginPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-neutral-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-white"
                   placeholder="••••••••"
+                  autoComplete="current-password"
                   required
                 />
               </div>
 
               <div className="flex items-center justify-between text-sm">
                 <label className="flex items-center">
-                  <input type="checkbox" className="mr-2 rounded border-neutral-300 text-primary-600 focus:ring-primary-500" />
+                  <input type="checkbox" className="mr-2 rounded border-neutral-300 text-primary focus:ring-primary" />
                   <span className="text-neutral-600">ログイン状態を保持</span>
                 </label>
-                <Link to="/forgot-password" className="text-primary-600 hover:text-primary-700">
+                <Link to="/forgot-password" className="text-primary hover:text-primary-dark font-medium transition-colors">
                   パスワードを忘れた
                 </Link>
               </div>
@@ -130,12 +121,12 @@ export default function NewLoginPage() {
               <div className="mt-4 grid grid-cols-2 gap-3">
                 <Link to="/register/worker">
                   <Button variant="outline" fullWidth>
-                    ワーカー登録
+                    Worker登録
                   </Button>
                 </Link>
                 <Link to="/register/client">
                   <Button variant="outline" fullWidth>
-                    クライアント登録
+                    Client登録
                   </Button>
                 </Link>
               </div>
@@ -144,15 +135,15 @@ export default function NewLoginPage() {
         </motion.div>
 
         <motion.p
-          className="mt-6 text-center text-neutral-500 text-sm"
+          className="mt-6 text-center text-white/90 text-sm"
           variants={slideUp}
         >
           ログインすることで、
-          <Link to="/terms" className="text-primary-600 hover:underline mx-1">
+          <Link to="/terms" className="text-white font-medium hover:underline mx-1">
             利用規約
           </Link>
           と
-          <Link to="/privacy" className="text-primary-600 hover:underline mx-1">
+          <Link to="/privacy" className="text-white font-medium hover:underline mx-1">
             プライバシーポリシー
           </Link>
           に同意したものとみなされます。

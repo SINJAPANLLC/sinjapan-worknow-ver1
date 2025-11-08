@@ -50,8 +50,7 @@ export default function WorkerRegistrationPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden py-12">
-      <div className="absolute inset-0 bg-gradient-primary opacity-10" />
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden py-12 bg-gradient-to-br from-primary via-primary-dark to-secondary">
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
       
       <motion.div
@@ -60,26 +59,13 @@ export default function WorkerRegistrationPage() {
         initial="initial"
         animate="animate"
       >
-        <Link to="/" className="flex justify-center mb-8">
-          <motion.h1
-            className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent"
-            variants={slideUp}
-            whileHover={{ scale: 1.05 }}
-          >
-            Work Now
-          </motion.h1>
-        </Link>
-        
         <motion.div variants={slideUp}>
-          <Card padding="lg">
+          <Card padding="lg" className="bg-white/95 backdrop-blur-sm shadow-2xl">
             <div className="text-center mb-8">
-              <div className="inline-block p-3 bg-primary-100 rounded-full mb-4">
-                <span className="text-3xl">👷</span>
-              </div>
-              <h2 className="text-2xl font-bold text-neutral-800 mb-2">
-                ワーカー登録
+              <h2 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
+                Worker登録
               </h2>
-              <p className="text-neutral-600">
+              <p className="text-neutral-600 text-sm">
                 即戦力として活躍しませんか？
               </p>
             </div>
@@ -103,8 +89,9 @@ export default function WorkerRegistrationPage() {
                   type="text"
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-neutral-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-white"
                   placeholder="山田 太郎"
+                  autoComplete="name"
                   required
                 />
               </div>
@@ -117,8 +104,9 @@ export default function WorkerRegistrationPage() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-neutral-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-white"
                   placeholder="email@example.com"
+                  autoComplete="email"
                   required
                 />
               </div>
@@ -131,8 +119,9 @@ export default function WorkerRegistrationPage() {
                   type="password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-neutral-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-white"
                   placeholder="8文字以上"
+                  autoComplete="new-password"
                   required
                 />
               </div>
@@ -145,8 +134,9 @@ export default function WorkerRegistrationPage() {
                   type="password"
                   value={formData.confirmPassword}
                   onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-neutral-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-white"
                   placeholder="もう一度入力してください"
+                  autoComplete="new-password"
                   required
                 />
               </div>
@@ -158,7 +148,7 @@ export default function WorkerRegistrationPage() {
                 fullWidth
                 loading={loading}
               >
-                ワーカーとして登録
+                Workerとして登録
               </Button>
             </form>
 
@@ -166,7 +156,7 @@ export default function WorkerRegistrationPage() {
               <p className="text-neutral-600 text-sm">
                 すでにアカウントをお持ちの方は
               </p>
-              <Link to="/login" className="inline-block mt-2 text-primary-600 hover:text-primary-700 font-medium">
+              <Link to="/login" className="inline-block mt-2 text-primary hover:text-primary-dark font-medium transition-colors">
                 ログイン
               </Link>
             </div>
@@ -174,15 +164,15 @@ export default function WorkerRegistrationPage() {
         </motion.div>
 
         <motion.p
-          className="mt-6 text-center text-neutral-500 text-sm"
+          className="mt-6 text-center text-white/90 text-sm"
           variants={slideUp}
         >
           登録することで、
-          <Link to="/terms" className="text-primary-600 hover:underline mx-1">
+          <Link to="/terms" className="text-white font-medium hover:underline mx-1">
             利用規約
           </Link>
           と
-          <Link to="/privacy" className="text-primary-600 hover:underline mx-1">
+          <Link to="/privacy" className="text-white font-medium hover:underline mx-1">
             プライバシーポリシー
           </Link>
           に同意したものとみなされます。
