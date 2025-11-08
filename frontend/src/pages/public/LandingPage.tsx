@@ -89,29 +89,21 @@ export default function LandingPage() {
               className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20"
             >
               <Sparkles className="w-4 h-4" />
-              <span className="text-sm font-medium">新しい働き方のプラットフォーム</span>
+              <span className="text-sm font-medium">自由に稼ぐプラットフォーム</span>
             </motion.div>
 
             <motion.h1
               className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight"
               style={{ 
                 fontSize: 'clamp(2.5rem, 8vw, 5rem)',
-                lineHeight: '1.1'
+                lineHeight: '1.2'
               }}
               variants={slideUpSlow}
             >
-              働き方に彩りを。<br className="hidden sm:inline" />
+              働き方に彩りを。
+              <br />
               採用には自由を。
             </motion.h1>
-            
-            <motion.p
-              className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed"
-              style={{ fontSize: 'clamp(1rem, 3vw, 1.5rem)' }}
-              variants={slideUp}
-            >
-              即戦力とクライアントをつなぐ、<br className="hidden sm:inline" />
-              新しいマッチングプラットフォーム
-            </motion.p>
             
             <motion.div
               className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4"
