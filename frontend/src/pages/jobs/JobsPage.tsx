@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { jobsAPI, Job } from '../../lib/api';
+import { jobsAPI, type Job } from '../../lib/api';
 
 export default function JobsPage() {
   const { data, isLoading, error } = useQuery({

@@ -14,19 +14,28 @@ class PostgresService:
 
     @contextmanager
     def _get_cursor(self):
-        conn = get_pg_connection()
+        conn = None
         cursor = None
         try:
+            conn = get_pg_connection()
             cursor = conn.cursor(cursor_factory=RealDictCursor)
             yield cursor
             conn.commit()
         except Exception as e:
-            conn.rollback()
+            if conn and not conn.closed:
+                try:
+                    conn.rollback()
+                except:
+                    pass
             raise e
         finally:
-            if cursor:
-                cursor.close()
-            release_pg_connection(conn)
+            if cursor and not cursor.closed:
+                try:
+                    cursor.close()
+                except:
+                    pass
+            if conn:
+                release_pg_connection(conn)
 
     def get_by_id(self, record_id: str) -> Optional[Dict[str, Any]]:
         with self._get_cursor() as cursor:
