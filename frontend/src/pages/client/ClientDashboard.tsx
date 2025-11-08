@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
-import { jobsAPI, applicationsAPI } from '../../lib/api';
+import { jobsAPI } from '../../lib/api';
 import { slideUp, fadeIn } from '../../utils/animations';
 import {
   BriefcaseIcon,
@@ -137,48 +137,7 @@ export default function ClientDashboard() {
               <h2 className="text-xl font-bold text-gray-900 mb-4">
                 最近の応募
               </h2>
-              {applications && applications.length > 0 ? (
-                <div className="space-y-3">
-                  {applications.slice(0, 3).map((app) => (
-                    <div
-                      key={app.id}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                    >
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          応募 #{app.id.slice(0, 8)}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {new Date(app.created_at).toLocaleDateString('ja-JP')}
-                        </p>
-                      </div>
-                      <Badge
-                        variant={
-                          app.status === 'hired'
-                            ? 'success'
-                            : app.status === 'rejected'
-                            ? 'danger'
-                            : app.status === 'interview'
-                            ? 'warning'
-                            : 'neutral'
-                        }
-                      >
-                        {app.status === 'pending'
-                          ? '審査中'
-                          : app.status === 'interview'
-                          ? '面接'
-                          : app.status === 'hired'
-                          ? '採用'
-                          : app.status === 'rejected'
-                          ? '不採用'
-                          : '取り下げ'}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-600">まだ応募がありません</p>
-              )}
+              <p className="text-gray-600">応募情報は各求人ページから確認できます</p>
             </Card>
           </motion.div>
         </div>
