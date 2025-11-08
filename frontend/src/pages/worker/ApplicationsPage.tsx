@@ -4,7 +4,7 @@ import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { applicationsAPI, type Application } from '../../lib/api';
 import { slideUp, fadeIn } from '../../utils/animations';
-import { Home, Search, FileText, User, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Sparkles, Zap, Flame, Bell, UserCircle, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 
 export default function ApplicationsPage() {
@@ -94,10 +94,11 @@ export default function ApplicationsPage() {
 
       <BottomNav
         items={[
-          { label: 'ホーム', path: '/dashboard', icon: Home },
-          { label: '求人検索', path: '/jobs', icon: Search },
-          { label: '応募履歴', path: '/applications', icon: FileText },
-          { label: 'プロフィール', path: '/profile', icon: User },
+          { label: 'さがす', path: '/jobs', icon: Sparkles },
+          { label: 'はたらく', path: '/applications', icon: Zap },
+          { label: 'Now', path: '/dashboard', icon: Flame },
+          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'マイページ', path: '/profile', icon: UserCircle },
         ]}
       />
     </div>

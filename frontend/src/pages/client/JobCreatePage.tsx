@@ -5,7 +5,7 @@ import { jobsAPI } from '../../lib/api';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { slideUp, fadeIn } from '../../utils/animations';
-import { Home, PlusCircle, Briefcase, User, ArrowLeft } from 'lucide-react';
+import { Sparkles, Zap, Flame, Bell, UserCircle, ArrowLeft } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 
 export default function JobCreatePage() {
@@ -218,10 +218,11 @@ export default function JobCreatePage() {
 
       <BottomNav
         items={[
-          { label: 'ホーム', path: '/dashboard', icon: Home },
-          { label: '求人作成', path: '/jobs/new', icon: PlusCircle },
-          { label: '求人管理', path: '/jobs/manage', icon: Briefcase },
-          { label: 'プロフィール', path: '/profile', icon: User },
+          { label: 'さがす', path: '/jobs/manage', icon: Sparkles },
+          { label: 'はたらく', path: '/jobs/new', icon: Zap },
+          { label: 'Now', path: '/dashboard', icon: Flame },
+          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'マイページ', path: '/profile', icon: UserCircle },
         ]}
       />
     </div>

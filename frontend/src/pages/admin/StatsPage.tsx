@@ -4,10 +4,11 @@ import { Card } from '../../components/ui/Card';
 import { adminAPI } from '../../lib/api';
 import { slideUp, fadeIn } from '../../utils/animations';
 import {
-  LayoutDashboard,
-  Users,
-  Briefcase,
-  BarChart3,
+  Sparkles,
+  Zap,
+  Flame,
+  Bell,
+  UserCircle,
   TrendingUp,
   DollarSign,
   FileText,
@@ -191,10 +192,11 @@ export default function StatsPage() {
 
       <BottomNav
         items={[
-          { label: 'ダッシュボード', path: '/dashboard', icon: LayoutDashboard },
-          { label: 'ユーザー', path: '/admin/users', icon: Users },
-          { label: '求人', path: '/admin/jobs', icon: Briefcase },
-          { label: '統計', path: '/admin/stats', icon: BarChart3 },
+          { label: 'さがす', path: '/admin/users', icon: Sparkles },
+          { label: 'はたらく', path: '/admin/jobs', icon: Zap },
+          { label: 'Now', path: '/dashboard', icon: Flame },
+          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'マイページ', path: '/admin/stats', icon: UserCircle },
         ]}
       />
     </div>

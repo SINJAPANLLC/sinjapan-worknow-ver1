@@ -12,7 +12,7 @@ import {
   ArrowTrendingUpIcon,
   ArrowTrendingDownIcon,
 } from '@heroicons/react/24/outline';
-import { Users, Briefcase, BarChart3, MessageCircle, Zap } from 'lucide-react';
+import { Sparkles, Zap, Flame, Bell, UserCircle, Users, Briefcase, BarChart3 } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 
 export default function AdminDashboard() {
@@ -217,11 +217,11 @@ export default function AdminDashboard() {
       </div>
       
       <BottomNav items={[
-        { label: 'さがす', path: '/admin/users', icon: Users },
-        { label: 'はたらく', path: '/admin/jobs', icon: Briefcase },
-        { label: 'Now', path: '/dashboard', icon: Zap },
-        { label: 'メッセージ', path: '/notifications', icon: MessageCircle },
-        { label: 'マイページ', path: '/admin/stats', icon: BarChart3 },
+        { label: 'さがす', path: '/admin/users', icon: Sparkles },
+        { label: 'はたらく', path: '/admin/jobs', icon: Zap },
+        { label: 'Now', path: '/dashboard', icon: Flame },
+        { label: 'メッセージ', path: '/notifications', icon: Bell },
+        { label: 'マイページ', path: '/admin/stats', icon: UserCircle },
       ]} />
     </div>
   );

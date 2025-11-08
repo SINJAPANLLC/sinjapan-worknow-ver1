@@ -5,15 +5,20 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { notificationsAPI } from '../../lib/api';
 import { slideUp, fadeIn } from '../../utils/animations';
-import { Bell, Check, Trash2, CheckCheck, AlertCircle, Info, Briefcase, DollarSign } from 'lucide-react';
+import { Bell, Check, Trash2, CheckCheck, AlertCircle, Info, Briefcase, DollarSign, Sparkles, Zap, Flame, UserCircle } from 'lucide-react';
+import { BottomNav } from '../../components/layout/BottomNav';
+import { useAuthStore } from '../../stores/authStore';
 
 export default function NotificationsPage() {
+  const { user } = useAuthStore();
   const queryClient = useQueryClient();
 
   const { data: notifications, isLoading } = useQuery({
     queryKey: ['notifications'],
     queryFn: notificationsAPI.list,
   });
+
+  if (!user) return null;
 
   const markAsReadMutation = useMutation({
     mutationFn: notificationsAPI.markAsRead,
@@ -149,6 +154,16 @@ export default function NotificationsPage() {
           </motion.div>
         )}
       </div>
+
+      <BottomNav
+        items={[
+          { label: 'さがす', path: user.role === 'worker' ? '/jobs' : user.role === 'company' ? '/jobs/manage' : '/admin/users', icon: Sparkles },
+          { label: 'はたらく', path: user.role === 'worker' ? '/applications' : user.role === 'company' ? '/jobs/new' : '/admin/jobs', icon: Zap },
+          { label: 'Now', path: '/dashboard', icon: Flame },
+          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'マイページ', path: user.role === 'admin' ? '/admin/stats' : '/profile', icon: UserCircle },
+        ]}
+      />
     </div>
   );
 }

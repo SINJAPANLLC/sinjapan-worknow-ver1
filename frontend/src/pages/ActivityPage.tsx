@@ -13,12 +13,18 @@ import type { ActivityLog } from '../types';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { formatDateTime } from '../utils/format';
+import { Sparkles, Zap, Flame, Bell, UserCircle } from 'lucide-react';
+import { BottomNav } from '../components/layout/BottomNav';
+import { useAuthStore } from '../stores/authStore';
 
 export default function ActivityPage() {
+  const { user } = useAuthStore();
   const { data: activities = [], isLoading } = useQuery({
     queryKey: ['activities'],
     queryFn: () => activitiesAPI.list({ limit: 50 }),
   });
+
+  if (!user) return null;
 
   const getActionIcon = (actionType: string) => {
     if (actionType.includes('login') || actionType.includes('register')) {
@@ -85,6 +91,16 @@ export default function ActivityPage() {
           )}
         </Card>
       </div>
+
+      <BottomNav
+        items={[
+          { label: 'さがす', path: user.role === 'worker' ? '/jobs' : user.role === 'company' ? '/jobs/manage' : '/admin/users', icon: Sparkles },
+          { label: 'はたらく', path: user.role === 'worker' ? '/applications' : user.role === 'company' ? '/jobs/new' : '/admin/jobs', icon: Zap },
+          { label: 'Now', path: '/dashboard', icon: Flame },
+          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'マイページ', path: user.role === 'admin' ? '/admin/stats' : '/profile', icon: UserCircle },
+        ]}
+      />
     </div>
   );
 

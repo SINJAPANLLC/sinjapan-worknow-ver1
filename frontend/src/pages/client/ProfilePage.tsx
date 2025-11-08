@@ -5,7 +5,7 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { authAPI, paymentsAPI } from '../../lib/api';
 import { slideUp, fadeIn } from '../../utils/animations';
-import { Home, PlusCircle, Briefcase, User, Mail, Calendar, Shield, CreditCard, TrendingUp } from 'lucide-react';
+import { Sparkles, Zap, Flame, Bell, UserCircle, Mail, Calendar, Shield, CreditCard, TrendingUp } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 
 export default function ProfilePage() {
@@ -135,10 +135,11 @@ export default function ProfilePage() {
 
       <BottomNav
         items={[
-          { label: 'ホーム', path: '/dashboard', icon: Home },
-          { label: '求人作成', path: '/jobs/new', icon: PlusCircle },
-          { label: '求人管理', path: '/jobs/manage', icon: Briefcase },
-          { label: 'プロフィール', path: '/profile', icon: User },
+          { label: 'さがす', path: '/jobs/manage', icon: Sparkles },
+          { label: 'はたらく', path: '/jobs/new', icon: Zap },
+          { label: 'Now', path: '/dashboard', icon: Flame },
+          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'マイページ', path: '/profile', icon: UserCircle },
         ]}
       />
     </div>
