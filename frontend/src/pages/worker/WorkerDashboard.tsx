@@ -277,7 +277,6 @@ export default function WorkerDashboard() {
             )}
             <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-white animate-pulse' : 'bg-white/50'}`} />
             <span className="relative z-10">{isOnline ? 'オンライン中' : 'オンラインにする'}</span>
-            {isOnline && <span className="text-xs opacity-75 absolute bottom-1 right-4 relative z-10">タップでオフラインに</span>}
           </button>
         </div>
       </div>
