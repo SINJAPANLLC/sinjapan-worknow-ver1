@@ -51,8 +51,9 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
     -   Persistent authentication tokens via localStorage.
     -   Role-based routing (`getDashboard()`) for different user types (worker, company, admin).
 -   **Database**: Replit PostgreSQL.
-    -   Seven core tables: `users`, `jobs`, `applications`, `assignments`, `payments`, `reviews`, `device_tokens`.
+    -   Ten core tables: `users`, `jobs`, `applications`, `assignments`, `payments`, `reviews`, `device_tokens`, `bank_accounts`, `withdrawal_requests`, `activity_logs`.
     -   Indexes implemented on all tables for performance.
+    -   Extended user profile fields: phone verification, DOB, gender, address, location (latitude/longitude), preferred prefecture, work style, affiliation, ID verification.
 
 ### Feature Specifications
 -   **Authentication**: Login, registration (worker/client flows), password reset, JWT token management.
@@ -61,6 +62,14 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
 -   **Application Management**: Create, update applications with status tracking.
 -   **Assignment Management**: Track work assignments from start to completion.
 -   **Payment Management**: Full Stripe Connect integration for worker payouts and payment history.
+-   **Bank Account Management**: CRUD operations for worker bank accounts (Japanese banking: bank code, branch code, ordinary/current account types).
+-   **Withdrawal System**: Worker withdrawal requests with status tracking (pending/processing/completed/rejected), balance calculations (available/pending).
+-   **Profile Management**: 
+    -   Extended user profiles with personal details (DOB, gender, address)
+    -   Phone verification flow (SMS codes in dev mode)
+    -   ID document upload
+    -   Location features: preferred prefecture selection (47 prefectures), geolocation capture
+-   **Activity Tracking**: Comprehensive activity logging system tracking all user actions with metadata, IP addresses, timestamps.
 -   **Review System**: 1-5 star ratings with comments for mutual evaluation.
 -   **Notifications**: Push notification readiness with device token management.
 
@@ -71,3 +80,81 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
 -   **Icons**: Lucide Icons, @heroicons/react
 -   **Push Notifications**: Firebase Cloud Messaging (integration ready)
 -   **Caching/Queuing**: Redis (planned for caching)
+-   **Geolocation**: Browser Geolocation API
+
+## Recent Changes (2025-11-08)
+
+### Implemented Features
+1. **Bank Account Management System**
+   - Japanese banking support (bank code, branch code, account types)
+   - CRUD operations with default account selection
+   - API endpoints: `/bank-accounts/`
+   
+2. **Withdrawal Request System**
+   - Create withdrawal requests linked to bank accounts
+   - Balance tracking (available/pending)
+   - Status management workflow (pending → processing → completed/rejected)
+   - Admin approval interface
+   - API endpoints: `/withdrawals/`, `/withdrawals/balance`
+
+3. **Enhanced User Profiles**
+   - Personal details: DOB, gender, address, work style, affiliation
+   - Phone verification flow (dev mode shows codes in response)
+   - ID document upload
+   - Location features:
+     - Preferred prefecture dropdown (47 Japanese prefectures)
+     - Geolocation capture (latitude/longitude)
+   - File upload endpoints: `/files/upload/avatar`, `/files/upload/id-document`
+
+4. **Activity Logging System**
+   - Comprehensive action tracking
+   - Metadata storage for debugging
+   - IP address and user-agent capture
+   - API endpoints: `/activities/`
+
+5. **Frontend Pages**
+   - **PaymentsPage** (`/payments`): Bank accounts, withdrawal requests, transaction history
+   - **ProfilePage** (updated): Location fields, phone verification
+   - **ActivityPage** (`/activity`): User activity history
+
+### Known Issues & Future Improvements
+
+⚠️ **CRITICAL SECURITY CONCERNS** (Identified by Architecture Review):
+
+1. **Bank Account Number Encryption**
+   - **Current**: Account numbers stored and transmitted in plaintext
+   - **Required**: Implement encryption/tokenization at rest and in transit
+   - **Action**: Add encryption service, mask account numbers in API responses
+
+2. **Withdrawal Race Conditions**
+   - **Current**: Balance checks not transactionally protected
+   - **Risk**: Concurrent requests can cause overdrafts
+   - **Required**: Row-level locking, idempotency keys, transaction isolation
+
+3. **Location Privacy**
+   - **Current**: Location data collected without explicit consent tracking
+   - **Required**: Add consent UI, obfuscation options, deletion capability
+   - **Action**: Implement privacy controls and audit trail
+
+4. **Activity Log Retention**
+   - **Current**: Unlimited log accumulation
+   - **Risk**: Performance degradation at scale
+   - **Required**: Retention policies, partitioning strategy, archival process
+
+5. **Phone Verification**
+   - **Current**: In-memory code storage with dev-mode API exposure
+   - **Required**: Production SMS integration (Twilio), Redis-based storage, rate limiting
+
+6. **File Upload Security**
+   - **Current**: No authentication on upload endpoints, local storage only
+   - **Required**: S3 integration, virus scanning, size limits
+
+### Recommended Next Steps
+1. Implement encryption layer for sensitive banking data
+2. Add database transaction management for withdrawal operations
+3. Create privacy consent flows for location data
+4. Set up production SMS service (Twil io)
+5. Migrate file storage to S3 with CDN
+6. Add comprehensive error handling and user feedback
+7. Implement automated testing suite
+8. Add monitoring and alerting for critical operations

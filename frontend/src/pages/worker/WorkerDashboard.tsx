@@ -13,7 +13,7 @@ import {
   MagnifyingGlassIcon,
   UserCircleIcon
 } from '@heroicons/react/24/outline';
-import { Home, Search, FileText, User } from 'lucide-react';
+import { Home, Search, FileText, User, MessageCircle, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BottomNav } from '../../components/layout/BottomNav';
 
@@ -248,10 +248,11 @@ export default function WorkerDashboard() {
       </div>
       
       <BottomNav items={[
-        { label: 'ホーム', path: '/dashboard', icon: Home },
-        { label: '求人検索', path: '/jobs', icon: Search },
-        { label: '応募履歴', path: '/applications', icon: FileText },
-        { label: 'プロフィール', path: '/profile', icon: User },
+        { label: 'さがす', path: '/jobs', icon: Search },
+        { label: 'はたらく', path: '/applications', icon: FileText },
+        { label: 'Now', path: '/dashboard', icon: Zap },
+        { label: 'メッセージ', path: '/notifications', icon: MessageCircle },
+        { label: 'マイページ', path: '/profile', icon: User },
       ]} />
     </div>
   );
