@@ -63,6 +63,13 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
 -   **Real-time Updates**: Delivery status auto-refreshes every 5 seconds, ensuring workers see latest assignment state.
 -   **Status-Based Actions**: Dynamic button labels ("商品受取に向かう", "商品を受け取った", "配達完了") guide workers through each delivery stage.
 
+### November 9, 2025 - Prefecture & Sort Selection Dropdowns
+-   **Prefecture Selection**: Implemented fully functional 47-prefecture dropdown menu with 2-column grid layout, Framer Motion animations, and instant filtering on selection.
+-   **Sort Selection**: Added interactive sort dropdown (現在地から近い順/時給が高い順/新着順) with smooth animations and real-time query updates.
+-   **UI Enhancements**: Chevron rotation on dropdown open/close, gradient highlighting for selected options, backdrop blur effects on menus.
+-   **Icon Update**: Changed BottomNav message icon from Bell (notifications) to MessageCircle for consistency with `/messages` route.
+-   **State Management**: Dropdown open/close states managed separately, menus close automatically on selection for better UX.
+
 ### November 8, 2025 - Urgent Jobs & Geocoding Implementation
 -   **Urgent Jobs System**: Added `is_urgent` and `urgent_deadline` flags to jobs table. Urgent jobs are now prioritized in all job listings (ORDER BY is_urgent DESC).
 -   **Automatic Geocoding**: Integrated OpenStreetMap Nominatim API for address-to-coordinates conversion. Jobs with `location` field are automatically geocoded on creation to populate `latitude` and `longitude` for map display.

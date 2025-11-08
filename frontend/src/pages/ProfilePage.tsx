@@ -14,7 +14,7 @@ import { Badge } from '../components/ui/Badge';
 import { useAuthStore } from '../stores/authStore';
 import { authAPI, filesAPI, phoneAPI } from '../lib/api';
 import { slideUp } from '../utils/animations';
-import { Sparkles, Zap, Flame, Bell, UserCircle } from 'lucide-react';
+import { Sparkles, Zap, Flame, MessageCircle, UserCircle } from 'lucide-react';
 import { BottomNav } from '../components/layout/BottomNav';
 
 export function ProfilePage() {
@@ -217,7 +217,7 @@ export function ProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00A5A8] to-[#009999] p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00A5A8] to-[#009999] pt-20 pb-28 px-4 md:px-8">
       <div className="max-w-2xl mx-auto space-y-6">
         <motion.div
           variants={slideUp}
@@ -621,7 +621,7 @@ export function ProfilePage() {
           { label: 'さがす', path: user.role === 'worker' ? '/jobs' : user.role === 'company' ? '/jobs/manage' : '/admin/users', icon: Sparkles },
           { label: 'はたらく', path: user.role === 'worker' ? '/applications' : user.role === 'company' ? '/jobs/new' : '/admin/jobs', icon: Zap },
           { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
           { label: 'マイページ', path: user.role === 'admin' ? '/admin/stats' : '/profile', icon: UserCircle },
         ]}
       />

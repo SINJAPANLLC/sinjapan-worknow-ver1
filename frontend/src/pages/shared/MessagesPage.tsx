@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { messagesAPI } from '../../lib/api';
 import type { Conversation, Message } from '../../lib/api';
 import { useAuthStore } from '../../stores/authStore';
-import { Send, ArrowLeft, User, MessageCircle, Sparkles, Zap, Flame, Bell, UserCircle } from 'lucide-react';
+import { Send, ArrowLeft, User, MessageCircle, Sparkles, Zap, Flame, UserCircle } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 import { formatDistanceToNow } from 'date-fns';
 import { ja } from 'date-fns/locale';
@@ -138,7 +138,7 @@ export default function MessagesPage() {
             { label: 'さがす', path: '/jobs', icon: Sparkles },
             { label: 'はたらく', path: '/applications', icon: Zap },
             { label: 'Now', path: '/dashboard', icon: Flame },
-            { label: 'メッセージ', path: '/messages', icon: Bell },
+            { label: 'メッセージ', path: '/messages', icon: MessageCircle },
             { label: 'マイページ', path: '/profile', icon: UserCircle },
           ]}
         />
@@ -147,8 +147,8 @@ export default function MessagesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16 pb-24">
-      <div className="bg-gradient-to-r from-[#00CED1] to-[#009999] text-white px-6 py-6 shadow-lg">
+    <div className="min-h-screen bg-gray-50 pb-24">
+      <div className="bg-gradient-to-r from-[#00CED1] to-[#009999] text-white px-6 py-6 shadow-lg pt-20">
         <h1 className="text-2xl font-bold">メッセージ</h1>
         <p className="text-sm text-white/80 mt-1">チャットで連絡を取りましょう</p>
       </div>
@@ -213,7 +213,7 @@ export default function MessagesPage() {
           { label: 'さがす', path: '/jobs', icon: Sparkles },
           { label: 'はたらく', path: '/applications', icon: Zap },
           { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/messages', icon: Bell },
+          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
           { label: 'マイページ', path: '/profile', icon: UserCircle },
         ]}
       />
