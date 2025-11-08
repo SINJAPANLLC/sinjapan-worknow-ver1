@@ -28,17 +28,12 @@ ENV/
 env/
 .pythonlibs/
 
-# Flutter
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-.pub-cache/
-.pub/
-frontend/build/
-frontend/.dart_tool/
-frontend/.flutter-plugins
-frontend/.flutter-plugins-dependencies
+# Node.js / React
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+*.local
 
 # IDEs
 .idea/
