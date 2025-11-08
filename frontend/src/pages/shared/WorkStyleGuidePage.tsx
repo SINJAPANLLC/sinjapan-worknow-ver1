@@ -11,9 +11,11 @@ import {
   Heart,
   Shield,
   TrendingUp,
-  Home,
-  Search,
-  User
+  Sparkles,
+  Zap,
+  Flame,
+  Bell,
+  UserCircle
 } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -204,10 +206,11 @@ export default function WorkStyleGuidePage() {
 
       <BottomNav
         items={[
-          { label: 'ホーム', path: '/dashboard', icon: Home },
-          { label: '求人検索', path: '/jobs', icon: Search },
-          { label: '応募履歴', path: '/applications', icon: FileText },
-          { label: 'プロフィール', path: '/profile', icon: User },
+          { label: 'さがす', path: '/jobs', icon: Sparkles },
+          { label: 'はたらく', path: '/applications', icon: Zap },
+          { label: 'Now', path: '/dashboard', icon: Flame },
+          { label: 'メッセージ', path: '/notifications', icon: Bell },
+          { label: 'マイページ', path: '/profile', icon: UserCircle },
         ]}
       />
     </div>
