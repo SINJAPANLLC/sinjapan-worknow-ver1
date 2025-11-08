@@ -1,4 +1,5 @@
 from typing import Dict, Optional
+from datetime import datetime
 
 from fastapi import HTTPException, status
 
@@ -81,3 +82,16 @@ class PaymentService(PostgresService):
         if not data:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Payment not found")
         return self._to_payment(data)
+
+    def create_internal_payment(self, assignment_id: str, amount: int) -> PaymentRead:
+        """Create an internal payment record without Stripe (for automatic payment on assignment completion)"""
+        record = {
+            "assignment_id": assignment_id,
+            "amount": amount,
+            "currency": "JPY",
+            "status": PaymentStatus.SUCCEEDED.value,
+            "stripe_payment_intent_id": None,
+            "stripe_transfer_id": None,
+        }
+        inserted = self.insert(record)
+        return self._to_payment(inserted)
