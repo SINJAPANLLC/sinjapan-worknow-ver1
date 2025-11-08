@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { 
   EnvelopeIcon, 
   CalendarIcon,
@@ -12,18 +14,31 @@ import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { useAuthStore } from '../stores/authStore';
-import { authAPI, filesAPI, phoneAPI } from '../lib/api';
+import { authAPI, filesAPI, phoneAPI, withdrawalsAPI, bankAccountsAPI } from '../lib/api';
 import { slideUp } from '../utils/animations';
-import { Sparkles, Zap, Flame, MessageCircle, UserCircle } from 'lucide-react';
+import { Sparkles, Zap, Flame, MessageCircle, UserCircle, Wallet, CreditCard } from 'lucide-react';
 import { BottomNav } from '../components/layout/BottomNav';
 
 export function ProfilePage() {
   const { user, setUser } = useAuthStore();
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
   const [codeSent, setCodeSent] = useState(false);
+
+  const { data: balance } = useQuery({
+    queryKey: ['withdrawal-balance'],
+    queryFn: () => withdrawalsAPI.getBalance(),
+    enabled: user?.role === 'worker',
+  });
+
+  const { data: accounts = [] } = useQuery({
+    queryKey: ['bank-accounts'],
+    queryFn: () => bankAccountsAPI.list(),
+    enabled: user?.role === 'worker',
+  });
   const [formData, setFormData] = useState<{
     full_name: string;
     phone: string;
@@ -281,15 +296,38 @@ export function ProfilePage() {
             <Card className="p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">決済情報</h2>
               <div className="space-y-4">
-                <div className="text-gray-600">
-                  <p className="text-sm">累計収益</p>
-                  <p className="text-3xl font-bold text-[#00CED1]">¥0</p>
+                <div className="bg-gradient-to-br from-[#00CED1]/10 to-[#009999]/10 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <Wallet className="w-5 h-5 text-[#009999]" />
+                      <p className="text-sm font-medium text-gray-700">出金可能残高</p>
+                    </div>
+                  </div>
+                  <p className="text-3xl font-bold bg-gradient-to-r from-[#00CED1] to-[#009999] bg-clip-text text-transparent">
+                    ¥{balance?.available_balance?.toLocaleString() || '0'}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    累計収益: ¥{balance?.total_earned?.toLocaleString() || '0'}
+                  </p>
                 </div>
-                <Button variant="primary" className="w-full">
-                  Stripe Connectアカウントを設定
+
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CreditCard className="w-5 h-5 text-gray-600" />
+                    <p className="text-sm font-medium text-gray-700">登録済み銀行口座</p>
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900">{accounts.length}件</p>
+                </div>
+
+                <Button 
+                  variant="primary" 
+                  className="w-full"
+                  onClick={() => navigate('/payments')}
+                >
+                  決済情報を管理
                 </Button>
-                <p className="text-xs text-gray-500">
-                  報酬を受け取るにはStripe Connectアカウントが必要です
+                <p className="text-xs text-gray-500 text-center">
+                  銀行口座の登録・出金申請は決済情報ページで行えます
                 </p>
               </div>
             </Card>
