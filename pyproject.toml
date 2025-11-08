@@ -16,6 +16,7 @@ dependencies = [
     "python-dotenv>=1.2.1",
     "python-jose>=3.5.0",
     "python-multipart>=0.0.20",
+    "qrcode[pil]>=8.2",
     "redis>=7.0.1",
     "stripe>=13.2.0",
     "supabase>=2.24.0",
