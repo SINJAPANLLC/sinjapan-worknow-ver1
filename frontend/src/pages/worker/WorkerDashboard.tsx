@@ -205,9 +205,9 @@ export default function WorkerDashboard() {
             </div>
             {jobsLoading ? (
               <p className="text-gray-600">読み込み中...</p>
-            ) : jobs && jobs.items.length > 0 ? (
+            ) : jobs && jobs.length > 0 ? (
               <div className="space-y-4">
-                {jobs.items.map((job) => (
+                {jobs.map((job: any) => (
                   <div
                     key={job.id}
                     className="p-4 border border-gray-200 rounded-lg hover:border-primary transition-colors"
@@ -225,7 +225,7 @@ export default function WorkerDashboard() {
                     </p>
                     <div className="flex items-center justify-between">
                       <div className="flex gap-2">
-                        {job.tags.slice(0, 3).map((tag, i) => (
+                        {job.tags?.slice(0, 3).map((tag: any, i: number) => (
                           <Badge key={i} variant="neutral" size="sm">
                             {tag}
                           </Badge>
