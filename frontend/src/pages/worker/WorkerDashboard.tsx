@@ -252,7 +252,7 @@ export default function WorkerDashboard() {
                 ))}
               </div>
             ) : (
-              <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-3 mb-3 border border-gray-200 text-center">
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-2 mb-2 border border-gray-200 text-center">
                 <p className="text-xs text-gray-600">
                   {isOnline ? '現在、近くに求人はありません' : 'オンラインにすると求人が表示されます'}
                 </p>
