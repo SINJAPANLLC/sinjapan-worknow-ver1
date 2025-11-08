@@ -24,8 +24,8 @@ export default function WorkerDashboard() {
     },
     onError: (error) => {
       console.error('Failed to update online status:', error);
-      // Revert UI state on error
-      setIsOnline(!isOnline);
+      // Revert UI state on error using functional setter to avoid stale closure
+      setIsOnline(prev => !prev);
     },
   });
 

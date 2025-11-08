@@ -55,7 +55,12 @@ class UserService(PostgresService):
         return self._to_user(data)
 
     def set_online_status(self, user_id: str, is_online: bool) -> UserRead:
-        """Set user online/offline status"""
+        """Set user online/offline status
+        
+        Always updates last_online_at to preserve audit trail.
+        This timestamp shows when the user was last online, 
+        regardless of their current status.
+        """
         with self._get_cursor() as cursor:
             cursor.execute(
                 """
@@ -64,7 +69,7 @@ class UserService(PostgresService):
                 WHERE id = %s
                 RETURNING *
                 """,
-                (is_online, datetime.utcnow() if is_online else None, user_id),
+                (is_online, datetime.utcnow(), user_id),
             )
             result = cursor.fetchone()
             if not result:
