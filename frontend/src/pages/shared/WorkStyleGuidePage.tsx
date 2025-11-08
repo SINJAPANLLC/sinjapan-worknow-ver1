@@ -61,13 +61,13 @@ const benefits = [
 export default function WorkStyleGuidePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-cyan-50 to-teal-50 pb-24">
-      <div className="bg-gradient-to-r from-[#00CED1] to-[#009999] text-white px-6 py-8 shadow-lg">
-        <Link to="/applications" className="inline-flex items-center gap-2 text-white/90 hover:text-white mb-4">
-          <ArrowLeft className="w-5 h-5" />
-          <span>戻る</span>
+      <div className="bg-gradient-to-r from-[#00CED1] to-[#009999] px-6 py-8 shadow-lg">
+        <Link to="/applications" className="inline-flex items-center gap-2 text-white hover:text-white/80 mb-4 transition-colors">
+          <ArrowLeft className="w-5 h-5 text-white" />
+          <span className="text-white font-medium">戻る</span>
         </Link>
-        <h1 className="text-3xl font-bold mb-2">働き方ガイド</h1>
-        <p className="text-white/90">Work Nowで働くための完全ガイド</p>
+        <h1 className="text-3xl font-bold mb-2 text-white">働き方ガイド</h1>
+        <p className="text-white/95">Work Nowで働くための完全ガイド</p>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
