@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Dict, Optional
 
 from fastapi import HTTPException, status
@@ -84,3 +85,46 @@ class AssignmentService(PostgresService):
         if not data:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Assignment not found")
         return self._to_assignment(data)
+
+    def get_active_delivery(self, worker_id: str) -> Optional[AssignmentRead]:
+        query = """
+            SELECT * FROM assignments
+            WHERE worker_id = %s
+            AND status IN ('pending_pickup', 'picking_up', 'in_delivery')
+            ORDER BY created_at DESC
+            LIMIT 1
+        """
+        conn = self.get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, (worker_id,))
+            columns = [desc[0] for desc in cursor.description]
+            row = cursor.fetchone()
+            if row:
+                data = dict(zip(columns, row))
+                return self._to_assignment(data)
+            return None
+        finally:
+            conn.close()
+
+    def advance_delivery_status(self, assignment_id: str) -> AssignmentRead:
+        assignment = self.get_assignment(assignment_id)
+        status_flow = {
+            AssignmentStatus.PENDING_PICKUP: AssignmentStatus.PICKING_UP,
+            AssignmentStatus.PICKING_UP: AssignmentStatus.IN_DELIVERY,
+            AssignmentStatus.IN_DELIVERY: AssignmentStatus.DELIVERED,
+        }
+        if assignment.status not in status_flow:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Cannot advance from status {assignment.status}"
+            )
+        next_status = status_flow[assignment.status]
+        update_data = {"status": next_status.value}
+        if next_status == AssignmentStatus.IN_DELIVERY:
+            update_data["picked_up_at"] = datetime.utcnow()
+        elif next_status == AssignmentStatus.DELIVERED:
+            update_data["delivered_at"] = datetime.utcnow()
+            update_data["completed_at"] = datetime.utcnow()
+        updated = self.update(assignment_id, update_data)
+        return self._to_assignment(updated)

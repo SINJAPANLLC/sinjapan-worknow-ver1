@@ -106,3 +106,25 @@ async def update_assignment(
         if job.company_id != current_user.id:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     return assignment_service.update_assignment(assignment_id, payload)
+
+
+@router.get("/active/delivery", response_model=Optional[AssignmentRead])
+async def get_active_delivery(
+    current_user: UserRead = Depends(get_current_user),
+    assignment_service: AssignmentService = Depends(get_assignment_service),
+) -> Optional[AssignmentRead]:
+    if current_user.role != UserRole.WORKER:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only workers can access this")
+    return assignment_service.get_active_delivery(current_user.id)
+
+
+@router.post("/{assignment_id}/advance-status", response_model=AssignmentRead)
+async def advance_delivery_status(
+    assignment_id: str,
+    current_user: UserRead = Depends(get_current_user),
+    assignment_service: AssignmentService = Depends(get_assignment_service),
+) -> AssignmentRead:
+    assignment = assignment_service.get_assignment(assignment_id)
+    if current_user.role == UserRole.WORKER and assignment.worker_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+    return assignment_service.advance_delivery_status(assignment_id)
