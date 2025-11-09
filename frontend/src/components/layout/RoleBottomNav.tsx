@@ -1,5 +1,5 @@
 import { BottomNav } from './BottomNav';
-import { Sparkles, Zap, Flame, Bell, UserCircle, Briefcase, Plus, Home, MessageCircle } from 'lucide-react';
+import { Sparkles, Zap, Flame, Bell, UserCircle, Briefcase, Plus, Home, MessageCircle, Users, BarChart3, Settings } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 
 export function RoleBottomNav() {
@@ -34,11 +34,11 @@ export function RoleBottomNav() {
   if (user.role === 'admin') {
     return (
       <BottomNav items={[
-        { label: 'さがす', path: '/admin/users', icon: Sparkles },
-        { label: 'はたらく', path: '/admin/jobs', icon: Zap },
-        { label: 'Now', path: '/dashboard', icon: Flame },
-        { label: 'メッセージ', path: '/notifications', icon: Bell },
-        { label: 'マイページ', path: '/admin/stats', icon: UserCircle },
+        { label: 'ユーザー', path: '/admin/users', icon: Users },
+        { label: '求人', path: '/admin/jobs', icon: Briefcase },
+        { label: 'ホーム', path: '/dashboard', icon: Home },
+        { label: '統計', path: '/admin/stats', icon: BarChart3 },
+        { label: '設定', path: '/profile', icon: Settings },
       ]} />
     );
   }
