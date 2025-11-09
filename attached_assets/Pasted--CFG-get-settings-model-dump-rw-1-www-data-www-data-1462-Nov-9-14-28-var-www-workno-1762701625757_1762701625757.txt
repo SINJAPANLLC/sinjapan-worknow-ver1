@@ -1,0 +1,51 @@
+
+
+CFG = get_settings().model_dump()
+-rw------- 1 www-data www-data 1462 Nov  9 14:28 /var/www/worknow/.env
+-rw-r--r-- 1 www-data www-data 2740 Nov  9 14:17 /var/www/worknow/.env.production.template
+backend/.env not found
+app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+app.include_router(jobs.router, prefix="/jobs", tags=["Jobs"])
+app.include_router(applications.router, prefix="/applications", tags=["Applications"])
+app.include_router(assignments.router, prefix="/assignments", tags=["Assignments"])
+app.include_router(payments.router, prefix="/payments", tags=["Payments"])
+app.include_router(reviews.router, prefix="/reviews", tags=["Reviews"])
+app.include_router(notifications.router, prefix="/notifications", tags=["Notifications"])
+app.include_router(admin.router, prefix="/admin", tags=["Admin"])
+app.include_router(client_settings.router, prefix="/client/settings", tags=["Client Settings"])
+app.include_router(files.router, prefix="/files", tags=["Files"])
+app.include_router(phone_verification.router, prefix="/phone", tags=["Phone Verification"])
+app.include_router(bank_accounts.router)
+app.include_router(withdrawals.router)
+app.include_router(activities.router)
+app.include_router(messages.router)
+app.include_router(favorites.router, prefix="/favorites", tags=["Favorites"])
+app.include_router(job_notifications.router, prefix="/job-notifications", tags=["Job Notifications"])
+app.include_router(qr.router)
+app.include_router(penalties.router)
+app.include_router(workers.router, prefix="/workers", tags=["Workers"])
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=int(CFG["PORT"]), reload=True)
+Note: Unnecessary use of -X or --request, POST is already inferred.
+* Host localhost:8008 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying [::1]:8008...
+* connect to ::1 port 8008 from ::1 port 58280 failed: Connection refused
+*   Trying 127.0.0.1:8008...
+* Connected to localhost (127.0.0.1) port 8008
+> POST /auth/login HTTP/1.1
+> Host: localhost:8008
+> User-Agent: curl/8.5.0
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 34
+> 
+} [34 bytes data]
+< HTTP/1.1 422 Unprocessable Entity
+< date: Sun, 09 Nov 2025 15:20:19 GMT
+(venv) root@srv1087935:/var/www/worknow# 
