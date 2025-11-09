@@ -44,18 +44,18 @@ export function SupportPage() {
             <div className="p-6">
               <h2 className="text-xl font-bold mb-4 break-keep">お問い合わせ</h2>
               <div className="space-y-4">
-                <a href="mailto:support@worknow-japan.com" className="flex items-center gap-3 p-4 bg-gradient-to-r from-[#00CED1] to-[#009999] text-white rounded-lg hover:opacity-90 transition-opacity">
-                  <Mail className="w-5 h-5" />
-                  <div>
-                    <p className="font-semibold break-keep">メールサポート</p>
-                    <p className="text-sm opacity-90">support@worknow-japan.com</p>
+                <a href="mailto:info@sinjapan.jp" className="flex items-center gap-3 p-4 bg-gradient-to-r from-[#00CED1] to-[#009999] text-white rounded-lg hover:opacity-90 transition-opacity">
+                  <Mail className="w-5 h-5 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="font-semibold">メールサポート</p>
+                    <p className="text-sm opacity-90">info@sinjapan.jp</p>
                   </div>
                 </a>
-                <a href="tel:0120-xxx-xxxx" className="flex items-center gap-3 p-4 bg-gradient-to-r from-[#00CED1] to-[#009999] text-white rounded-lg hover:opacity-90 transition-opacity">
-                  <Phone className="w-5 h-5" />
-                  <div>
-                    <p className="font-semibold break-keep">電話サポート</p>
-                    <p className="text-sm opacity-90">0120-XXX-XXXX (平日10:00-18:00)</p>
+                <a href="tel:050-5526-9906" className="flex items-center gap-3 p-4 bg-gradient-to-r from-[#00CED1] to-[#009999] text-white rounded-lg hover:opacity-90 transition-opacity">
+                  <Phone className="w-5 h-5 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="font-semibold">電話サポート</p>
+                    <p className="text-sm opacity-90">050-5526-9906 (9:00-21:00)</p>
                   </div>
                 </a>
               </div>
@@ -73,9 +73,9 @@ export function SupportPage() {
                   <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
                     <button
                       onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                      className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors"
+                      className="w-full flex items-center justify-between gap-3 p-4 text-left hover:bg-gray-50 transition-colors"
                     >
-                      <span className="font-semibold break-keep">{faq.question}</span>
+                      <span className="font-semibold min-w-0 flex-1">{faq.question}</span>
                       {openIndex === index ? (
                         <ChevronUp className="w-5 h-5 flex-shrink-0 text-gray-500" />
                       ) : (
@@ -83,7 +83,7 @@ export function SupportPage() {
                       )}
                     </button>
                     {openIndex === index && (
-                      <div className="px-4 pb-4 text-gray-700 break-keep">
+                      <div className="px-4 pb-4 text-gray-700">
                         {faq.answer}
                       </div>
                     )}

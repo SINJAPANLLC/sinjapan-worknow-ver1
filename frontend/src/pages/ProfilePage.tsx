@@ -303,19 +303,19 @@ export function ProfilePage() {
           >
             <Card className="p-6">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#00CED1]/20 to-[#009999]/20 flex items-center justify-center">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#00CED1]/20 to-[#009999]/20 flex items-center justify-center flex-shrink-0">
                     <Wallet className="w-6 h-6 text-[#00CED1]" />
                   </div>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <h3 className="font-bold text-gray-900">決済情報</h3>
-                    <p className="text-sm text-gray-600">残高・出金・銀行口座の管理</p>
+                    <p className="text-sm text-gray-600">残高・出金管理</p>
                   </div>
                 </div>
                 <Button
                   variant="outline"
                   onClick={() => navigate('/payments')}
-                  className="border-[#00CED1] text-[#00CED1] hover:bg-[#00CED1]/10"
+                  className="border-[#00CED1] text-[#00CED1] hover:bg-[#00CED1]/10 flex-shrink-0"
                 >
                   管理
                 </Button>
@@ -774,19 +774,19 @@ export function ProfilePage() {
             >
               <Card className="p-6">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center flex-shrink-0">
                       <ShieldAlert className="w-6 h-6 text-amber-600" />
                     </div>
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <h3 className="font-bold text-gray-900">ペナルティ履歴</h3>
-                      <p className="text-sm text-gray-600">違反・ペナルティの確認</p>
+                      <p className="text-sm text-gray-600">違反履歴の確認</p>
                     </div>
                   </div>
                   <Button
                     variant="outline"
                     onClick={() => navigate('/penalties')}
-                    className="border-amber-600 text-amber-600 hover:bg-amber-50"
+                    className="border-amber-600 text-amber-600 hover:bg-amber-50 flex-shrink-0"
                   >
                     確認
                   </Button>
@@ -802,19 +802,19 @@ export function ProfilePage() {
             >
               <Card className="p-6">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400/20 to-amber-400/20 flex items-center justify-center">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400/20 to-amber-400/20 flex items-center justify-center flex-shrink-0">
                       <Star className="w-6 h-6 text-yellow-600" />
                     </div>
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <h3 className="font-bold text-gray-900">レビュー</h3>
-                      <p className="text-sm text-gray-600">評価の確認・投稿</p>
+                      <p className="text-sm text-gray-600">評価の確認</p>
                     </div>
                   </div>
                   <Button
                     variant="outline"
                     onClick={() => navigate('/reviews')}
-                    className="border-yellow-600 text-yellow-600 hover:bg-yellow-50"
+                    className="border-yellow-600 text-yellow-600 hover:bg-yellow-50 flex-shrink-0"
                   >
                     確認
                   </Button>
@@ -941,19 +941,19 @@ export function ProfilePage() {
           >
             <Card className="p-6">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#00CED1]/20 to-[#009999]/20 flex items-center justify-center">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#00CED1]/20 to-[#009999]/20 flex items-center justify-center flex-shrink-0">
                     <HelpCircle className="w-6 h-6 text-[#00CED1]" />
                   </div>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <h3 className="font-bold text-gray-900">サポート</h3>
-                    <p className="text-sm text-gray-600">よくある質問・お問い合わせ</p>
+                    <p className="text-sm text-gray-600">FAQ・お問合せ</p>
                   </div>
                 </div>
                 <Button
                   variant="outline"
                   onClick={() => navigate('/support')}
-                  className="border-[#00CED1] text-[#00CED1] hover:bg-[#00CED1]/10"
+                  className="border-[#00CED1] text-[#00CED1] hover:bg-[#00CED1]/10 flex-shrink-0"
                 >
                   開く
                 </Button>

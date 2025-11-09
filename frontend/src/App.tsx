@@ -15,6 +15,7 @@ import WorkerApplicationsPage from './pages/worker/ApplicationsPage';
 import QRScanPage from './pages/worker/QRScanPage';
 import WorkStyleGuidePage from './pages/shared/WorkStyleGuidePage';
 import ReviewPage from './pages/shared/ReviewPage';
+import { ReviewsListPage } from './pages/ReviewsListPage';
 import ClientJobCreatePage from './pages/client/JobCreatePage';
 import ClientJobsManagePage from './pages/client/JobsManagePage';
 import QRCodeDisplayPage from './pages/client/QRCodeDisplayPage';
@@ -121,7 +122,7 @@ function AppContent() {
           path="/reviews"
           element={
             <ProtectedRoute>
-              <ReviewPage />
+              <ReviewsListPage />
             </ProtectedRoute>
           }
         />
