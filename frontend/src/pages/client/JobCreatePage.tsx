@@ -203,7 +203,7 @@ export default function JobCreatePage() {
   const tagsArray = formData.tags ? formData.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00A5A8] to-[#009999] pb-24 pt-20">
+    <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00A5A8] to-[#009999] pb-24 pt-28">
       <div className="container mx-auto px-4 max-w-5xl">
         {/* Header */}
         <motion.div

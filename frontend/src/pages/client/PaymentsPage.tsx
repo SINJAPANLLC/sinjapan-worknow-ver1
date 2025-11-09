@@ -62,7 +62,7 @@ export default function ClientPaymentsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00B4B4] to-[#009999] pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00B4B4] to-[#009999] pb-24 pt-28">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
         <motion.div
