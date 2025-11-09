@@ -82,6 +82,13 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
 -   **Icon Update**: Changed BottomNav message icon from Bell (notifications) to MessageCircle for consistency with `/messages` route.
 -   **State Management**: Dropdown open/close states managed separately, menus close automatically on selection for better UX.
 
+### November 9, 2025 - Routing Fixes & Payment Validation
+-   **Routing Improvements**: Added missing routes for `/penalties`, `/support`, and `/reviews` in App.tsx. All three pages now accessible via ProtectedRoute with proper imports for PenaltiesPage and SupportPage.
+-   **Withdrawal Validation Fix**: Updated PaymentsPage withdrawal request form to enforce 100円 minimum (matching backend validation). Changed input min attribute from "1" to "100" and updated validation message.
+-   **File Upload Verification**: Confirmed avatar and ID document upload functionality is correctly implemented. Backend endpoints (`/files/upload/avatar`, `/files/upload/id-document`) return updated user object, and frontend properly updates auth state via setUser.
+-   **Balance Display Verification**: Confirmed ProfilePage correctly displays withdrawal balance using TanStack Query with auto-refresh. Balance calculation verified in WithdrawalService (SUM of succeeded payments minus completed/processing withdrawals).
+-   **System Health**: All workflows running without errors. Backend serving static files from `/uploads` directory. Frontend properly configured on port 5000 with CORS enabled.
+
 ### November 8, 2025 - Urgent Jobs & Geocoding Implementation
 -   **Urgent Jobs System**: Added `is_urgent` and `urgent_deadline` flags to jobs table. Urgent jobs are now prioritized in all job listings (ORDER BY is_urgent DESC).
 -   **Automatic Geocoding**: Integrated OpenStreetMap Nominatim API for address-to-coordinates conversion. Jobs with `location` field are automatically geocoded on creation to populate `latitude` and `longitude` for map display.
