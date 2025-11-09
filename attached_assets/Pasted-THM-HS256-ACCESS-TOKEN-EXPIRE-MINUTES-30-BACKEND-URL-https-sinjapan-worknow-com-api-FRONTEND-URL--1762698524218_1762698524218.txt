@@ -1,0 +1,53 @@
+THM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+BACKEND_URL=https://sinjapan-worknow.com/api
+FRONTEND_URL=https://sinjapan-worknow.com
+DOMAIN=sinjapan-worknow.com
+ALLOWED_ORIGINS=https://sinjapan-worknow.com,https://www.sinjapan-worknow.com
+
+curl -I https://sinjapan-worknow.com)'-pagerET|g" .env
+✅ .envファイルを更新しました
+● worknow-backend.service - Work Now Backend (FastAPI)
+     Loaded: loaded (/etc/systemd/system/worknow-backend.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2025-11-09 14:28:34 UTC; 5s ago
+   Main PID: 158160 (gunicorn)
+      Tasks: 5 (limit: 9483)
+     Memory: 278.9M (peak: 279.3M)
+        CPU: 4.023s
+     CGroup: /system.slice/worknow-backend.service
+             ├─158160 /var/www/worknow/venv/bin/python3 /var/www/worknow/venv/b…
+             ├─158176 /var/www/worknow/venv/bin/python3 /var/www/worknow/venv/b…
+             ├─158177 /var/www/worknow/venv/bin/python3 /var/www/worknow/venv/b…
+             ├─158178 /var/www/worknow/venv/bin/python3 /var/www/worknow/venv/b…
+             └─158179 /var/www/worknow/venv/bin/python3 /var/www/worknow/venv/b…
+
+Nov 09 14:28:36 srv1087935 gunicorn[158176]: [2025-11-09 14:28:36 +0000] [15…te.
+Nov 09 14:28:36 srv1087935 gunicorn[158177]: [2025-11-09 14:28:36 +0000] [15…77]
+Nov 09 14:28:36 srv1087935 gunicorn[158177]: [2025-11-09 14:28:36 +0000] [15…up.
+Nov 09 14:28:36 srv1087935 gunicorn[158177]: [2025-11-09 14:28:36 +0000] [15…te.
+Nov 09 14:28:36 srv1087935 gunicorn[158178]: [2025-11-09 14:28:36 +0000] [15…78]
+Nov 09 14:28:36 srv1087935 gunicorn[158178]: [2025-11-09 14:28:36 +0000] [15…up.
+Nov 09 14:28:36 srv1087935 gunicorn[158178]: [2025-11-09 14:28:36 +0000] [15…te.
+Nov 09 14:28:36 srv1087935 gunicorn[158179]: [2025-11-09 14:28:36 +0000] [15…79]
+Nov 09 14:28:36 srv1087935 gunicorn[158179]: [2025-11-09 14:28:36 +0000] [15…up.
+Nov 09 14:28:36 srv1087935 gunicorn[158179]: [2025-11-09 14:28:36 +0000] [15…te.
+Hint: Some lines were ellipsized, use -l to show in full.
+● worknow-frontend.service - Work Now Frontend (React + Vite)
+     Loaded: loaded (/etc/systemd/system/worknow-frontend.service; enabled; preset: enabled)
+     Active: activating (auto-restart) (Result: exit-code) since Sun 2025-11-09 14:28:34 UTC; 4s ago
+    Process: 158163 ExecStart=/usr/bin/node /var/www/worknow/frontend/dist-server/server.js (code=exited, status=1/FAILURE)
+   Main PID: 158163 (code=exited, status=1/FAILURE)
+        CPU: 35ms
+tcp        0      0 0.0.0.0:8008            0.0.0.0:*               LISTEN      158160/python3      
+HTTP/2 502 
+server: nginx/1.24.0 (Ubuntu)
+date: Sun, 09 Nov 2025 14:28:39 GMT
+content-type: text/html
+content-length: 166
+strict-transport-security: max-age=31536000; includeSubDomains
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+
+(venv) root@srv1087935:/var/www/worknow# 
