@@ -18,9 +18,19 @@ import { slideUp } from '../utils/animations';
 import { Sparkles, Zap, Flame, MessageCircle, UserCircle, Wallet, HelpCircle, ShieldAlert, Star } from 'lucide-react';
 import { BottomNav } from '../components/layout/BottomNav';
 
+const getFullImageUrl = (url: string | undefined): string | undefined => {
+  if (!url) return undefined;
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8008';
+  return `${API_BASE}${url}`;
+};
+
 export function ProfilePage() {
   const { user, setUser } = useAuthStore();
   const navigate = useNavigate();
+  const avatarUrl = getFullImageUrl(user?.avatar_url);
   const [isEditing, setIsEditing] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
@@ -260,9 +270,9 @@ export function ProfilePage() {
             <div className="flex flex-col items-center space-y-4">
               <div className="relative">
                 <div className="w-24 h-24 rounded-full bg-gradient-to-r from-[#00CED1] to-[#009999] flex items-center justify-center text-white text-3xl font-bold overflow-hidden">
-                  {user.avatar_url ? (
+                  {avatarUrl ? (
                     <img 
-                      src={user.avatar_url} 
+                      src={avatarUrl} 
                       alt={user.full_name} 
                       className="w-full h-full object-cover"
                     />
