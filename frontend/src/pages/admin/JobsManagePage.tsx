@@ -18,8 +18,7 @@ import {
   AlertCircle,
   Briefcase
 } from 'lucide-react';
-import { Sparkles, Zap, Flame, MessageCircle, UserCircle } from 'lucide-react';
-import { BottomNav } from '../../components/layout/BottomNav';
+import { RoleBottomNav } from '../../components/layout/RoleBottomNav';
 
 export default function AdminJobsManagePage() {
   const navigate = useNavigate();
@@ -232,15 +231,7 @@ export default function AdminJobsManagePage() {
         </div>
       </div>
 
-      <BottomNav
-        items={[
-          { label: 'ユーザー', path: '/admin/users', icon: Sparkles },
-          { label: '求人', path: '/admin/jobs', icon: Zap },
-          { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
-          { label: 'マイページ', path: '/profile', icon: UserCircle },
-        ]}
-      />
+      <RoleBottomNav />
     </div>
   );
 }
