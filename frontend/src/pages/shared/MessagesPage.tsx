@@ -4,8 +4,8 @@ import { motion } from 'framer-motion';
 import { messagesAPI } from '../../lib/api';
 import type { Conversation, Message } from '../../lib/api';
 import { useAuthStore } from '../../stores/authStore';
-import { Send, ArrowLeft, User, MessageCircle, Sparkles, Zap, Flame, UserCircle } from 'lucide-react';
-import { BottomNav } from '../../components/layout/BottomNav';
+import { Send, ArrowLeft, User, MessageCircle } from 'lucide-react';
+import { RoleBottomNav } from '../../components/layout/RoleBottomNav';
 import { formatDistanceToNow } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
@@ -133,15 +133,7 @@ export default function MessagesPage() {
           </div>
         </div>
 
-        <BottomNav
-          items={[
-            { label: 'さがす', path: '/jobs', icon: Sparkles },
-            { label: 'はたらく', path: '/applications', icon: Zap },
-            { label: 'Now', path: '/dashboard', icon: Flame },
-            { label: 'メッセージ', path: '/messages', icon: MessageCircle },
-            { label: 'マイページ', path: '/profile', icon: UserCircle },
-          ]}
-        />
+        <RoleBottomNav />
       </div>
     );
   }
@@ -208,15 +200,7 @@ export default function MessagesPage() {
         )}
       </div>
 
-      <BottomNav
-        items={[
-          { label: 'さがす', path: '/jobs', icon: Sparkles },
-          { label: 'はたらく', path: '/applications', icon: Zap },
-          { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
-          { label: 'マイページ', path: '/profile', icon: UserCircle },
-        ]}
-      />
+      <RoleBottomNav />
     </div>
   );
 }

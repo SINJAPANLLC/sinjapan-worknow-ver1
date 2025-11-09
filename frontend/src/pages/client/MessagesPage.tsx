@@ -14,104 +14,67 @@ import {
   Clock,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { RoleBottomNav } from '../../components/layout/RoleBottomNav';
+import { messagesAPI } from '../../lib/api';
+import type { Conversation, Message } from '../../lib/api';
+import { useAuthStore } from '../../stores/authStore';
+import { formatDistanceToNow } from 'date-fns';
+import { ja } from 'date-fns/locale';
 
-interface Message {
-  id: number;
-  conversation_id: number;
-  sender_id: string;
-  receiver_id: string;
-  content: string;
-  is_read: boolean;
-  created_at: string;
-  sender_name?: string;
-  sender_avatar?: string;
-}
-
-interface Conversation {
-  id: number;
-  participant_1_id: string;
-  participant_2_id: string;
-  other_user_name?: string;
-  other_user_id?: string;
-  last_message?: string;
-  last_message_at: string;
-  unread_count?: number;
-}
-
-export default function MessagesPage() {
+export default function ClientMessagesPage() {
   const navigate = useNavigate();
+  const { user } = useAuthStore();
   const queryClient = useQueryClient();
-  const [selectedConversationId, setSelectedConversationId] = useState<number | null>(null);
-  const [messageInput, setMessageInput] = useState('');
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+  const [messageText, setMessageText] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
   const { data: conversations = [], isLoading: conversationsLoading } = useQuery({
     queryKey: ['conversations'],
-    queryFn: async () => {
-      const response = await fetch('/api/messages/conversations', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-      if (!response.ok) throw new Error('Failed to fetch conversations');
-      return response.json();
-    },
-    refetchInterval: 5000,
+    queryFn: messagesAPI.getConversations,
   });
 
-  const { data: messages = [] } = useQuery({
-    queryKey: ['messages', selectedConversationId],
-    queryFn: async () => {
-      if (!selectedConversationId) return [];
-      const response = await fetch(`/api/messages/conversations/${selectedConversationId}/messages`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-      if (!response.ok) throw new Error('Failed to fetch messages');
-      return response.json();
-    },
-    enabled: !!selectedConversationId,
-    refetchInterval: 3000,
+  const { data: messages = [], isLoading: messagesLoading } = useQuery({
+    queryKey: ['messages', selectedConversation?.id],
+    queryFn: () => messagesAPI.getConversationMessages(selectedConversation!.id),
+    enabled: !!selectedConversation,
   });
 
-  const sendMutation = useMutation({
-    mutationFn: async (data: { receiver_id: string; content: string }) => {
-      const response = await fetch('/api/messages/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) throw new Error('Failed to send message');
-      return response.json();
-    },
+  const sendMessageMutation = useMutation({
+    mutationFn: (data: { receiver_id: string; content: string }) =>
+      messagesAPI.sendMessage(data),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['messages', selectedConversation?.id] });
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
-      queryClient.invalidateQueries({ queryKey: ['messages', selectedConversationId] });
-      setMessageInput('');
+      setMessageText('');
     },
   });
 
   const handleSendMessage = () => {
-    if (!messageInput.trim() || !selectedConversationId) return;
-    
-    const selectedConversation = conversations.find((c: Conversation) => c.id === selectedConversationId);
-    if (!selectedConversation) return;
+    if (!messageText.trim() || !selectedConversation) return;
 
-    sendMutation.mutate({
-      receiver_id: selectedConversation.other_user_id!,
-      content: messageInput,
+    const receiverId = selectedConversation.other_user_id || 
+                       (selectedConversation.participant_1_id === user?.id 
+                         ? selectedConversation.participant_2_id 
+                         : selectedConversation.participant_1_id);
+
+    sendMessageMutation.mutate({
+      receiver_id: receiverId,
+      content: messageText.trim(),
     });
   };
 
-  const filteredConversations = conversations.filter((conv: Conversation) =>
-    conv.other_user_name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const formatTime = (dateString: string) => {
+    try {
+      return formatDistanceToNow(new Date(dateString), { addSuffix: true, locale: ja });
+    } catch {
+      return '';
+    }
+  };
 
-  const selectedConversation = conversations.find((c: Conversation) => c.id === selectedConversationId);
+  const filteredConversations = conversations.filter((conv: Conversation) =>
+    (conv.other_user_name || '').toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00B4B4] to-[#009999] pb-24 pt-28">
@@ -162,9 +125,9 @@ export default function MessagesPage() {
                   filteredConversations.map((conversation: Conversation) => (
                     <button
                       key={conversation.id}
-                      onClick={() => setSelectedConversationId(conversation.id)}
+                      onClick={() => setSelectedConversation(conversation)}
                       className={`w-full p-4 text-left border-b border-gray-100 hover:bg-gray-50 transition-colors ${
-                        selectedConversationId === conversation.id ? 'bg-primary/5' : ''
+                        selectedConversation?.id === conversation.id ? 'bg-primary/5' : ''
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -186,7 +149,7 @@ export default function MessagesPage() {
                             {conversation.last_message || 'メッセージがありません'}
                           </p>
                           <p className="text-xs text-gray-400 mt-1">
-                            {new Date(conversation.last_message_at).toLocaleString('ja-JP')}
+                            {formatTime(conversation.last_message_at)}
                           </p>
                         </div>
                       </div>
@@ -255,15 +218,15 @@ export default function MessagesPage() {
                     <div className="flex gap-2">
                       <input
                         type="text"
-                        value={messageInput}
-                        onChange={(e) => setMessageInput(e.target.value)}
+                        value={messageText}
+                        onChange={(e) => setMessageText(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                         placeholder="メッセージを入力..."
                         className="flex-1 px-4 py-2 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
                       />
                       <Button
                         onClick={handleSendMessage}
-                        disabled={!messageInput.trim() || sendMutation.isPending}
+                        disabled={!messageText.trim() || sendMessageMutation.isPending}
                         className="px-6"
                       >
                         <Send className="w-4 h-4" />
@@ -283,6 +246,8 @@ export default function MessagesPage() {
           </motion.div>
         </div>
       </div>
+
+      <RoleBottomNav />
     </div>
   );
 }

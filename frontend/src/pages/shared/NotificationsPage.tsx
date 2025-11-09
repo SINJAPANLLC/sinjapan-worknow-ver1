@@ -5,8 +5,8 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { notificationsAPI } from '../../lib/api';
 import { slideUp, fadeIn } from '../../utils/animations';
-import { MessageCircle, Check, Trash2, CheckCheck, AlertCircle, Info, Briefcase, DollarSign, Sparkles, Zap, Flame, UserCircle } from 'lucide-react';
-import { BottomNav } from '../../components/layout/BottomNav';
+import { MessageCircle, Check, Trash2, CheckCheck, AlertCircle, Info, Briefcase, DollarSign, Bell } from 'lucide-react';
+import { RoleBottomNav } from '../../components/layout/RoleBottomNav';
 import { useAuthStore } from '../../stores/authStore';
 
 export default function NotificationsPage() {
@@ -155,15 +155,7 @@ export default function NotificationsPage() {
         )}
       </div>
 
-      <BottomNav
-        items={[
-          { label: 'さがす', path: user.role === 'worker' ? '/jobs' : user.role === 'company' ? '/jobs/manage' : '/admin/users', icon: Sparkles },
-          { label: 'はたらく', path: user.role === 'worker' ? '/applications' : user.role === 'company' ? '/jobs/new' : '/admin/jobs', icon: Zap },
-          { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
-          { label: 'マイページ', path: user.role === 'admin' ? '/admin/stats' : '/profile', icon: UserCircle },
-        ]}
-      />
+      <RoleBottomNav />
     </div>
   );
 }
