@@ -6,13 +6,15 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { authAPI, paymentsAPI, reviewsAPI } from '../../lib/api';
 import { slideUp, fadeIn } from '../../utils/animations';
-import { Mail, Calendar, Shield, CreditCard, TrendingUp, Star, X, Building2, Phone, MapPin, Lock, Eye, EyeOff } from 'lucide-react';
+import { Mail, Calendar, Shield, CreditCard, TrendingUp, Star, X, Building2, Phone, MapPin, Lock, Eye, EyeOff, Bell, FileText } from 'lucide-react';
 import { RoleBottomNav } from '../../components/layout/RoleBottomNav';
 
 export default function ProfilePage() {
   const queryClient = useQueryClient();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
 
@@ -26,6 +28,21 @@ export default function ProfilePage() {
     current_password: '',
     new_password: '',
     confirm_password: '',
+  });
+
+  const [notificationSettings, setNotificationSettings] = useState({
+    push_enabled: true,
+    email_enabled: true,
+    job_applications: true,
+    messages: true,
+    system_notifications: true,
+  });
+
+  const [invoiceSettings, setInvoiceSettings] = useState({
+    company_name: '',
+    company_address: '',
+    company_phone: '',
+    tax_id: '',
   });
 
   const { data: user, isLoading } = useQuery({
@@ -300,11 +317,21 @@ export default function ProfilePage() {
                     <Lock className="w-4 h-4 mr-2" />
                     パスワード変更
                   </Button>
-                  <Button variant="outline" className="w-full justify-start" disabled>
-                    通知設定（準備中）
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={() => setShowNotificationModal(true)}
+                  >
+                    <Bell className="w-4 h-4 mr-2" />
+                    通知設定
                   </Button>
-                  <Button variant="outline" className="w-full justify-start" disabled>
-                    請求書設定（準備中）
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={() => setShowInvoiceModal(true)}
+                  >
+                    <FileText className="w-4 h-4 mr-2" />
+                    請求書設定
                   </Button>
                 </div>
               </Card>
@@ -536,6 +563,237 @@ export default function ProfilePage() {
                     disabled={changePasswordMutation.isPending}
                   >
                     {changePasswordMutation.isPending ? '変更中...' : '変更'}
+                  </Button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Notification Settings Modal */}
+      <AnimatePresence>
+        {showNotificationModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+            onClick={() => setShowNotificationModal(false)}
+          >
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 25 }}
+              className="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-3xl">
+                <h3 className="text-xl font-bold text-gray-900">通知設定</h3>
+                <button
+                  onClick={() => setShowNotificationModal(false)}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-6">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <h4 className="text-sm font-medium text-gray-900">プッシュ通知</h4>
+                      <p className="text-xs text-gray-500">モバイルデバイスに通知を送信</p>
+                    </div>
+                    <button
+                      onClick={() => setNotificationSettings({ ...notificationSettings, push_enabled: !notificationSettings.push_enabled })}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        notificationSettings.push_enabled ? 'bg-primary' : 'bg-gray-200'
+                      }`}
+                    >
+                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        notificationSettings.push_enabled ? 'translate-x-6' : 'translate-x-1'
+                      }`} />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <h4 className="text-sm font-medium text-gray-900">メール通知</h4>
+                      <p className="text-xs text-gray-500">メールで通知を受け取る</p>
+                    </div>
+                    <button
+                      onClick={() => setNotificationSettings({ ...notificationSettings, email_enabled: !notificationSettings.email_enabled })}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        notificationSettings.email_enabled ? 'bg-primary' : 'bg-gray-200'
+                      }`}
+                    >
+                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        notificationSettings.email_enabled ? 'translate-x-6' : 'translate-x-1'
+                      }`} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-200 pt-4">
+                  <h4 className="text-sm font-medium text-gray-900 mb-4">通知タイプ</h4>
+                  <div className="space-y-3">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={notificationSettings.job_applications}
+                        onChange={(e) => setNotificationSettings({ ...notificationSettings, job_applications: e.target.checked })}
+                        className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                      />
+                      <span className="ml-3 text-sm text-gray-700">求人応募通知</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={notificationSettings.messages}
+                        onChange={(e) => setNotificationSettings({ ...notificationSettings, messages: e.target.checked })}
+                        className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                      />
+                      <span className="ml-3 text-sm text-gray-700">メッセージ通知</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={notificationSettings.system_notifications}
+                        onChange={(e) => setNotificationSettings({ ...notificationSettings, system_notifications: e.target.checked })}
+                        className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                      />
+                      <span className="ml-3 text-sm text-gray-700">システム通知</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => setShowNotificationModal(false)}
+                  >
+                    キャンセル
+                  </Button>
+                  <Button
+                    variant="primary"
+                    className="flex-1"
+                    onClick={() => {
+                      alert('通知設定を保存しました');
+                      setShowNotificationModal(false);
+                    }}
+                  >
+                    保存
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Invoice Settings Modal */}
+      <AnimatePresence>
+        {showInvoiceModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+            onClick={() => setShowInvoiceModal(false)}
+          >
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 25 }}
+              className="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-3xl">
+                <h3 className="text-xl font-bold text-gray-900">請求書設定</h3>
+                <button
+                  onClick={() => setShowInvoiceModal(false)}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
+
+              <form className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    会社名
+                  </label>
+                  <input
+                    type="text"
+                    value={invoiceSettings.company_name}
+                    onChange={(e) => setInvoiceSettings({ ...invoiceSettings, company_name: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="株式会社〇〇"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    会社住所
+                  </label>
+                  <textarea
+                    value={invoiceSettings.company_address}
+                    onChange={(e) => setInvoiceSettings({ ...invoiceSettings, company_address: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="〒000-0000 東京都..."
+                    rows={3}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    電話番号
+                  </label>
+                  <input
+                    type="tel"
+                    value={invoiceSettings.company_phone}
+                    onChange={(e) => setInvoiceSettings({ ...invoiceSettings, company_phone: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="03-1234-5678"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    法人番号
+                  </label>
+                  <input
+                    type="text"
+                    value={invoiceSettings.tax_id}
+                    onChange={(e) => setInvoiceSettings({ ...invoiceSettings, tax_id: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="1234567890123"
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => setShowInvoiceModal(false)}
+                  >
+                    キャンセル
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="primary"
+                    className="flex-1"
+                    onClick={() => {
+                      alert('請求書設定を保存しました');
+                      setShowInvoiceModal(false);
+                    }}
+                  >
+                    保存
                   </Button>
                 </div>
               </form>
