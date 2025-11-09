@@ -157,6 +157,7 @@ export default function JobCreatePage() {
         prefecture: formData.prefecture || undefined,
         employment_type: formData.employment_type || undefined,
         hourly_rate: formData.hourly_rate ? parseInt(formData.hourly_rate) : undefined,
+        transportation_allowance: formData.transportation_allowance ? parseInt(formData.transportation_allowance) : undefined,
         currency: 'JPY',
         tags: formData.tags ? formData.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
         starts_at: formData.starts_at || undefined,
@@ -504,23 +505,24 @@ export default function JobCreatePage() {
                   </div>
                 </div>
 
-                {/* Employment Type & Hourly Rate */}
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      雇用形態
-                    </label>
-                    <select
-                      name="employment_type"
-                      value={formData.employment_type}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#00CED1] focus:ring-2 focus:ring-[#00CED1]/20 transition-colors"
-                    >
-                      <option value="part-time">アルバイト</option>
-                      <option value="contract">業務委託</option>
-                    </select>
-                  </div>
+                {/* Employment Type */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
+                    雇用形態
+                  </label>
+                  <select
+                    name="employment_type"
+                    value={formData.employment_type}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#00CED1] focus:ring-2 focus:ring-[#00CED1]/20 transition-colors"
+                  >
+                    <option value="part-time">アルバイト</option>
+                    <option value="contract">業務委託</option>
+                  </select>
+                </div>
 
+                {/* Hourly Rate & Transportation Allowance */}
+                <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
                       時給（円）
@@ -546,17 +548,58 @@ export default function JobCreatePage() {
                         {errors.hourly_rate}
                       </p>
                     )}
-                    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                      <p className="text-xs text-blue-900 font-semibold mb-2">💡 料金について</p>
-                      <ul className="text-xs text-blue-800 space-y-1">
-                        <li>• <strong>交通費：</strong>別途支給または含む（仕事内容に記載してください）</li>
-                        <li>• <strong>プラットフォーム手数料：</strong>20%（税抜・クライアント負担）</li>
-                        <li>• <strong>振込手数料：</strong>¥330（税抜・ワーカー負担）</li>
-                        <li>• <strong>即時支払手数料：</strong>5%（税抜・ワーカーが選択した場合のみ）</li>
-                      </ul>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      交通費（円）
+                    </label>
+                    <div className="relative">
+                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <input
+                        type="number"
+                        name="transportation_allowance"
+                        value={formData.transportation_allowance}
+                        onChange={handleChange}
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#00CED1] focus:ring-2 focus:ring-[#00CED1]/20 transition-colors"
+                        placeholder="500"
+                        min="0"
+                      />
                     </div>
+                    <p className="mt-2 text-xs text-gray-500">任意：別途支給する場合は入力</p>
                   </div>
                 </div>
+
+                {/* Platform Fee Auto-Calculation */}
+                {formData.hourly_rate && parseInt(formData.hourly_rate) > 0 && (
+                  <div className="p-4 bg-gradient-to-r from-[#00CED1]/10 to-[#009999]/10 border border-[#00CED1]/30 rounded-xl">
+                    <p className="text-sm font-semibold text-gray-900 mb-3">💰 料金内訳（税抜）</p>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between text-gray-700">
+                        <span>時給</span>
+                        <span className="font-medium">¥{parseInt(formData.hourly_rate).toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between text-gray-700">
+                        <span>プラットフォーム手数料（20%）</span>
+                        <span className="font-medium text-[#00CED1]">
+                          ¥{Math.round(parseInt(formData.hourly_rate) * 0.2).toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="pt-2 border-t border-[#00CED1]/20 flex justify-between text-gray-900 font-bold">
+                        <span>実質時給負担</span>
+                        <span className="text-[#00CED1]">
+                          ¥{Math.round(parseInt(formData.hourly_rate) * 1.2).toLocaleString()}
+                        </span>
+                      </div>
+                      {formData.transportation_allowance && parseInt(formData.transportation_allowance) > 0 && (
+                        <div className="pt-2 border-t border-[#00CED1]/20 flex justify-between text-gray-700">
+                          <span>交通費（別途）</span>
+                          <span className="font-medium">¥{parseInt(formData.transportation_allowance).toLocaleString()}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {/* Working Hours & Work Date */}
                 <div className="grid md:grid-cols-2 gap-4">
