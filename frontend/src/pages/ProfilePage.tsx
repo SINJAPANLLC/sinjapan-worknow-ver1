@@ -15,8 +15,8 @@ import { Badge } from '../components/ui/Badge';
 import { useAuthStore } from '../stores/authStore';
 import { authAPI, filesAPI, phoneAPI } from '../lib/api';
 import { slideUp } from '../utils/animations';
-import { Sparkles, Zap, Flame, MessageCircle, UserCircle, Wallet, HelpCircle, ShieldAlert, Star } from 'lucide-react';
-import { BottomNav } from '../components/layout/BottomNav';
+import { Wallet, HelpCircle, ShieldAlert, Star } from 'lucide-react';
+import { RoleBottomNav } from '../components/layout/RoleBottomNav';
 
 const getFullImageUrl = (url: string | undefined): string | undefined => {
   if (!url) return undefined;
@@ -989,15 +989,7 @@ export function ProfilePage() {
         )}
       </div>
 
-      <BottomNav
-        items={[
-          { label: 'さがす', path: user.role === 'worker' ? '/jobs' : user.role === 'company' ? '/jobs/manage' : '/admin/users', icon: Sparkles },
-          { label: 'はたらく', path: user.role === 'worker' ? '/applications' : user.role === 'company' ? '/jobs/new' : '/admin/jobs', icon: Zap },
-          { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
-          { label: 'マイページ', path: user.role === 'admin' ? '/admin/stats' : '/profile', icon: UserCircle },
-        ]}
-      />
+      <RoleBottomNav />
     </div>
   );
 }
