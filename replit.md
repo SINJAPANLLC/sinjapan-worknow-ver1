@@ -104,3 +104,14 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
 -   **Online Workers Display**: Client dashboard now shows real-time list of online workers with auto-refresh every 30 seconds. Companies can see worker availability instantly.
 -   **Backend Enhancements**: Added `GET /auth/workers/online` endpoint for companies/admins. Updated job service to handle async geocoding.
 -   **UI Improvements**: Removed demand indicator, fixed mobile text overflow, added turquoise gradient styling (#00CED1 to #009999) for online worker cards.
+
+### November 9, 2025 - Job Detail Page Enhancement & Company Name Display
+-   **Company Name in JobRead Schema**: Added optional `company_name` field to JobRead schema, mirroring the ApplicationRead enrichment pattern.
+-   **JobService Enhancement**: Integrated UserService into JobService to fetch company information. Implemented `_enrich_jobs_with_company()` method for efficient batch lookup of company names when listing jobs.
+-   **JobDetailPage Redesign**: Complete visual overhaul with turquoise gradient theme (#00CED1 to #009999). Replaced gray backgrounds with white/95 transparency + backdrop blur for premium feel.
+-   **Company Name Display**: Job detail page now displays company name (with Building2 icon) instead of technical company ID, improving readability.
+-   **Working Hours Calculation**: Added smart calculation to display total working hours when both starts_at and ends_at are available. Uses `calculateWorkingHours()` function with proper validation for positive values.
+-   **Enhanced Info Cards**: Job metadata cards (location, employment type, working hours, start time) now use gradient backgrounds, turquoise borders, and improved typography.
+-   **Tag Styling**: Job tags updated with gradient backgrounds and borders matching brand identity.
+-   **Application Form Polish**: Application button and form inputs styled with gradient backgrounds, improved borders, and better focus states.
+-   **Backend Pattern**: JobService follows same efficient enrichment pattern as ApplicationService (batch fetching to minimize database queries).
