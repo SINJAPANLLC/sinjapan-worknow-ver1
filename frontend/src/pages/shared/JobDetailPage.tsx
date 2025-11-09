@@ -96,7 +96,7 @@ export default function JobDetailPage() {
         </motion.div>
 
         <motion.div {...slideUp} className="space-y-6">
-          <Card className="bg-white/95 backdrop-blur-sm shadow-2xl">
+          <Card className="bg-white/95 backdrop-blur-sm shadow-2xl mt-8">
             <div className="flex items-start justify-between mb-6">
               <div className="flex-1">
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-[#00CED1] to-[#009999] bg-clip-text text-transparent mb-3">
