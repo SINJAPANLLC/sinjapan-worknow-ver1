@@ -1,0 +1,43 @@
+     Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2025-11-09 14:27:16 UTC; 26ms ago
+       Docs: man:nginx(8)
+    Process: 158002 ExecStartPre=/usr/sbin/nginx -t -q -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+    Process: 158004 ExecStart=/usr/sbin/nginx -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+   Main PID: 158005 (nginx)
+      Tasks: 3 (limit: 9483)
+     Memory: 4.6M (peak: 4.9M)
+        CPU: 44ms
+     CGroup: /system.slice/nginx.service
+             ├─158005 "nginx: master process /usr/sbin/nginx -g daemon on; mast…
+             ├─158006 "nginx: worker process"
+             └─158007 "nginx: worker process"
+
+Nov 09 14:27:16 srv1087935 nginx[158004]: 2025/11/09 14:27:16 [warn] 158004…m:12
+Nov 09 14:27:16 srv1087935 nginx[158004]: 2025/11/09 14:27:16 [warn] 158004…ored
+Nov 09 14:27:16 srv1087935 nginx[158004]: 2025/11/09 14:27:16 [warn] 158004…ored
+Nov 09 14:27:16 srv1087935 nginx[158004]: 2025/11/09 14:27:16 [warn] 158004…ored
+Nov 09 14:27:16 srv1087935 nginx[158004]: 2025/11/09 14:27:16 [warn] 158004…ored
+Nov 09 14:27:16 srv1087935 nginx[158004]: 2025/11/09 14:27:16 [warn] 158004…ored
+Nov 09 14:27:16 srv1087935 nginx[158004]: 2025/11/09 14:27:16 [warn] 158004…ored
+Nov 09 14:27:16 srv1087935 nginx[158004]: 2025/11/09 14:27:16 [warn] 158004…ored
+Nov 09 14:27:16 srv1087935 nginx[158004]: 2025/11/09 14:27:16 [warn] 158004…ored
+Nov 09 14:27:16 srv1087935 systemd[1]: Started nginx.service - A high perfo…ver.
+Hint: Some lines were ellipsized, use -l to show in full.
+=== Port Check ===
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      158005/nginx: maste 
+tcp        0      0 0.0.0.0:443             0.0.0.0:*               LISTEN      158005/nginx: maste 
+tcp        0      0 0.0.0.0:8000            0.0.0.0:*               LISTEN      136414/node         
+tcp6       0      0 :::80                   :::*                    LISTEN      158005/nginx: maste 
+tcp6       0      0 :::443                  :::*                    LISTEN      158005/nginx: maste 
+=== HTTPS Access Test ===
+HTTP/2 502 
+server: nginx/1.24.0 (Ubuntu)
+date: Sun, 09 Nov 2025 14:27:17 GMT
+content-type: text/html
+content-length: 166
+strict-transport-security: max-age=31536000; includeSubDomains
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+
+root@srv1087935:/var/www/worknow/frontend# 
