@@ -16,7 +16,7 @@ import { Badge } from '../components/ui/Badge';
 import { useAuthStore } from '../stores/authStore';
 import { authAPI, filesAPI, phoneAPI, withdrawalsAPI, bankAccountsAPI } from '../lib/api';
 import { slideUp } from '../utils/animations';
-import { Sparkles, Zap, Flame, MessageCircle, UserCircle, Wallet, CreditCard } from 'lucide-react';
+import { Sparkles, Zap, Flame, MessageCircle, UserCircle, Wallet, CreditCard, HelpCircle, ShieldAlert } from 'lucide-react';
 import { BottomNav } from '../components/layout/BottomNav';
 
 export function ProfilePage() {
@@ -352,6 +352,66 @@ export function ProfilePage() {
               </div>
             </Card>
           </motion.div>
+        )}
+
+        {user.role === 'worker' && (
+          <>
+            <motion.div
+              variants={slideUp}
+              initial="initial"
+              animate="animate"
+              transition={{ delay: 0.15 }}
+            >
+              <Card className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#00CED1]/20 to-[#009999]/20 flex items-center justify-center">
+                      <HelpCircle className="w-6 h-6 text-[#00CED1]" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900">サポート</h3>
+                      <p className="text-sm text-gray-600">よくある質問・お問い合わせ</p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate('/support')}
+                    className="border-[#00CED1] text-[#00CED1] hover:bg-[#00CED1]/10"
+                  >
+                    開く
+                  </Button>
+                </div>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              variants={slideUp}
+              initial="initial"
+              animate="animate"
+              transition={{ delay: 0.18 }}
+            >
+              <Card className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
+                      <ShieldAlert className="w-6 h-6 text-amber-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900">ペナルティ履歴</h3>
+                      <p className="text-sm text-gray-600">違反・ペナルティの確認</p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate('/penalties')}
+                    className="border-amber-600 text-amber-600 hover:bg-amber-50"
+                  >
+                    確認
+                  </Button>
+                </div>
+              </Card>
+            </motion.div>
+          </>
         )}
 
         <motion.div
