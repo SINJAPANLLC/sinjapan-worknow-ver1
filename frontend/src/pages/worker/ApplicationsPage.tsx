@@ -31,13 +31,17 @@ export default function ApplicationsPage() {
     enabled: !!user?.id,
   });
 
-  const upcomingApplications = applications?.filter(app => 
-    app.status === 'hired' || app.status === 'interview'
-  ) || [];
+  const upcomingApplications = applications?.filter(app => {
+    const assignment = assignments?.find(a => a.application_id === app.id);
+    const isCompleted = assignment && (assignment.status === 'completed' || assignment.completed_at);
+    return !isCompleted && (app.status === 'hired' || app.status === 'interview' || app.status === 'pending');
+  }) || [];
 
-  const pastApplications = applications?.filter(app => 
-    app.status === 'rejected' || app.status === 'withdrawn'
-  ) || [];
+  const pastApplications = applications?.filter(app => {
+    const assignment = assignments?.find(a => a.application_id === app.id);
+    const isCompleted = assignment && (assignment.status === 'completed' || assignment.completed_at);
+    return isCompleted || app.status === 'rejected' || app.status === 'withdrawn';
+  }) || [];
 
   const getStatusBadge = (status: Application['status']) => {
     switch (status) {
@@ -135,7 +139,12 @@ export default function ApplicationsPage() {
                   <Card className="hover:shadow-md transition-shadow">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
-                        <h3 className="font-bold text-base text-gray-900 mb-2">求人ID: {application.job_id}</h3>
+                        <h3 className="font-bold text-base text-gray-900 mb-1">
+                          {application.job?.title || '求人情報'}
+                        </h3>
+                        {application.job?.company_name && (
+                          <p className="text-sm text-gray-600 mb-2">{application.job.company_name}</p>
+                        )}
                         <div className="flex flex-wrap gap-2">
                           <Badge variant={statusInfo.variant} size="sm">
                             <StatusIcon className="w-3.5 h-3.5 mr-1" />

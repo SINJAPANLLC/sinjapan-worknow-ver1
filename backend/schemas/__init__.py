@@ -4,6 +4,7 @@ from .application import (
     ApplicationRead,
     ApplicationStatus,
     ApplicationUpdate,
+    JobSummary,
 )
 from .assignment import (
     AssignmentCreate,
@@ -49,6 +50,7 @@ __all__ = [
     "ApplicationRead",
     "ApplicationStatus",
     "ApplicationUpdate",
+    "JobSummary",
     "AssignmentCreate",
     "AssignmentList",
     "AssignmentRead",

@@ -14,6 +14,12 @@ class ApplicationStatus(str, Enum):
     WITHDRAWN = "withdrawn"
 
 
+class JobSummary(BaseModel):
+    title: str
+    company_name: str
+    company_id: str
+
+
 class ApplicationBase(TimestampedModel):
     job_id: str
     worker_id: str
@@ -33,6 +39,7 @@ class ApplicationUpdate(BaseModel):
 
 class ApplicationRead(ApplicationBase):
     id: str
+    job: Optional[JobSummary] = None
 
 
 class ApplicationList(PaginatedResponse[ApplicationRead]):

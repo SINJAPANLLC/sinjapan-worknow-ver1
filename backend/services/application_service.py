@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 from fastapi import HTTPException, status
 
@@ -8,20 +8,69 @@ from schemas import (
     ApplicationRead,
     ApplicationStatus,
     ApplicationUpdate,
+    JobSummary,
     JobStatus,
 )
 
 from .postgres_base import PostgresService
 from .job_service import JobService
+from .user_service import UserService
 
 
 class ApplicationService(PostgresService):
-    def __init__(self, job_service: Optional[JobService] = None) -> None:
+    def __init__(self, job_service: Optional[JobService] = None, user_service: Optional[UserService] = None) -> None:
         super().__init__("applications")
         self.jobs = job_service or JobService()
+        self.users = user_service or UserService()
 
-    def _to_application(self, data: Dict) -> ApplicationRead:
-        return ApplicationRead(**data)
+    def _to_application(self, data: Dict, include_job: bool = True) -> ApplicationRead:
+        app_data = {**data}
+        if include_job and data.get("job_id"):
+            try:
+                job = self.jobs.get_job(data["job_id"])
+                company = self.users.get_user(job.company_id)
+                app_data["job"] = JobSummary(
+                    title=job.title,
+                    company_name=company.full_name,
+                    company_id=job.company_id
+                )
+            except Exception:
+                app_data["job"] = None
+        return ApplicationRead(**app_data)
+    
+    def _enrich_applications_with_jobs(self, applications: List[Dict]) -> List[ApplicationRead]:
+        if not applications:
+            return []
+        
+        job_ids = list(set(app["job_id"] for app in applications if app.get("job_id")))
+        jobs_map = {}
+        companies_map = {}
+        
+        for job_id in job_ids:
+            try:
+                job = self.jobs.get_job(job_id)
+                if job.company_id not in companies_map:
+                    try:
+                        company = self.users.get_user(job.company_id)
+                        companies_map[job.company_id] = company.full_name
+                    except Exception:
+                        companies_map[job.company_id] = "不明"
+                
+                jobs_map[job_id] = JobSummary(
+                    title=job.title,
+                    company_name=companies_map[job.company_id],
+                    company_id=job.company_id
+                )
+            except Exception:
+                jobs_map[job_id] = None
+        
+        result = []
+        for app_data in applications:
+            app_dict = {**app_data}
+            app_dict["job"] = jobs_map.get(app_data.get("job_id"))
+            result.append(ApplicationRead(**app_dict))
+        
+        return result
 
     def create_application(self, worker_id: str, payload: ApplicationCreate) -> ApplicationRead:
         job = self.jobs.get_job(payload.job_id)
@@ -67,7 +116,7 @@ class ApplicationService(PostgresService):
         start = (page - 1) * size
         end = start + size - 1
         response = self.list(filters=filters, range_=(start, end), order=("created_at", "desc"))
-        items = [self._to_application(item) for item in response["items"]]
+        items = self._enrich_applications_with_jobs(response["items"])
         total = response["count"]
         return ApplicationList(items=items, total=total, page=page, size=size)
 
@@ -75,4 +124,4 @@ class ApplicationService(PostgresService):
         data = self.get_by_id(application_id)
         if not data:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
-        return self._to_application(data)
+        return self._to_application(data, include_job=True)
