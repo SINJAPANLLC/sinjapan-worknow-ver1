@@ -1,0 +1,66 @@
+y-policy: default-src 'none'
+x-content-type-options: nosniff
+strict-transport-security: max-age=31536000; includeSubDomains
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+
+(venv) root@srv1087935:/var/www/worknow/frontend# cd /var/www/worknow/frontend
+
+# TypeScriptが実際にインストールされているか確認
+ls -la node_modules/.bin/tsc
+
+# npxを使って明示的にビルド
+npx tsc -b && npx vite build
+
+# または、package.jsonのビルドスクリプトを一時的に修正
+cat > package.json.tmp << 'EOF'
+{
+  "scripts": {
+    "build": "npx tsc -b && npx vite build"
+  }
+}
+EOF
+
+# 実際のpackage.jsonのビルドスクリプト部分だけ置き換える
+sed -i 's/"tsc -b && vite build"/"npx tsc -b \&\& npx vite build"/' package.json 
+
+# 再度ビルド
+npm run build
+
+curl https://sinjapan-worknow.comd
+ls: cannot access 'node_modules/.bin/tsc': No such file or directory
+
+                                                                               
+                This is not the tsc command you are looking for                
+                                                                               
+
+To get access to the TypeScript compiler, tsc, from the command line either:
+
+- Use npm install typescript to first add TypeScript to your project before using npx
+- Use yarn to avoid accidentally running code from un-installed packages
+
+> frontend@0.0.0 build
+> npx tsc -b && npx vite build
+
+
+                                                                               
+                This is not the tsc command you are looking for                
+                                                                               
+
+To get access to the TypeScript compiler, tsc, from the command line either:
+
+- Use npm install typescript to first add TypeScript to your project before using npx
+- Use yarn to avoid accidentally running code from un-installed packages
+ls: cannot access 'dist/': No such file or directory
+ls: cannot access 'dist/index.html': No such file or directory
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Not Found</pre>
+</body>
+</html>
