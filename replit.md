@@ -55,12 +55,33 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
 -   **Geolocation**: Browser Geolocation API, OpenStreetMap Nominatim API (geocoding)
 -   **Maps**: React Leaflet for interactive map visualization
 
+## Deployment Configuration
+-   **VPS Provider**: Hostinger (212.85.24.206)
+-   **Domain**: sinjapan-worknow.com
+-   **Frontend Port**: 20000 (Express + Node.js serving built React app)
+-   **Backend Port**: 8008 (Gunicorn + Uvicorn workers)
+-   **Web Server**: Nginx with SSL/TLS (Let's Encrypt)
+-   **Services**: systemd for process management (worknow-backend, worknow-frontend)
+-   **Database**: PostgreSQL (worknow_production)
+-   **Deployment Files**:
+    - `deployment/setup.sh`: Automated VPS setup script
+    - `deployment/nginx.conf`: HTTPS configuration with SSL
+    - `deployment/nginx-http.conf`: HTTP-only config for pre-SSL setup
+    - `deployment/worknow-backend.service`: Backend systemd service
+    - `deployment/worknow-frontend.service`: Frontend systemd service
+    - `.env.production.template`: Production environment variables template
+    - `DEPLOYMENT.md`: Comprehensive deployment guide
+    - `backend/requirements.txt`: Python dependencies
+
 ## Recent Changes
 **November 9, 2025**:
-- ✅ Enhanced messaging system with deep-linking support (auto-opens conversations from ApplicationsManagePage)
-- ✅ Profile image upload functionality already implemented with proper validation
-- ✅ Added online workers map visualization with React Leaflet (null-safe rendering, auto-centering)
-- ✅ Enhanced ApplicationsManagePage with full worker profile details and contact information
-- ✅ Added fee information panel to Job Creation page
-- ✅ Added QR code generation modal to Job Management page
+- ✅ Complete VPS deployment configuration for Hostinger with automated setup script
+- ✅ Nginx reverse proxy setup with SSL/TLS support (Let's Encrypt)
+- ✅ systemd service files for backend (Gunicorn) and frontend (Express)
+- ✅ Production environment template with all required variables
+- ✅ Comprehensive deployment guide with troubleshooting section
+- ✅ Unified navigation with RoleBottomNav across all admin pages (including ProfilePage)
+- ✅ Fixed AdminDashboard header overlap with pt-28 padding
+- ✅ Enhanced messaging system with deep-linking support
+- ✅ Added online workers map visualization with React Leaflet
 - ⏳ Payment method management (Stripe cards) pending - requires Stripe API keys configuration
