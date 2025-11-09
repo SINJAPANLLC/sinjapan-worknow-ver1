@@ -82,6 +82,14 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
 -   **Icon Update**: Changed BottomNav message icon from Bell (notifications) to MessageCircle for consistency with `/messages` route.
 -   **State Management**: Dropdown open/close states managed separately, menus close automatically on selection for better UX.
 
+### November 9, 2025 - Application Cards UX Improvements
+-   **Job Information Display**: Extended ApplicationRead schema with JobSummary (title, company_name, company_id) to show human-readable job details instead of technical IDs.
+-   **Backend Enhancement**: ApplicationService now enriches application responses with job metadata by fetching job and company information. Implemented efficient batch lookup to minimize database queries.
+-   **Frontend Type Updates**: Added JobSummary interface to frontend Application type to support job title and company name display.
+-   **ApplicationsPage Redesign**: Application cards now display job title and company name prominently, removing confusing technical job IDs.
+-   **Smart Tab Filtering**: Completed assignments (status='completed' or with completed_at timestamp) now automatically appear in "これまでの仕事" tab, while active/pending work stays in "今後の予定" tab.
+-   **Graceful Fallbacks**: UI handles missing job information gracefully with sensible defaults.
+
 ### November 9, 2025 - Routing Fixes & Payment Validation
 -   **Routing Improvements**: Added missing routes for `/penalties`, `/support`, and `/reviews` in App.tsx. All three pages now accessible via ProtectedRoute with proper imports for PenaltiesPage and SupportPage.
 -   **Withdrawal Validation Fix**: Updated PaymentsPage withdrawal request form to enforce 100円 minimum (matching backend validation). Changed input min attribute from "1" to "100" and updated validation message.
