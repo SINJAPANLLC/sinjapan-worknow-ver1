@@ -4,20 +4,14 @@ import { Card } from '../../components/ui/Card';
 import { adminAPI } from '../../lib/api';
 import { slideUp, fadeIn } from '../../utils/animations';
 import {
-  Sparkles,
-  Zap,
-  Flame,
-  Bell,
-  UserCircle,
   TrendingUp,
   DollarSign,
   FileText,
   Calendar,
   Users,
   Briefcase,
-  MessageCircle,
 } from 'lucide-react';
-import { BottomNav } from '../../components/layout/BottomNav';
+import { RoleBottomNav } from '../../components/layout/RoleBottomNav';
 
 export default function StatsPage() {
   const { data: stats, isLoading } = useQuery({
@@ -193,15 +187,7 @@ export default function StatsPage() {
         )}
       </div>
 
-      <BottomNav
-        items={[
-          { label: 'さがす', path: '/admin/users', icon: Sparkles },
-          { label: 'はたらく', path: '/admin/jobs', icon: Zap },
-          { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
-          { label: 'マイページ', path: '/admin/stats', icon: UserCircle },
-        ]}
-      />
+      <RoleBottomNav />
     </div>
   );
 }
