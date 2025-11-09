@@ -34,6 +34,8 @@ import { NotificationsPage } from './pages/NotificationsPage';
 import MessagesPage from './pages/shared/MessagesPage';
 import ClientMessagesPage from './pages/client/MessagesPage';
 import ClientDeliveryManagePage from './pages/client/DeliveryManagePage';
+import ClientProfilePage from './pages/client/ProfilePage';
+import WorkerProfilePage from './pages/worker/ProfilePage';
 import SettingsPage from './pages/shared/SettingsPage';
 import JobDetailPage from './pages/shared/JobDetailPage';
 import MainLayout from './components/layout/MainLayout';
@@ -52,6 +54,12 @@ function AppContent() {
     if (user?.role === 'company') return <ClientDashboard />;
     if (user?.role === 'admin') return <AdminDashboard />;
     return <MainLayout />;
+  };
+
+  const getProfilePage = () => {
+    if (user?.role === 'worker') return <WorkerProfilePage />;
+    if (user?.role === 'company') return <ClientProfilePage />;
+    return <ProfilePage />;
   };
 
   return (
@@ -151,7 +159,7 @@ function AppContent() {
           path="/profile"
           element={
             <ProtectedRoute>
-              <ProfilePage />
+              {getProfilePage()}
             </ProtectedRoute>
           }
         />
