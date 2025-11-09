@@ -66,18 +66,18 @@ class MessageService(PostgresService):
                     SELECT 
                         c.*,
                         CASE 
-                            WHEN c.participant_1_id = %s THEN u2.full_name
+                            WHEN c.participant_1_id::text = %s THEN u2.full_name
                             ELSE u1.full_name
                         END as other_user_name,
                         CASE 
-                            WHEN c.participant_1_id = %s THEN c.participant_2_id
+                            WHEN c.participant_1_id::text = %s THEN c.participant_2_id
                             ELSE c.participant_1_id
                         END as other_user_id,
                         (SELECT content FROM messages WHERE conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message,
-                        (SELECT COUNT(*) FROM messages WHERE conversation_id = c.id AND receiver_id = %s AND is_read = FALSE) as unread_count
+                        (SELECT COUNT(*) FROM messages WHERE conversation_id = c.id AND receiver_id::text = %s AND is_read = FALSE) as unread_count
                     FROM conversations c
-                    LEFT JOIN users u1 ON c.participant_1_id = u1.id::text
-                    LEFT JOIN users u2 ON c.participant_2_id = u2.id::text
+                    LEFT JOIN users u1 ON c.participant_1_id::text = u1.id::text
+                    LEFT JOIN users u2 ON c.participant_2_id::text = u2.id::text
                     WHERE c.participant_1_id::text = %s OR c.participant_2_id::text = %s
                     ORDER BY c.last_message_at DESC
                 """

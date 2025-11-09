@@ -81,7 +81,7 @@ export function ProfilePage() {
     try {
       const result = await filesAPI.uploadAvatar(file);
       setUser(result.user);
-      alert('プロフィール写真をアップロードしました');
+      alert('プロフィール写真をアップロードしました。ヘッダーに反映されない場合は、一度ログアウトして再ログインしてください。');
       e.target.value = '';
     } catch (error) {
       console.error('Avatar upload failed:', error);
