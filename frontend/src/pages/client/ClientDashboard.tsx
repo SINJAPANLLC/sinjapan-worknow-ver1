@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { RoleBottomNav } from '../../components/layout/RoleBottomNav';
+import OnlineWorkersMap from '../../components/map/OnlineWorkersMap';
 
 export default function ClientDashboard() {
   const navigate = useNavigate();
@@ -260,12 +261,25 @@ export default function ClientDashboard() {
           </motion.div>
         </div>
 
+        {/* Online Workers Map */}
+        {!jobsLoading && onlineWorkers && onlineWorkers.length > 0 && (
+          <motion.div
+            variants={slideUp}
+            initial="initial"
+            animate="animate"
+            transition={{ delay: 0.4 }}
+            className="mb-6"
+          >
+            <OnlineWorkersMap workers={onlineWorkers} />
+          </motion.div>
+        )}
+
         {/* Recent Jobs */}
         <motion.div
           variants={slideUp}
           initial="initial"
           animate="animate"
-          transition={{ delay: 0.4 }}
+          transition={{ delay: 0.5 }}
         >
           <Card className="p-5 md:p-6">
             <div className="flex items-center justify-between mb-5">
