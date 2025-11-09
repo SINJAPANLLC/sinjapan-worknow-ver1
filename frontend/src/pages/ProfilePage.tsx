@@ -65,10 +65,10 @@ export function ProfilePage() {
     preferred_prefecture: user?.preferred_prefecture || '',
     latitude: user?.latitude,
     longitude: user?.longitude,
-    emergency_contact_name: (user as any)?.emergency_contact_name || '',
-    emergency_contact_phone: (user as any)?.emergency_contact_phone || '',
-    emergency_contact_relationship: (user as any)?.emergency_contact_relationship || '',
-    qualifications: (user as any)?.qualifications || [],
+    emergency_contact_name: user?.emergency_contact_name || '',
+    emergency_contact_phone: user?.emergency_contact_phone || '',
+    emergency_contact_relationship: user?.emergency_contact_relationship || '',
+    qualifications: user?.qualifications || [],
   });
 
   const [passwordForm, setPasswordForm] = useState({
@@ -141,6 +141,10 @@ export function ProfilePage() {
       preferred_prefecture: user.preferred_prefecture || '',
       latitude: user.latitude,
       longitude: user.longitude,
+      emergency_contact_name: user?.emergency_contact_name || '',
+      emergency_contact_phone: user?.emergency_contact_phone || '',
+      emergency_contact_relationship: user?.emergency_contact_relationship || '',
+      qualifications: user?.qualifications || [],
     });
     setIsEditing(false);
     setCodeSent(false);
@@ -594,6 +598,141 @@ export function ProfilePage() {
                       <p className="text-gray-900">{user.affiliation || '未設定'}</p>
                     )}
                   </div>
+
+                  <div className="pt-4 border-t border-gray-200">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 break-keep">緊急連絡先</h3>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          氏名
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={formData.emergency_contact_name || ''}
+                            onChange={(e) => setFormData({ ...formData, emergency_contact_name: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00CED1] focus:border-transparent"
+                            placeholder="山田太郎"
+                          />
+                        ) : (
+                          <p className="text-gray-900">{user?.emergency_contact_name || '未設定'}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          電話番号
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type="tel"
+                            value={formData.emergency_contact_phone || ''}
+                            onChange={(e) => setFormData({ ...formData, emergency_contact_phone: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00CED1] focus:border-transparent"
+                            placeholder="090-1234-5678"
+                          />
+                        ) : (
+                          <p className="text-gray-900">{user?.emergency_contact_phone || '未設定'}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          続柄
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={formData.emergency_contact_relationship || ''}
+                            onChange={(e) => setFormData({ ...formData, emergency_contact_relationship: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00CED1] focus:border-transparent"
+                            placeholder="父、母、配偶者など"
+                          />
+                        ) : (
+                          <p className="text-gray-900">{user?.emergency_contact_relationship || '未設定'}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-200">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 break-keep">保有資格</h3>
+                    
+                    {isEditing ? (
+                      <div className="space-y-3">
+                        <div className="flex flex-wrap gap-2">
+                          {(formData.qualifications || []).map((qual, index) => (
+                            <Badge
+                              key={index}
+                              variant="primary"
+                              className="flex items-center gap-2"
+                            >
+                              {qual}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = [...(formData.qualifications || [])];
+                                  updated.splice(index, 1);
+                                  setFormData({ ...formData, qualifications: updated });
+                                }}
+                                className="hover:text-red-600"
+                              >
+                                ×
+                              </button>
+                            </Badge>
+                          ))}
+                        </div>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={newQualification}
+                            onChange={(e) => setNewQualification(e.target.value)}
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00CED1] focus:border-transparent"
+                            placeholder="フォークリフト、運転免許など"
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter' && newQualification.trim()) {
+                                e.preventDefault();
+                                setFormData({
+                                  ...formData,
+                                  qualifications: [...(formData.qualifications || []), newQualification.trim()]
+                                });
+                                setNewQualification('');
+                              }
+                            }}
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              if (newQualification.trim()) {
+                                setFormData({
+                                  ...formData,
+                                  qualifications: [...(formData.qualifications || []), newQualification.trim()]
+                                });
+                                setNewQualification('');
+                              }
+                            }}
+                          >
+                            追加
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-wrap gap-2">
+                        {(user?.qualifications || []).length > 0 ? (
+                          (user?.qualifications || []).map((qual: string, index: number) => (
+                            <Badge key={index} variant="primary">
+                              {qual}
+                            </Badge>
+                          ))
+                        ) : (
+                          <p className="text-gray-900">未設定</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </>
               )}
 
@@ -663,9 +802,103 @@ export function ProfilePage() {
         >
           <Card className="p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">アカウント設定</h2>
-            <Button variant="outline" className="w-full">
-              パスワード変更
-            </Button>
+            
+            {!showPasswordForm ? (
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => setShowPasswordForm(true)}
+              >
+                パスワード変更
+              </Button>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    現在のパスワード
+                  </label>
+                  <input
+                    type="password"
+                    value={passwordForm.currentPassword}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00CED1] focus:border-transparent"
+                    placeholder="現在のパスワードを入力"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    新しいパスワード
+                  </label>
+                  <input
+                    type="password"
+                    value={passwordForm.newPassword}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00CED1] focus:border-transparent"
+                    placeholder="新しいパスワードを入力"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    新しいパスワード（確認）
+                  </label>
+                  <input
+                    type="password"
+                    value={passwordForm.confirmPassword}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00CED1] focus:border-transparent"
+                    placeholder="新しいパスワードを再入力"
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <Button
+                    variant="primary"
+                    className="flex-1"
+                    onClick={async () => {
+                      if (!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
+                        alert('すべての項目を入力してください');
+                        return;
+                      }
+                      if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+                        alert('新しいパスワードが一致しません');
+                        return;
+                      }
+                      if (passwordForm.newPassword.length < 6) {
+                        alert('パスワードは6文字以上で設定してください');
+                        return;
+                      }
+
+                      try {
+                        await authAPI.changePassword({
+                          current_password: passwordForm.currentPassword,
+                          new_password: passwordForm.newPassword,
+                        });
+                        alert('パスワードを変更しました');
+                        setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+                        setShowPasswordForm(false);
+                      } catch (error: any) {
+                        console.error('Password change failed:', error);
+                        alert(error.response?.data?.detail || 'パスワード変更に失敗しました');
+                      }
+                    }}
+                  >
+                    変更
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => {
+                      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+                      setShowPasswordForm(false);
+                    }}
+                  >
+                    キャンセル
+                  </Button>
+                </div>
+              </div>
+            )}
           </Card>
         </motion.div>
       </div>

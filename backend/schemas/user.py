@@ -1,6 +1,6 @@
 from datetime import date
 from enum import Enum
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel, EmailStr, Field
 
@@ -37,6 +37,10 @@ class UserBase(TimestampedModel):
     preferred_prefecture: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
+    emergency_contact_name: Optional[str] = None
+    emergency_contact_phone: Optional[str] = None
+    emergency_contact_relationship: Optional[str] = None
+    qualifications: Optional[List[str]] = None
 
 
 class UserCreate(BaseModel):
@@ -61,6 +65,10 @@ class UserUpdate(BaseModel):
     preferred_prefecture: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
+    emergency_contact_name: Optional[str] = None
+    emergency_contact_phone: Optional[str] = None
+    emergency_contact_relationship: Optional[str] = None
+    qualifications: Optional[List[str]] = None
 
 
 class UserRead(UserBase):

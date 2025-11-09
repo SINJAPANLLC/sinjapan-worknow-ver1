@@ -26,6 +26,10 @@ create table if not exists public.users (
     preferred_prefecture text,
     latitude numeric(10, 7),
     longitude numeric(10, 7),
+    emergency_contact_name text,
+    emergency_contact_phone text,
+    emergency_contact_relationship text,
+    qualifications text[],
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now()
 );
