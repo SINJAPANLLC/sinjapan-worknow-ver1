@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { BottomNav } from '../components/layout/BottomNav';
-import { MessageCircle, Mail, Phone, HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { MessageCircle, Mail, Phone, HelpCircle, ChevronDown, ChevronUp, Sparkles, Zap, Flame, UserCircle } from 'lucide-react';
+import { useAuthStore } from '../stores/authStore';
 
 const faqs = [
   {
@@ -28,7 +29,10 @@ const faqs = [
 ];
 
 export function SupportPage() {
+  const { user } = useAuthStore();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  if (!user) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00CED1]/80 to-[#009999] pb-28">
@@ -103,7 +107,15 @@ export function SupportPage() {
           </Card>
         </div>
       </div>
-      <BottomNav />
+      <BottomNav
+        items={[
+          { label: 'さがす', path: user.role === 'worker' ? '/jobs' : user.role === 'company' ? '/jobs/manage' : '/admin/users', icon: Sparkles },
+          { label: 'はたらく', path: user.role === 'worker' ? '/applications' : user.role === 'company' ? '/jobs/new' : '/admin/jobs', icon: Zap },
+          { label: 'Now', path: '/dashboard', icon: Flame },
+          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
+          { label: 'マイページ', path: user.role === 'admin' ? '/admin/stats' : '/profile', icon: UserCircle },
+        ]}
+      />
     </div>
   );
 }

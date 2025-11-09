@@ -3,7 +3,7 @@ import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { useAuthStore } from '../stores/authStore';
 import { BottomNav } from '../components/layout/BottomNav';
-import { AlertTriangle, XCircle, Ban } from 'lucide-react';
+import { AlertTriangle, XCircle, Ban, Sparkles, Zap, Flame, MessageCircle, UserCircle } from 'lucide-react';
 import { penaltiesAPI } from '../lib/api';
 
 interface Penalty {
@@ -65,10 +65,10 @@ export function PenaltiesPage() {
                       <Icon className="w-8 h-8 flex-shrink-0" />
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <Badge variant={penalty.is_active ? 'destructive' : 'secondary'}>
+                          <Badge variant={penalty.is_active ? 'danger' : 'neutral'}>
                             {penalty.is_active ? '有効' : '無効'}
                           </Badge>
-                          <Badge variant="outline">{penalty.penalty_points}ポイント</Badge>
+                          <Badge variant="warning">{penalty.penalty_points}ポイント</Badge>
                         </div>
                         <h3 className="text-lg font-semibold mb-2 break-keep">{penalty.reason}</h3>
                         {penalty.description && (
@@ -89,7 +89,15 @@ export function PenaltiesPage() {
           </div>
         )}
       </div>
-      <BottomNav />
+      <BottomNav
+        items={[
+          { label: 'さがす', path: user.role === 'worker' ? '/jobs' : user.role === 'company' ? '/jobs/manage' : '/admin/users', icon: Sparkles },
+          { label: 'はたらく', path: user.role === 'worker' ? '/applications' : user.role === 'company' ? '/jobs/new' : '/admin/jobs', icon: Zap },
+          { label: 'Now', path: '/dashboard', icon: Flame },
+          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
+          { label: 'マイページ', path: user.role === 'admin' ? '/admin/stats' : '/profile', icon: UserCircle },
+        ]}
+      />
     </div>
   );
 }
