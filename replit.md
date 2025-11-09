@@ -26,7 +26,7 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
 ### Technical Implementations
 -   **Backend**: FastAPI (Python) on port 8008. Provides API endpoints for authentication, job/application/assignment management, payments, reviews, notifications, and admin functions. Uses JWT for authentication, bcrypt for password hashing, and `PostgresService` for database interaction.
 -   **Frontend**: React + Vite + TypeScript on port 5000. Utilizes React 19.2.0, Vite 7.2.2, React Router v7, Zustand 5.0 for state management, and TanStack Query v5 for data fetching. Supports persistent authentication via localStorage and role-based routing.
--   **Database**: Replit PostgreSQL with ten core tables (`users`, `jobs`, `applications`, `assignments`, `payments`, `reviews`, `device_tokens`, `bank_accounts`, `withdrawal_requests`, `activity_logs`) and indexes for performance.
+-   **Database**: Replit PostgreSQL with twelve core tables (`users`, `jobs`, `applications`, `assignments`, `payments`, `reviews`, `device_tokens`, `bank_accounts`, `withdrawal_requests`, `activity_logs`, `client_notification_preferences`, `client_invoice_settings`) and indexes for performance.
 
 ### Feature Specifications
 -   **Authentication**: Login, registration (worker/client), password reset, JWT.
@@ -34,7 +34,7 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
 -   **Job Management**: CRUD operations for jobs with status management, including urgent job prioritization and geocoding integration.
 -   **Application & Assignment Management**: Create, update applications, track assignments. Includes a Wolt-style delivery management system with status progression, route visualization, and real-time updates. Application cards display enriched job information.
 -   **Payment Management**: Stripe Connect integration for payouts, bank account management (Japanese banking specifics), worker withdrawal system with automatic payment creation and balance tracking.
--   **Profile Management**: Extended user profiles with personal details, phone verification, ID document upload, emergency contacts, qualifications, location features, and password change functionality. Header displays user avatar. **Client My Page**: Full profile management with mobile-first slide-up modals for editing company information (name, phone, address) and secure password change with validation.
+-   **Profile Management**: Extended user profiles with personal details, phone verification, ID document upload, emergency contacts, qualifications, location features, and password change functionality. Header displays user avatar. **Client My Page**: Full profile management with mobile-first slide-up modals for editing company information (name, phone, address), secure password change with validation, notification preferences (push/email toggles, notification type matrix), and invoice settings (company details, tax ID).
 -   **Activity Tracking**: Comprehensive logging of user actions.
 -   **Review System**: 1-5 star ratings with comments for mutual evaluation.
 -   **Notifications**: Push notification readiness with device token management.
