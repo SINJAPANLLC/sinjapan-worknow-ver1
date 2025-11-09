@@ -1,0 +1,76 @@
+CREATE DATABASE worknow_production;
+SQL
+
+# 2. 正しいスキーマファイルをVPSにコピー（Mac側で実行）
+cd ~/Desktop/dist  # またはプロジェクトのある場所
+scp -r /path/to/backend/db/schema.sql root@212.85.24.206:/var/www/worknow/backend/db/
+
+# 3. VPS上で正しいスキーマを適用
+sudo -u postgres psql worknow_production < /var/www/worknow/backend/db/schema.sql
+
+# 4. 管理者アカウントを作成
+cd /var/www/worknow && source venv/bin/activate && HASH=$(python3 -c "from passlib.context import CryptContext; pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto'); print(pwd_context.hash('Kazuya8008'))") && sudo -u postgres psql worknow_production << SQL
+INSERT INTO users (email, password_hash, role, full_name, is_active, phone_verifSQLECT id, email, role, full_name FROM users WHERE email = 'info@sinjapanllc.jp'
+DROP DATABASE
+CREATE DATABASE
+-bash: cd: /root/Desktop/dist: No such file or directory
+scp: stat local "/path/to/backend/db/schema.sql": No such file or directory
+CREATE EXTENSION
+CREATE EXTENSION
+CREATE TABLE
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE TABLE
+CREATE INDEX
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+CREATE TABLE
+CREATE INDEX
+CREATE TABLE
+CREATE INDEX
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+ERROR:  syntax error at or near "begin"
+LINE 8:         begin
+                ^
+ERROR:  syntax error at or near "return"
+LINE 1: return new;
+        ^
+WARNING:  there is no transaction in progress
+COMMIT
+ERROR:  syntax error at or near "$$ language plpgsql;
+    end if;
+end $$"
+LINE 1: $$ language plpgsql;
+        ^
+ERROR:  function public.set_updated_at() does not exist
+CONTEXT:  SQL statement "create trigger set_updated_at_users
+        before update on public.users
+        for each row execute function public.set_updated_at()"
+PL/pgSQL function inline_code_block line 5 at SQL statement
+INSERT 0 1
+                  id                  |        email        | role  |     full_name      
+--------------------------------------+---------------------+-------+--------------------
+ b1cfcdbc-ebf5-4d04-99be-58204aef67ec | info@sinjapanllc.jp | admin | SINJAPAN LLC Admin
+(1 row)
+
+(venv) root@srv1087935:/var/www/worknow# 
