@@ -3,9 +3,19 @@ import { motion } from 'framer-motion';
 import { useAuthStore } from '../../stores/authStore';
 import { useState } from 'react';
 
+const getFullImageUrl = (url: string | undefined): string | undefined => {
+  if (!url) return undefined;
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8008';
+  return `${API_BASE}${url}`;
+};
+
 export function Header() {
   const { user, logout } = useAuthStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const avatarUrl = getFullImageUrl(user?.avatar_url);
   
   return (
     <header className="fixed top-0 left-0 right-0 bg-gradient-to-r from-primary via-primary to-primary-dark backdrop-blur-sm border-b border-primary-dark/30 z-50">
@@ -33,11 +43,15 @@ export function Header() {
                   className="flex items-center space-x-2 text-white hover:text-white/80 transition-colors"
                 >
                   <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white font-medium overflow-hidden">
-                    {user.avatar_url ? (
+                    {avatarUrl ? (
                       <img 
-                        src={user.avatar_url} 
+                        src={avatarUrl} 
                         alt={user.full_name} 
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          console.error('Failed to load avatar:', avatarUrl);
+                          e.currentTarget.style.display = 'none';
+                        }}
                       />
                     ) : (
                       user.full_name.charAt(0).toUpperCase()

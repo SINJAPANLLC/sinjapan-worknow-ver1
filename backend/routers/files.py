@@ -35,7 +35,13 @@ async def save_upload_file(upload_file: UploadFile, file_type: str, user_id: str
             )
         await f.write(content)
     
-    return f"/uploads/{filename}"
+    domain = os.getenv('REPLIT_DEV_DOMAIN', 'localhost:8008')
+    if 'localhost' in domain:
+        base_url = f"http://{domain}"
+    else:
+        base_url = f"https://{domain}"
+    
+    return f"{base_url}/uploads/{filename}"
 
 
 @router.post("/upload/avatar")
