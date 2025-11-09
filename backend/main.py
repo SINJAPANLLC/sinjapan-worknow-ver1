@@ -13,6 +13,7 @@ from routers import (
     reviews,
     notifications,
     admin,
+    client_settings,
     files,
     phone_verification,
     bank_accounts,
@@ -54,6 +55,7 @@ app.include_router(payments.router, prefix="/payments", tags=["Payments"])
 app.include_router(reviews.router, prefix="/reviews", tags=["Reviews"])
 app.include_router(notifications.router, prefix="/notifications", tags=["Notifications"])
 app.include_router(admin.router, prefix="/admin", tags=["Admin"])
+app.include_router(client_settings.router, prefix="/client/settings", tags=["Client Settings"])
 app.include_router(files.router, prefix="/files", tags=["Files"])
 app.include_router(phone_verification.router, prefix="/phone", tags=["Phone Verification"])
 app.include_router(bank_accounts.router)

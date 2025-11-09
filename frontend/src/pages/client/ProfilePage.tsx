@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
-import { authAPI, paymentsAPI, reviewsAPI } from '../../lib/api';
+import { authAPI, paymentsAPI, reviewsAPI, clientSettingsAPI } from '../../lib/api';
 import { slideUp, fadeIn } from '../../utils/animations';
 import { Mail, Calendar, Shield, CreditCard, TrendingUp, Star, X, Building2, Phone, MapPin, Lock, Eye, EyeOff, Bell, FileText } from 'lucide-react';
 import { RoleBottomNav } from '../../components/layout/RoleBottomNav';
@@ -28,21 +28,6 @@ export default function ProfilePage() {
     current_password: '',
     new_password: '',
     confirm_password: '',
-  });
-
-  const [notificationSettings, setNotificationSettings] = useState({
-    push_enabled: true,
-    email_enabled: true,
-    job_applications: true,
-    messages: true,
-    system_notifications: true,
-  });
-
-  const [invoiceSettings, setInvoiceSettings] = useState({
-    company_name: '',
-    company_address: '',
-    company_phone: '',
-    tax_id: '',
   });
 
   const { data: user, isLoading } = useQuery({
@@ -93,6 +78,57 @@ export default function ProfilePage() {
     },
   });
 
+  const { data: notificationPreferences } = useQuery({
+    queryKey: ['client-settings', 'notifications'],
+    queryFn: clientSettingsAPI.getNotificationPreferences,
+    enabled: !!user && user.role === 'company',
+  });
+
+  const { data: invoiceSettings } = useQuery({
+    queryKey: ['client-settings', 'invoice'],
+    queryFn: clientSettingsAPI.getInvoiceSettings,
+    enabled: !!user && user.role === 'company',
+  });
+
+  const updateNotificationsMutation = useMutation({
+    mutationFn: clientSettingsAPI.updateNotificationPreferences,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['client-settings', 'notifications'] });
+      setShowNotificationModal(false);
+      alert('通知設定を保存しました');
+    },
+    onError: (error: any) => {
+      alert(error.message || '設定の保存に失敗しました');
+    },
+  });
+
+  const updateInvoiceMutation = useMutation({
+    mutationFn: clientSettingsAPI.updateInvoiceSettings,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['client-settings', 'invoice'] });
+      setShowInvoiceModal(false);
+      alert('請求書設定を保存しました');
+    },
+    onError: (error: any) => {
+      alert(error.message || '設定の保存に失敗しました');
+    },
+  });
+
+  const [notificationForm, setNotificationForm] = useState({
+    push_enabled: true,
+    email_enabled: true,
+    job_applications: true,
+    messages: true,
+    system_notifications: true,
+  });
+
+  const [invoiceForm, setInvoiceForm] = useState({
+    company_name: '',
+    company_address: '',
+    company_phone: '',
+    tax_id: '',
+  });
+
   const handleOpenEditModal = () => {
     if (user) {
       setEditForm({
@@ -131,6 +167,41 @@ export default function ProfilePage() {
       current_password: passwordForm.current_password,
       new_password: passwordForm.new_password,
     });
+  };
+
+  const handleOpenNotificationModal = () => {
+    if (notificationPreferences) {
+      setNotificationForm({
+        push_enabled: notificationPreferences.push_enabled,
+        email_enabled: notificationPreferences.email_enabled,
+        job_applications: notificationPreferences.job_applications,
+        messages: notificationPreferences.messages,
+        system_notifications: notificationPreferences.system_notifications,
+      });
+    }
+    setShowNotificationModal(true);
+  };
+
+  const handleOpenInvoiceModal = () => {
+    if (invoiceSettings) {
+      setInvoiceForm({
+        company_name: invoiceSettings.company_name || '',
+        company_address: invoiceSettings.company_address || '',
+        company_phone: invoiceSettings.company_phone || '',
+        tax_id: invoiceSettings.tax_id || '',
+      });
+    }
+    setShowInvoiceModal(true);
+  };
+
+  const handleSaveNotificationSettings = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateNotificationsMutation.mutate(notificationForm);
+  };
+
+  const handleSaveInvoiceSettings = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateInvoiceMutation.mutate(invoiceForm);
   };
 
   return (
@@ -320,7 +391,7 @@ export default function ProfilePage() {
                   <Button 
                     variant="outline" 
                     className="w-full justify-start"
-                    onClick={() => setShowNotificationModal(true)}
+                    onClick={handleOpenNotificationModal}
                   >
                     <Bell className="w-4 h-4 mr-2" />
                     通知設定
@@ -328,7 +399,7 @@ export default function ProfilePage() {
                   <Button 
                     variant="outline" 
                     className="w-full justify-start"
-                    onClick={() => setShowInvoiceModal(true)}
+                    onClick={handleOpenInvoiceModal}
                   >
                     <FileText className="w-4 h-4 mr-2" />
                     請求書設定
@@ -599,7 +670,7 @@ export default function ProfilePage() {
                 </button>
               </div>
 
-              <div className="p-6 space-y-6">
+              <form className="p-6 space-y-6" onSubmit={handleSaveNotificationSettings}>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
@@ -607,13 +678,14 @@ export default function ProfilePage() {
                       <p className="text-xs text-gray-500">モバイルデバイスに通知を送信</p>
                     </div>
                     <button
-                      onClick={() => setNotificationSettings({ ...notificationSettings, push_enabled: !notificationSettings.push_enabled })}
+                      type="button"
+                      onClick={() => setNotificationForm({ ...notificationForm, push_enabled: !notificationForm.push_enabled })}
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        notificationSettings.push_enabled ? 'bg-primary' : 'bg-gray-200'
+                        notificationForm.push_enabled ? 'bg-primary' : 'bg-gray-200'
                       }`}
                     >
                       <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        notificationSettings.push_enabled ? 'translate-x-6' : 'translate-x-1'
+                        notificationForm.push_enabled ? 'translate-x-6' : 'translate-x-1'
                       }`} />
                     </button>
                   </div>
@@ -624,13 +696,14 @@ export default function ProfilePage() {
                       <p className="text-xs text-gray-500">メールで通知を受け取る</p>
                     </div>
                     <button
-                      onClick={() => setNotificationSettings({ ...notificationSettings, email_enabled: !notificationSettings.email_enabled })}
+                      type="button"
+                      onClick={() => setNotificationForm({ ...notificationForm, email_enabled: !notificationForm.email_enabled })}
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        notificationSettings.email_enabled ? 'bg-primary' : 'bg-gray-200'
+                        notificationForm.email_enabled ? 'bg-primary' : 'bg-gray-200'
                       }`}
                     >
                       <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        notificationSettings.email_enabled ? 'translate-x-6' : 'translate-x-1'
+                        notificationForm.email_enabled ? 'translate-x-6' : 'translate-x-1'
                       }`} />
                     </button>
                   </div>
@@ -642,8 +715,8 @@ export default function ProfilePage() {
                     <label className="flex items-center">
                       <input
                         type="checkbox"
-                        checked={notificationSettings.job_applications}
-                        onChange={(e) => setNotificationSettings({ ...notificationSettings, job_applications: e.target.checked })}
+                        checked={notificationForm.job_applications}
+                        onChange={(e) => setNotificationForm({ ...notificationForm, job_applications: e.target.checked })}
                         className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                       />
                       <span className="ml-3 text-sm text-gray-700">求人応募通知</span>
@@ -651,8 +724,8 @@ export default function ProfilePage() {
                     <label className="flex items-center">
                       <input
                         type="checkbox"
-                        checked={notificationSettings.messages}
-                        onChange={(e) => setNotificationSettings({ ...notificationSettings, messages: e.target.checked })}
+                        checked={notificationForm.messages}
+                        onChange={(e) => setNotificationForm({ ...notificationForm, messages: e.target.checked })}
                         className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                       />
                       <span className="ml-3 text-sm text-gray-700">メッセージ通知</span>
@@ -660,8 +733,8 @@ export default function ProfilePage() {
                     <label className="flex items-center">
                       <input
                         type="checkbox"
-                        checked={notificationSettings.system_notifications}
-                        onChange={(e) => setNotificationSettings({ ...notificationSettings, system_notifications: e.target.checked })}
+                        checked={notificationForm.system_notifications}
+                        onChange={(e) => setNotificationForm({ ...notificationForm, system_notifications: e.target.checked })}
                         className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                       />
                       <span className="ml-3 text-sm text-gray-700">システム通知</span>
@@ -671,6 +744,7 @@ export default function ProfilePage() {
 
                 <div className="flex gap-3 pt-4">
                   <Button
+                    type="button"
                     variant="outline"
                     className="flex-1"
                     onClick={() => setShowNotificationModal(false)}
@@ -678,17 +752,15 @@ export default function ProfilePage() {
                     キャンセル
                   </Button>
                   <Button
+                    type="submit"
                     variant="primary"
                     className="flex-1"
-                    onClick={() => {
-                      alert('通知設定を保存しました');
-                      setShowNotificationModal(false);
-                    }}
+                    disabled={updateNotificationsMutation.isPending}
                   >
-                    保存
+                    {updateNotificationsMutation.isPending ? '保存中...' : '保存'}
                   </Button>
                 </div>
-              </div>
+              </form>
             </motion.div>
           </motion.div>
         )}
@@ -722,15 +794,15 @@ export default function ProfilePage() {
                 </button>
               </div>
 
-              <form className="p-6 space-y-4">
+              <form className="p-6 space-y-4" onSubmit={handleSaveInvoiceSettings}>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     会社名
                   </label>
                   <input
                     type="text"
-                    value={invoiceSettings.company_name}
-                    onChange={(e) => setInvoiceSettings({ ...invoiceSettings, company_name: e.target.value })}
+                    value={invoiceForm.company_name}
+                    onChange={(e) => setInvoiceForm({ ...invoiceForm, company_name: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="株式会社〇〇"
                   />
@@ -741,8 +813,8 @@ export default function ProfilePage() {
                     会社住所
                   </label>
                   <textarea
-                    value={invoiceSettings.company_address}
-                    onChange={(e) => setInvoiceSettings({ ...invoiceSettings, company_address: e.target.value })}
+                    value={invoiceForm.company_address}
+                    onChange={(e) => setInvoiceForm({ ...invoiceForm, company_address: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="〒000-0000 東京都..."
                     rows={3}
@@ -755,8 +827,8 @@ export default function ProfilePage() {
                   </label>
                   <input
                     type="tel"
-                    value={invoiceSettings.company_phone}
-                    onChange={(e) => setInvoiceSettings({ ...invoiceSettings, company_phone: e.target.value })}
+                    value={invoiceForm.company_phone}
+                    onChange={(e) => setInvoiceForm({ ...invoiceForm, company_phone: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="03-1234-5678"
                   />
@@ -768,8 +840,8 @@ export default function ProfilePage() {
                   </label>
                   <input
                     type="text"
-                    value={invoiceSettings.tax_id}
-                    onChange={(e) => setInvoiceSettings({ ...invoiceSettings, tax_id: e.target.value })}
+                    value={invoiceForm.tax_id}
+                    onChange={(e) => setInvoiceForm({ ...invoiceForm, tax_id: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="1234567890123"
                   />
@@ -785,15 +857,12 @@ export default function ProfilePage() {
                     キャンセル
                   </Button>
                   <Button
-                    type="button"
+                    type="submit"
                     variant="primary"
                     className="flex-1"
-                    onClick={() => {
-                      alert('請求書設定を保存しました');
-                      setShowInvoiceModal(false);
-                    }}
+                    disabled={updateInvoiceMutation.isPending}
                   >
-                    保存
+                    {updateInvoiceMutation.isPending ? '保存中...' : '保存'}
                   </Button>
                 </div>
               </form>
