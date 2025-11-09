@@ -69,6 +69,10 @@ export function ProfilePage() {
 
   if (!user) return null;
 
+  const handleIdDocumentClick = () => {
+    document.getElementById('id-document-upload')?.click();
+  };
+
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -77,6 +81,8 @@ export function ProfilePage() {
     try {
       const result = await filesAPI.uploadAvatar(file);
       setUser(result.user);
+      alert('プロフィール写真をアップロードしました');
+      e.target.value = '';
     } catch (error) {
       console.error('Avatar upload failed:', error);
       alert('プロフィール写真のアップロードに失敗しました');
@@ -94,6 +100,7 @@ export function ProfilePage() {
       const result = await filesAPI.uploadIdDocument(file);
       setUser(result.user);
       alert('本人確認書類をアップロードしました');
+      e.target.value = '';
     } catch (error) {
       console.error('ID document upload failed:', error);
       alert('本人確認書類のアップロードに失敗しました');
@@ -252,7 +259,11 @@ export function ProfilePage() {
               <div className="relative">
                 <div className="w-24 h-24 rounded-full bg-gradient-to-r from-[#00CED1] to-[#009999] flex items-center justify-center text-white text-3xl font-bold overflow-hidden">
                   {user.avatar_url ? (
-                    <img src={user.avatar_url} alt={user.full_name} className="w-full h-full object-cover" />
+                    <img 
+                      src={user.avatar_url} 
+                      alt={user.full_name} 
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     user.full_name.charAt(0).toUpperCase()
                   )}
@@ -743,11 +754,14 @@ export function ProfilePage() {
                     <XCircleIcon className="w-6 h-6 text-gray-400" />
                   )}
                 </div>
-                <label htmlFor="id-document-upload">
-                  <Button variant="outline" className="w-full" disabled={isUploading}>
-                    {user.id_document_url ? '書類を再アップロード' : '書類をアップロード'}
-                  </Button>
-                </label>
+                <Button 
+                  variant="outline" 
+                  className="w-full" 
+                  disabled={isUploading}
+                  onClick={handleIdDocumentClick}
+                >
+                  {user.id_document_url ? '書類を再アップロード' : '書類をアップロード'}
+                </Button>
                 <input
                   id="id-document-upload"
                   type="file"
