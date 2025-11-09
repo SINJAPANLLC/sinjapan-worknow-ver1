@@ -60,6 +60,12 @@ export default function ApplicationsManagePage() {
     enabled: !!jobId,
   });
 
+  const { data: workerInfo } = useQuery({
+    queryKey: ['worker', selectedApplication?.worker_id],
+    queryFn: () => usersAPI.get(selectedApplication!.worker_id),
+    enabled: !!selectedApplication?.worker_id,
+  });
+
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }: { id: string; status: ApplicationStatus }) => 
       applicationsAPI.updateStatus(id, status),
@@ -257,13 +263,6 @@ export default function ApplicationsManagePage() {
     );
   };
 
-  // Fetch worker info for selected application
-  const { data: workerInfo } = useQuery({
-    queryKey: ['user', selectedApplication?.worker_id],
-    queryFn: () => usersAPI.get(selectedApplication!.worker_id),
-    enabled: !!selectedApplication,
-  });
-
   const isLoading = jobLoading || allApplicationsLoading;
 
   return (
@@ -445,40 +444,88 @@ export default function ApplicationsManagePage() {
 
               <div className="space-y-6">
                 {/* Worker Info */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <UserIcon className="w-5 h-5" />
+                <div className="bg-gradient-to-r from-[#00CED1]/10 to-[#009999]/10 rounded-lg p-4 border border-[#00CED1]/20">
+                  <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <UserIcon className="w-5 h-5 text-[#00CED1]" />
                     ワーカー情報
                   </h4>
                   {workerInfo ? (
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-600">名前:</span>
-                        <span className="font-medium text-gray-900">{workerInfo.full_name}</span>
+                    <div className="space-y-3 text-sm">
+                      <div className="flex items-center gap-3">
+                        {workerInfo.avatar_url ? (
+                          <img 
+                            src={workerInfo.avatar_url} 
+                            alt={workerInfo.full_name}
+                            className="w-12 h-12 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 bg-gradient-to-br from-[#00CED1] to-[#009999] rounded-full flex items-center justify-center text-white font-bold">
+                            {workerInfo.full_name.charAt(0)}
+                          </div>
+                        )}
+                        <div>
+                          <div className="font-bold text-lg text-gray-900">{workerInfo.full_name}</div>
+                          {workerInfo.affiliation && (
+                            <div className="text-xs text-gray-600">{workerInfo.affiliation}</div>
+                          )}
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-600">メール:</span>
-                        <span className="font-medium text-gray-900">{workerInfo.email}</span>
-                      </div>
-                      {workerInfo.phone && (
+                      
+                      {workerInfo.gender && (
                         <div className="flex items-center gap-2">
-                          <span className="text-gray-600">電話:</span>
-                          <span className="font-medium text-gray-900">{workerInfo.phone}</span>
+                          <span className="text-gray-600">性別:</span>
+                          <span className="font-medium text-gray-900">
+                            {workerInfo.gender === 'male' ? '男性' : 
+                             workerInfo.gender === 'female' ? '女性' : 
+                             workerInfo.gender === 'other' ? 'その他' : '回答しない'}
+                          </span>
                         </div>
                       )}
+                      
                       {workerInfo.preferred_prefecture && (
                         <div className="flex items-center gap-2">
+                          <MapPin className="w-4 h-4 text-gray-500" />
                           <span className="text-gray-600">希望勤務地:</span>
                           <span className="font-medium text-gray-900">{workerInfo.preferred_prefecture}</span>
                         </div>
                       )}
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-600">ID:</span>
-                        <span className="font-medium text-gray-600 text-xs">{selectedApplication.worker_id}</span>
+                      
+                      {workerInfo.work_style && (
+                        <div className="flex items-center gap-2">
+                          <Briefcase className="w-4 h-4 text-gray-500" />
+                          <span className="text-gray-600">働き方:</span>
+                          <span className="font-medium text-gray-900">{workerInfo.work_style}</span>
+                        </div>
+                      )}
+                      
+                      {workerInfo.qualifications && workerInfo.qualifications.length > 0 && (
+                        <div>
+                          <div className="text-gray-600 mb-2 flex items-center gap-2">
+                            <CheckCircle className="w-4 h-4 text-gray-500" />
+                            スキル・資格:
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {workerInfo.qualifications.map((qual, idx) => (
+                              <Badge key={idx} variant="success" size="sm">
+                                {qual}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div className="flex items-center gap-2 pt-2 border-t border-gray-200">
+                        <span className="text-gray-600">登録日:</span>
+                        <span className="font-medium text-gray-900 text-xs">
+                          {new Date(workerInfo.created_at).toLocaleDateString('ja-JP')}
+                        </span>
                       </div>
                     </div>
                   ) : (
-                    <div className="text-sm text-gray-600">読み込み中...</div>
+                    <div className="flex items-center justify-center py-4">
+                      <div className="inline-block w-6 h-6 border-2 border-[#00CED1]/30 border-t-[#00CED1] rounded-full animate-spin" />
+                      <span className="ml-2 text-sm text-gray-600">読み込み中...</span>
+                    </div>
                   )}
                 </div>
 

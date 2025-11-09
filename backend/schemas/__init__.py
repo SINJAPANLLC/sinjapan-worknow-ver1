@@ -42,7 +42,7 @@ from .payment import (
     PaymentUpdate,
 )
 from .review import ReviewCreate, ReviewList, ReviewRead, ReviewUpdate
-from .user import UserBase, UserCreate, UserRead, UserRole, UserUpdate
+from .user import UserBase, UserCreate, UserRead, UserRole, UserUpdate, WorkerPublicProfile
 
 __all__ = [
     "ApplicationCreate",
@@ -94,4 +94,5 @@ __all__ = [
     "UserRead",
     "UserRole",
     "UserUpdate",
+    "WorkerPublicProfile",
 ]

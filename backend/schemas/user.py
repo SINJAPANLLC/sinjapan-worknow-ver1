@@ -73,3 +73,15 @@ class UserUpdate(BaseModel):
 
 class UserRead(UserBase):
     id: str
+
+
+class WorkerPublicProfile(TimestampedModel):
+    """Public worker profile visible to companies/admins (excludes sensitive data)"""
+    id: str
+    full_name: str
+    avatar_url: Optional[str] = None
+    gender: Optional[Gender] = None
+    work_style: Optional[str] = None
+    affiliation: Optional[str] = None
+    preferred_prefecture: Optional[str] = None
+    qualifications: Optional[List[str]] = None
