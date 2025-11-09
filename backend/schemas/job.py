@@ -20,6 +20,7 @@ class JobBase(TimestampedModel):
     location: Optional[str] = None
     employment_type: Optional[str] = None
     hourly_rate: Optional[int] = Field(default=None, ge=0)
+    transportation_allowance: Optional[int] = Field(default=None, ge=0)
     currency: str = Field(default="JPY", max_length=3)
     status: JobStatus = JobStatus.DRAFT
     tags: List[str] = []
@@ -40,6 +41,7 @@ class JobCreate(BaseModel):
     location: Optional[str] = None
     employment_type: Optional[str] = None
     hourly_rate: Optional[int] = Field(default=None, ge=0)
+    transportation_allowance: Optional[int] = Field(default=None, ge=0)
     currency: str = Field(default="JPY", max_length=3)
     tags: List[str] = []
     starts_at: Optional[datetime] = None
@@ -59,6 +61,7 @@ class JobUpdate(BaseModel):
     location: Optional[str] = None
     employment_type: Optional[str] = None
     hourly_rate: Optional[int] = Field(default=None, ge=0)
+    transportation_allowance: Optional[int] = Field(default=None, ge=0)
     currency: Optional[str] = Field(default=None, max_length=3)
     status: Optional[JobStatus] = None
     tags: Optional[List[str]] = None

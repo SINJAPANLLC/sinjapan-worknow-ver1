@@ -32,6 +32,7 @@ interface FormData {
   prefecture: string;
   employment_type: string;
   hourly_rate: string;
+  transportation_allowance: string;
   tags: string;
   starts_at: string;
   ends_at: string;
@@ -61,6 +62,7 @@ export default function JobCreatePage() {
     prefecture: '',
     employment_type: 'part-time',
     hourly_rate: '',
+    transportation_allowance: '',
     tags: '',
     starts_at: '',
     ends_at: '',
