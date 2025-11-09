@@ -1,0 +1,37 @@
+Nov 09 14:36:46 srv1087935 systemd[1]: Stopping worknow-frontend.service - Work Now Frontend (React + Vite)...
+Nov 09 14:36:46 srv1087935 systemd[1]: worknow-frontend.service: Deactivated successfully.
+Nov 09 14:36:46 srv1087935 systemd[1]: Stopped worknow-frontend.service - Work Now Frontend (React + Vite).
+Nov 09 14:36:46 srv1087935 systemd[1]: Started worknow-frontend.service - Work Now Frontend (React + Vite).
+Nov 09 14:36:46 srv1087935 node[158898]: Frontend server running on http://0.0.0.0:20000
+Nov 09 14:36:49 srv1087935 node[158898]: Error: ENOENT: no such file or directory, stat '/var/www/worknow/frontend/dist/index.html'
+Nov 09 14:36:55 srv1087935 systemd[1]: Stopping worknow-frontend.service - Work Now Frontend (React + Vite)...
+Nov 09 14:36:55 srv1087935 systemd[1]: worknow-frontend.service: Deactivated successfully.
+Nov 09 14:36:55 srv1087935 systemd[1]: Stopped worknow-frontend.service - Work Now Frontend (React + Vite).
+Nov 09 14:36:55 srv1087935 systemd[1]: Started worknow-frontend.service - Work Now Frontend (React + Vite).
+Nov 09 14:36:55 srv1087935 node[158921]: Frontend server running on http://0.0.0.0:20000
+Nov 09 14:37:00 srv1087935 node[158921]: Error: ENOENT: no such file or directory, stat '/var/www/worknow/frontend/dist/index.html'
+Nov 09 14:37:07 srv1087935 node[158921]: Error: ENOENT: no such file or directory, stat '/var/www/worknow/frontend/dist/index.html'
+file:///root/.npm/_npx/9ed06546b0653f96/node_modules/vite/dist/node/cli.js:311
+			for (const name of Object.keys(options)) if (name !== "--" && !this.hasOption(name) && !globalCommand.hasOption(name)) throw new CACError(`Unknown option \`${name.length > 1 ? `--${name}` : `-${name}`}\``);
+			                                                                                                                             ^
+
+CACError: Unknown option `--force`
+    at Command.checkUnknownOptions (file:///root/.npm/_npx/9ed06546b0653f96/node_modules/vite/dist/node/cli.js:311:129)
+    at CAC.runMatchedCommand (file:///root/.npm/_npx/9ed06546b0653f96/node_modules/vite/dist/node/cli.js:473:11)
+    at CAC.parse (file:///root/.npm/_npx/9ed06546b0653f96/node_modules/vite/dist/node/cli.js:430:17)
+    at file:///root/.npm/_npx/9ed06546b0653f96/node_modules/vite/dist/node/cli.js:695:5
+    at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)
+
+Node.js v20.19.5
+ls: cannot access 'dist/': No such file or directory
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Not Found</pre>
+</body>
+</html>
