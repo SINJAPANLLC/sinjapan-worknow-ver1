@@ -31,7 +31,10 @@ async def get_worker_profile(
     return WorkerPublicProfile(
         id=user.id,
         full_name=user.full_name,
+        email=user.email,
         avatar_url=user.avatar_url,
+        phone=user.phone,
+        phone_verified=user.phone_verified,
         gender=user.gender,
         work_style=user.work_style,
         affiliation=user.affiliation,

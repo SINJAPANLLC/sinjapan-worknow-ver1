@@ -76,10 +76,13 @@ class UserRead(UserBase):
 
 
 class WorkerPublicProfile(TimestampedModel):
-    """Public worker profile visible to companies/admins (excludes sensitive data)"""
+    """Public worker profile visible to companies/admins for communication purposes"""
     id: str
     full_name: str
+    email: EmailStr
     avatar_url: Optional[str] = None
+    phone: Optional[str] = None
+    phone_verified: bool = False
     gender: Optional[Gender] = None
     work_style: Optional[str] = None
     affiliation: Optional[str] = None

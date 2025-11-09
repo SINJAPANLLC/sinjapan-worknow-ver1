@@ -513,12 +513,43 @@ export default function ApplicationsManagePage() {
                         </div>
                       )}
                       
+                      <div className="border-t border-gray-200 pt-3 mt-3 space-y-2">
+                        <div className="text-gray-600 font-semibold mb-2">連絡先情報</div>
+                        {workerInfo.email && (
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-600">メール:</span>
+                            <span className="font-medium text-gray-900 text-xs">{workerInfo.email}</span>
+                          </div>
+                        )}
+                        {workerInfo.phone && (
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-600">電話番号:</span>
+                            <span className="font-medium text-gray-900">{workerInfo.phone}</span>
+                            {workerInfo.phone_verified && (
+                              <Badge variant="success" size="sm">認証済み</Badge>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      
                       <div className="flex items-center gap-2 pt-2 border-t border-gray-200">
                         <span className="text-gray-600">登録日:</span>
                         <span className="font-medium text-gray-900 text-xs">
                           {new Date(workerInfo.created_at).toLocaleDateString('ja-JP')}
                         </span>
                       </div>
+
+                      {/* Message Worker Button */}
+                      <Button
+                        onClick={() => {
+                          setSelectedApplication(null);
+                          navigate(`/client/messages?user_id=${selectedApplication.worker_id}`);
+                        }}
+                        className="w-full mt-4 bg-gradient-to-r from-[#00CED1] to-[#009999] text-white hover:from-[#009999] hover:to-[#00CED1]"
+                      >
+                        <MessageSquare className="w-4 h-4 mr-2" />
+                        メッセージを送る
+                      </Button>
                     </div>
                   ) : (
                     <div className="flex items-center justify-center py-4">
