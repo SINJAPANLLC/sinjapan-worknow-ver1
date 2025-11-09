@@ -32,8 +32,16 @@ export function Header() {
                   onBlur={() => setTimeout(() => setIsMenuOpen(false), 200)}
                   className="flex items-center space-x-2 text-white hover:text-white/80 transition-colors"
                 >
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white font-medium">
-                    {user.full_name.charAt(0).toUpperCase()}
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white font-medium overflow-hidden">
+                    {user.avatar_url ? (
+                      <img 
+                        src={user.avatar_url} 
+                        alt={user.full_name} 
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      user.full_name.charAt(0).toUpperCase()
+                    )}
                   </div>
                   <span className="hidden md:block text-sm font-medium">{user.full_name}</span>
                 </button>
@@ -53,6 +61,13 @@ export function Header() {
                       onClick={() => setIsMenuOpen(false)}
                     >
                       プロフィール
+                    </Link>
+                    <Link
+                      to="/notifications"
+                      className="block px-4 py-2 text-sm text-neutral-700 hover:bg-primary-50 hover:text-primary-600"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      通知
                     </Link>
                     <Link
                       to="/settings"
