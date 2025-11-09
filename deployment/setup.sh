@@ -28,6 +28,17 @@ apt update && apt upgrade -y
 # 2. 必要なパッケージのインストール
 # ========================================
 echo -e "${GREEN}[2/10] 必要なパッケージをインストール中...${NC}"
+
+# Node.js 20.xをインストール（推奨バージョン）
+if ! command -v node &> /dev/null || [[ $(node -v | cut -d'v' -f2 | cut -d'.' -f1) -lt 20 ]]; then
+    echo -e "${GREEN}Node.js 20.xをインストール中...${NC}"
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+    apt install -y nodejs
+else
+    echo -e "${GREEN}Node.js $(node -v) は既にインストールされています${NC}"
+fi
+
+# その他のパッケージをインストール（npmは除外：NodeSourceのNode.jsに含まれているため）
 apt install -y \
     git \
     nginx \
@@ -36,17 +47,10 @@ apt install -y \
     python3 \
     python3-pip \
     python3-venv \
-    nodejs \
-    npm \
     certbot \
     python3-certbot-nginx \
     ufw \
     fail2ban
-
-# Node.js 20.xをインストール（推奨バージョン）
-echo -e "${GREEN}Node.js 20.xをインストール中...${NC}"
-curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-apt install -y nodejs
 
 # ========================================
 # 3. ファイアウォール設定

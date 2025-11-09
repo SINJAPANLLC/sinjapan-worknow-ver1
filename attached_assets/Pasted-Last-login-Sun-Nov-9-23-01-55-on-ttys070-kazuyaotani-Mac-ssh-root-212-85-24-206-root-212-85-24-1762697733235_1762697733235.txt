@@ -1,0 +1,146 @@
+Last login: Sun Nov  9 23:01:55 on ttys070
+kazuyaotani@Mac ~ % ssh root@212.85.24.206
+root@212.85.24.206's password: 
+Permission denied, please try again.
+root@212.85.24.206's password: 
+Welcome to Ubuntu 24.04.3 LTS (GNU/Linux 6.8.0-85-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Sun Nov  9 14:09:57 UTC 2025
+
+  System load:  0.01               Processes:             129
+  Usage of /:   13.9% of 95.82GB   Users logged in:       0
+  Memory usage: 27%                IPv4 address for eth0: 212.85.24.206
+  Swap usage:   0%                 IPv6 address for eth0: 2a02:4780:59:cc86::1
+
+ * Strictly confined Kubernetes makes edge and IoT secure. Learn how MicroK8s
+   just raised the bar for easy, resilient and secure K8s cluster deployment.
+
+   https://ubuntu.com/engage/secure-kubernetes-at-the-edge
+
+Expanded Security Maintenance for Applications is not enabled.
+
+0 updates can be applied immediately.
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+
+1 updates could not be installed automatically. For more details,
+see /var/log/unattended-upgrades/unattended-upgrades.log
+
+*** System restart required ***
+Last login: Sun Nov  9 14:02:05 2025 from 106.155.51.71
+root@srv1087935:~# cd /tmp
+git clone https://github.com/SINJAPANLLC/sinjapan-worknow-ver1.git
+cd sinjapan-worknow-ver1
+chmod +x deployment/setup.sh
+sudo bash deployment/setup.sh
+Cloning into 'sinjapan-worknow-ver1'...
+remote: Enumerating objects: 1923, done.
+remote: Counting objects: 100% (1923/1923), done.
+remote: Compressing objects: 100% (496/496), done.
+remote: Total 1923 (delta 1390), reused 1898 (delta 1373), pack-reused 0 (from 0)
+Receiving objects: 100% (1923/1923), 14.51 MiB | 10.43 MiB/s, done.
+Resolving deltas: 100% (1390/1390), done.
+=========================================
+Work Now VPSセットアップを開始します
+=========================================
+[1/10] システムを更新中...
+Hit:1 https://cdn.ubuntu.repo.cloudeka.id/ubuntu noble-backports InRelease
+Hit:2 https://cdn.ubuntu.repo.cloudeka.id/ubuntu noble InRelease               
+Get:3 https://cdn.ubuntu.repo.cloudeka.id/ubuntu noble-security InRelease [126 kB]
+Hit:4 https://cdn.ubuntu.repo.cloudeka.id/ubuntu noble-updates InRelease       
+Hit:5 http://archive.ubuntu.com/ubuntu noble InRelease                         
+Get:6 https://cdn.ubuntu.repo.cloudeka.id/ubuntu noble-security/main amd64 Components [21.5 kB]
+Get:7 https://cdn.ubuntu.repo.cloudeka.id/ubuntu noble-security/restricted amd64 Components [212 B]
+Get:8 https://cdn.ubuntu.repo.cloudeka.id/ubuntu noble-security/universe amd64 Components [52.3 kB]
+Get:9 https://cdn.ubuntu.repo.cloudeka.id/ubuntu noble-security/multiverse amd64 Components [208 B]
+Hit:10 https://repository.monarx.com/repository/ubuntu-noble noble InRelease   
+Hit:11 https://deb.nodesource.com/node_20.x nodistro InRelease      
+Get:12 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+Get:13 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+Get:14 http://archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+Get:15 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Components [175 kB]
+Get:16 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [378 kB]
+Get:17 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Components [212 B]
+Get:18 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [940 B]
+Get:19 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [7140 B]
+Get:20 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [11.0 kB]
+Get:21 http://archive.ubuntu.com/ubuntu noble-backports/restricted amd64 Components [216 B]
+Get:22 http://archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Components [212 B]
+Get:23 http://archive.ubuntu.com/ubuntu noble-security/main amd64 Components [21.5 kB]
+Get:24 http://archive.ubuntu.com/ubuntu noble-security/universe amd64 Components [52.3 kB]
+Get:25 http://archive.ubuntu.com/ubuntu noble-security/restricted amd64 Components [212 B]
+Get:26 http://archive.ubuntu.com/ubuntu noble-security/multiverse amd64 Components [212 B]
+Fetched 1226 kB in 2s (494 kB/s)           
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+1 package can be upgraded. Run 'apt list --upgradable' to see it.
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+Calculating upgrade... Done
+The following packages have been kept back:
+  cloud-init
+0 upgraded, 0 newly installed, 0 to remove and 1 not upgraded.
+[2/10] 必要なパッケージをインストール中...
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+git is already the newest version (1:2.43.0-1ubuntu7.3).
+nginx is already the newest version (1.24.0-2ubuntu7.5).
+postgresql is already the newest version (16+257build1.1).
+postgresql-contrib is already the newest version (16+257build1.1).
+python3 is already the newest version (3.12.3-0ubuntu2).
+python3 set to manually installed.
+nodejs is already the newest version (20.19.5-1nodesource1).
+certbot is already the newest version (2.9.0-1).
+python3-certbot-nginx is already the newest version (2.9.0-1).
+ufw is already the newest version (0.36.2-6).
+fail2ban is already the newest version (1.0.2-3ubuntu0.1).
+Some packages could not be installed. This may mean that you have
+requested an impossible situation or if you are using the unstable
+distribution that some required packages have not yet been created
+or been moved out of Incoming.
+The following information may help to resolve the situation:
+
+The following packages have unmet dependencies:
+ nodejs : Conflicts: npm
+ npm : Depends: node-agent-base but it is not going to be installed
+       Depends: node-archy but it is not going to be installed
+       Depends: node-cacache (>= 17) but it is not going to be installed
+       Depends: node-chalk (>= 5.1.2-2~) but it is not going to be installed
+       Depends: node-cli-table3
+       Depends: node-columnify but it is not going to be installed
+       Depends: node-cssesc
+       Depends: node-debug but it is not going to be installed
+       Depends: node-emoji-regex
+       Depends: node-gyp but it is not going to be installed
+       Depends: node-http-proxy-agent but it is not going to be installed
+       Depends: node-https-proxy-agent but it is not going to be installed
+       Depends: node-mkdirp but it is not going to be installed
+       Depends: node-ms but it is not going to be installed
+       Depends: node-nopt but it is not going to be installed
+       Depends: node-normalize-package-data but it is not going to be installed
+       Depends: node-npm-bundled but it is not going to be installed
+       Depends: node-npm-normalize-package-bin
+       Depends: node-npm-package-arg (>= 10) but it is not going to be installed
+       Depends: node-npmlog but it is not going to be installed
+       Depends: node-postcss-selector-parser
+       Depends: node-read-package-json but it is not going to be installed
+       Depends: node-rimraf but it is not going to be installed
+       Depends: node-semver but it is not going to be installed
+       Depends: node-string-width but it is not going to be installed
+       Depends: node-strip-ansi but it is not going to be installed
+       Depends: node-tar but it is not going to be installed
+       Depends: node-validate-npm-package-name but it is not going to be installed
+       Depends: node-which but it is not going to be installed
+       Depends: nodejs:any
+       Recommends: node-tap but it is not going to be installed
+E: Unable to correct problems, you have held broken packages.
+root@srv1087935:/tmp/sinjapan-worknow-ver1# 
