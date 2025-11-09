@@ -1,0 +1,101 @@
+END;
+$$ LANGUAGE plpgsql;
+
+-- 既存テーブルにトリガーを追加
+DROP TRIGGER IF EXISTS set_updated_at_users ON users;
+CREATE TRIGGER set_updated_at_users BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+DROP TRIGGER IF EXISTS set_updated_at_jobs ON jobs;
+CREATE TRIGGER set_updated_at_jobs BEFORE UPDATE ON jobs FOR EACH ROW EXECUTE FUecho "Password: Kazuya8008"lc.jp"japan-worknow.com"t_updated_at"e);TZ;ALSE;nt_in
+CREATE FUNCTION
+NOTICE:  trigger "set_updated_at_users" for relation "users" does not exist, skipping
+DROP TRIGGER
+CREATE TRIGGER
+NOTICE:  trigger "set_updated_at_jobs" for relation "jobs" does not exist, skipping
+DROP TRIGGER
+CREATE TRIGGER
+NOTICE:  trigger "set_updated_at_applications" for relation "applications" does not exist, skipping
+DROP TRIGGER
+CREATE TRIGGER
+NOTICE:  trigger "set_updated_at_assignments" for relation "assignments" does not exist, skipping
+DROP TRIGGER
+CREATE TRIGGER
+NOTICE:  trigger "set_updated_at_payments" for relation "payments" does not exist, skipping
+DROP TRIGGER
+CREATE TRIGGER
+NOTICE:  trigger "set_updated_at_reviews" for relation "reviews" does not exist, skipping
+DROP TRIGGER
+CREATE TRIGGER
+NOTICE:  trigger "set_updated_at_notifications" for relation "notifications" does not exist, skipping
+DROP TRIGGER
+CREATE TRIGGER
+NOTICE:  trigger "set_updated_at_bank_accounts" for relation "bank_accounts" does not exist, skipping
+DROP TRIGGER
+CREATE TRIGGER
+NOTICE:  trigger "set_updated_at_withdrawal_requests" for relation "withdrawal_requests" does not exist, skipping
+DROP TRIGGER
+CREATE TRIGGER
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+CREATE TABLE
+CREATE INDEX
+CREATE TRIGGER
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+CREATE TABLE
+CREATE TRIGGER
+CREATE TABLE
+CREATE INDEX
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE TABLE
+CREATE TRIGGER
+CREATE TABLE
+CREATE TRIGGER
+CREATE TABLE
+CREATE INDEX
+ALTER TABLE
+ALTER TABLE
+CREATE INDEX
+✅ トリガーと欠落テーブルを追加しました
+                      List of relations
+ Schema |              Name               | Type  |  Owner   
+--------+---------------------------------+-------+----------
+ public | activity_logs                   | table | postgres
+ public | applications                    | table | postgres
+ public | assignments                     | table | postgres
+ public | bank_accounts                   | table | postgres
+ public | client_invoice_settings         | table | postgres
+ public | client_notification_preferences | table | postgres
+ public | conversation_participants       | table | postgres
+ public | conversations                   | table | postgres
+ public | device_tokens                   | table | postgres
+ public | job_notifications               | table | postgres
+ public | jobs                            | table | postgres
+ public | messages                        | table | postgres
+ public | notifications                   | table | postgres
+ public | payments                        | table | postgres
+ public | penalties                       | table | postgres
+ public | qr_tokens                       | table | postgres
+ public | reviews                         | table | postgres
+ public | users                           | table | postgres
+ public | withdrawal_requests             | table | postgres
+ public | worker_favorites                | table | postgres
+(20 rows)
+
+                            List of functions
+ Schema |      Name      | Result data type | Argument data types | Type 
+--------+----------------+------------------+---------------------+------
+ public | set_updated_at | trigger          |                     | func
+(1 row)
+
+
+🎉 データベースセットアップ完了！
+ログインテスト: https://sinjapan-worknow.com
+Email: info@sinjapanllc.jp
+Password: Kazuya8008
+(venv) root@srv1087935:/var/www/worknow# 
