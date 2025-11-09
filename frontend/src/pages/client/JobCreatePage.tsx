@@ -18,16 +18,12 @@ import {
   Send,
   AlertCircle,
   CheckCircle,
-  Zap,
-  Plus,
-  Flame,
-  MessageCircle,
-  UserCircle,
   Upload,
   X,
   Clock,
+  Zap,
 } from 'lucide-react';
-import { BottomNav } from '../../components/layout/BottomNav';
+import { RoleBottomNav } from '../../components/layout/RoleBottomNav';
 
 interface FormData {
   title: string;
@@ -668,15 +664,7 @@ export default function JobCreatePage() {
         )}
       </div>
 
-      <BottomNav
-        items={[
-          { label: '求人管理', path: '/jobs/manage', icon: Briefcase },
-          { label: '新規作成', path: '/jobs/new', icon: Plus },
-          { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
-          { label: 'マイページ', path: '/profile', icon: UserCircle },
-        ]}
-      />
+      <RoleBottomNav />
     </div>
   );
 }

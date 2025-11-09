@@ -9,11 +9,6 @@ import { jobsAPI, assignmentsAPI, reviewsAPI, type Assignment, type Job } from '
 import { useAuthStore } from '../../stores/authStore';
 import { slideUp, fadeIn } from '../../utils/animations';
 import { 
-  Sparkles, 
-  Zap, 
-  Flame, 
-  MessageCircle, 
-  UserCircle, 
   Eye, 
   Edit, 
   Trash2, 
@@ -33,9 +28,10 @@ import {
   XCircle,
   AlertCircle,
   FileText,
-  Filter
+  Filter,
+  Flame
 } from 'lucide-react';
-import { BottomNav } from '../../components/layout/BottomNav';
+import { RoleBottomNav } from '../../components/layout/RoleBottomNav';
 
 type ViewMode = 'kanban' | 'list';
 type JobStatus = 'draft' | 'published' | 'closed';
@@ -682,15 +678,7 @@ export default function JobsManagePage() {
         )}
       </AnimatePresence>
 
-      <BottomNav
-        items={[
-          { label: 'ダッシュボード', path: '/dashboard', icon: Sparkles },
-          { label: '求人作成', path: '/jobs/new', icon: Zap },
-          { label: '求人管理', path: '/jobs/manage', icon: Flame },
-          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
-          { label: 'マイページ', path: '/profile', icon: UserCircle },
-        ]}
-      />
+      <RoleBottomNav />
     </div>
   );
 }

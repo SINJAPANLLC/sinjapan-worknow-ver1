@@ -18,8 +18,7 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { slideUp, fadeIn } from '../../utils/animations';
-import { BottomNav } from '../../components/layout/BottomNav';
-import { Sparkles, Zap, Flame, MessageCircle, UserCircle } from 'lucide-react';
+import { RoleBottomNav } from '../../components/layout/RoleBottomNav';
 
 type PaymentStatus = 'pending' | 'processing' | 'completed' | 'failed';
 
@@ -324,15 +323,7 @@ export default function ClientPaymentsPage() {
         )}
       </AnimatePresence>
 
-      <BottomNav
-        items={[
-          { label: 'ダッシュボード', path: '/client/dashboard', icon: Sparkles },
-          { label: '求人作成', path: '/client/jobs/new', icon: Zap },
-          { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
-          { label: 'マイページ', path: '/profile', icon: UserCircle },
-        ]}
-      />
+      <RoleBottomNav />
     </div>
   );
 }

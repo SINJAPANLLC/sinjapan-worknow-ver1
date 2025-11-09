@@ -22,8 +22,7 @@ import {
   Briefcase,
   MapPin
 } from 'lucide-react';
-import { BottomNav } from '../../components/layout/BottomNav';
-import { Sparkles, Zap, Flame, MessageCircle, UserCircle } from 'lucide-react';
+import { RoleBottomNav } from '../../components/layout/RoleBottomNav';
 
 type ApplicationStatus = 'pending' | 'interview' | 'hired' | 'rejected' | 'withdrawn';
 
@@ -623,15 +622,7 @@ export default function ApplicationsManagePage() {
         )}
       </AnimatePresence>
 
-      <BottomNav
-        items={[
-          { label: 'ダッシュボード', path: '/dashboard', icon: Sparkles },
-          { label: '求人作成', path: '/jobs/new', icon: Zap },
-          { label: '求人管理', path: '/jobs/manage', icon: Flame },
-          { label: 'メッセージ', path: '/client/messages', icon: MessageCircle },
-          { label: 'マイページ', path: '/profile', icon: UserCircle },
-        ]}
-      />
+      <RoleBottomNav />
     </div>
   );
 }

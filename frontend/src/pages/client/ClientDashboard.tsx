@@ -7,25 +7,18 @@ import { Button } from '../../components/ui/Button';
 import { jobsAPI, authAPI } from '../../lib/api';
 import { slideUp, fadeIn, scaleIn } from '../../utils/animations';
 import {
-  Sparkles,
-  Zap,
-  Flame,
-  MessageCircle,
-  UserCircle,
   Briefcase,
   FileText,
   Users,
-  Clock,
-  CheckCircle,
   Radio,
   Plus,
-  Eye,
   TrendingUp,
   Calendar,
-  AlertCircle,
+  Zap,
+  MessageCircle,
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { BottomNav } from '../../components/layout/BottomNav';
+import { RoleBottomNav } from '../../components/layout/RoleBottomNav';
 
 export default function ClientDashboard() {
   const navigate = useNavigate();
@@ -396,15 +389,7 @@ export default function ClientDashboard() {
         </motion.div>
       </div>
 
-      <BottomNav
-        items={[
-          { label: '求人管理', path: '/jobs/manage', icon: Briefcase },
-          { label: '新規作成', path: '/jobs/new', icon: Plus },
-          { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/client/messages', icon: MessageCircle },
-          { label: 'マイページ', path: '/profile', icon: UserCircle },
-        ]}
-      />
+      <RoleBottomNav />
     </div>
   );
 }
