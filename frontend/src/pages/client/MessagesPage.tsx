@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Card } from '../../components/ui/Card';
@@ -13,7 +13,7 @@ import {
   ArrowLeft,
   Clock,
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { RoleBottomNav } from '../../components/layout/RoleBottomNav';
 import { messagesAPI } from '../../lib/api';
 import type { Conversation, Message } from '../../lib/api';
@@ -23,40 +23,92 @@ import { ja } from 'date-fns/locale';
 
 export default function ClientMessagesPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [messageText, setMessageText] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [targetUserId, setTargetUserId] = useState<string | null>(null);
 
   const { data: conversations = [], isLoading: conversationsLoading } = useQuery({
     queryKey: ['conversations'],
     queryFn: messagesAPI.getConversations,
   });
 
-  const { data: messages = [], isLoading: messagesLoading } = useQuery({
+  const { data: messages = [] } = useQuery({
     queryKey: ['messages', selectedConversation?.id],
     queryFn: () => messagesAPI.getConversationMessages(selectedConversation!.id),
-    enabled: !!selectedConversation,
+    enabled: !!selectedConversation && selectedConversation.id !== null,
   });
 
   const sendMessageMutation = useMutation({
     mutationFn: (data: { receiver_id: string; content: string }) =>
       messagesAPI.sendMessage(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['messages', selectedConversation?.id] });
-      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['conversations'] });
+      await queryClient.invalidateQueries({ queryKey: ['messages', selectedConversation?.id] });
       setMessageText('');
+      
+      if (selectedConversation && selectedConversation.id === null && targetUserId) {
+        const updatedConversations = await queryClient.fetchQuery({
+          queryKey: ['conversations'],
+          queryFn: messagesAPI.getConversations,
+        });
+        
+        const newConversation = updatedConversations.find((conv: Conversation) => 
+          conv.other_user_id === targetUserId ||
+          conv.participant_1_id === targetUserId ||
+          conv.participant_2_id === targetUserId
+        );
+        
+        if (newConversation) {
+          setSelectedConversation(newConversation);
+          setTargetUserId(null);
+          navigate('/client/messages', { replace: true });
+        }
+      }
     },
   });
 
-  const handleSendMessage = () => {
-    if (!messageText.trim() || !selectedConversation) return;
+  useEffect(() => {
+    const userIdParam = searchParams.get('user_id');
+    if (userIdParam && conversations.length > 0) {
+      const existingConversation = conversations.find((conv: Conversation) => 
+        conv.other_user_id === userIdParam ||
+        conv.participant_1_id === userIdParam ||
+        conv.participant_2_id === userIdParam
+      );
+      
+      if (existingConversation) {
+        setSelectedConversation(existingConversation);
+        navigate('/client/messages', { replace: true });
+      } else {
+        setTargetUserId(userIdParam);
+        setSelectedConversation({
+          id: null as any,
+          participant_1_id: user?.id || '',
+          participant_2_id: userIdParam,
+          other_user_id: userIdParam,
+          other_user_name: 'ワーカー',
+          last_message: null as any,
+          last_message_at: new Date().toISOString(),
+          unread_count: 0,
+        });
+      }
+    }
+  }, [searchParams, conversations, user?.id, navigate]);
 
-    const receiverId = selectedConversation.other_user_id || 
-                       (selectedConversation.participant_1_id === user?.id 
-                         ? selectedConversation.participant_2_id 
-                         : selectedConversation.participant_1_id);
+  const handleSendMessage = () => {
+    if (!messageText.trim()) return;
+    
+    const receiverId = targetUserId || 
+                       selectedConversation?.other_user_id || 
+                       (selectedConversation?.participant_1_id === user?.id 
+                         ? selectedConversation?.participant_2_id 
+                         : selectedConversation?.participant_1_id);
+
+    if (!receiverId) return;
 
     sendMessageMutation.mutate({
       receiver_id: receiverId,
