@@ -1,0 +1,52 @@
+TP/1.1" 404
+Nov 09 14:58:17 srv1087935 gunicorn[158179]: 127.0.0.1:38722 - "GET /docs HTTP/1.1" 200
+Nov 09 14:58:17 srv1087935 gunicorn[158179]: 127.0.0.1:38736 - "GET /api/health HTTP/1.1" 404
+cat: /var/www/worknow/.env.production: No such file or directory
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
+from utils.config import CFG
+from routers import (
+    auth,
+    jobs,
+    applications,
+    assignments,
+    payments,
+    reviews,
+--
+    CORSMiddleware,
+    allow_origins=CFG["CORS_ORIGINS"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+UPLOAD_DIR = Path("uploads")
+UPLOAD_DIR.mkdir(exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
+
+
+● worknow-backend.service - Work Now Backend (FastAPI)
+     Loaded: loaded (/etc/systemd/system/worknow-backend.service; enabled; pres>
+     Active: active (running) since Sun 2025-11-09 14:28:34 UTC; 51min ago
+   Main PID: 158160 (gunicorn)
+      Tasks: 5 (limit: 9483)
+     Memory: 279.1M (peak: 279.6M)
+        CPU: 19.911s
+     CGroup: /system.slice/worknow-backend.service
+             ├─158160 /var/www/worknow/venv/bin/python3 /var/www/worknow/venv/b>
+             ├─158176 /var/www/worknow/venv/bin/python3 /var/www/worknow/venv/b>
+             ├─158177 /var/www/worknow/venv/bin/python3 /var/www/worknow/venv/b>
+             ├─158178 /var/www/worknow/venv/bin/python3 /var/www/worknow/venv/b>
+             └─158179 /var/www/worknow/venv/bin/python3 /var/www/worknow/venv/b>
+
+Nov 09 14:28:36 srv1087935 gunicorn[158179]: [2025-11-09 14:28:36 +0000] [15817>
+Nov 09 14:28:36 srv1087935 gunicorn[158179]: [2025-11-09 14:28:36 +0000] [15817>
+Nov 09 14:28:36 srv1087935 gunicorn[158179]: [2025-11-09 14:28:36 +0000] [15817>
+Nov 09 14:31:33 srv1087935 gunicorn[158179]: 212.85.24.206:0 - "HEAD /api/docs >
+Nov 09 14:37:00 srv1087935 gunicorn[158179]: 212.85.24.206:0 - "HEAD /api/docs >
+Nov 09 14:38:26 srv1087935 gunicorn[158179]: 212.85.24.206:0 - "GET /api/docs H>
+Nov 09 14:42:44 srv1087935 gunicorn[158178]: 212.85.24.206:0 - "GET /api/docs H>
+Nov 09 14:57:05 srv1087935 gunicorn[158179]: 212.85.24.206:0 - "GET /api/docs H>
+Nov 09 14:58:17 srv1087935 gunicorn[158179]: 127.0.0.1:38722 - "GET /docs HTTP/>
+lines 1-23
