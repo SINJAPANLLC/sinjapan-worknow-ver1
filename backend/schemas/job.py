@@ -69,6 +69,7 @@ class JobUpdate(BaseModel):
 
 class JobRead(JobBase):
     id: str
+    company_name: Optional[str] = None
 
 
 class JobList(PaginatedResponse[JobRead]):

@@ -7,11 +7,13 @@ from schemas import JobCreate, JobList, JobRead, JobStatus, JobUpdate
 
 from .postgres_base import PostgresService
 from .geocoding_service import GeocodingService
+from .user_service import UserService
 
 
 class JobService(PostgresService):
-    def __init__(self) -> None:
+    def __init__(self, user_service: Optional[UserService] = None) -> None:
         super().__init__("jobs")
+        self.users = user_service or UserService()
     
     @staticmethod
     def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
@@ -28,8 +30,37 @@ class JobService(PostgresService):
         
         return R * c
 
-    def _to_job(self, data: Dict) -> JobRead:
-        return JobRead(**data)
+    def _to_job(self, data: Dict, include_company: bool = True) -> JobRead:
+        job_data = {**data}
+        if include_company and data.get("company_id"):
+            try:
+                company = self.users.get_user(data["company_id"])
+                job_data["company_name"] = company.full_name
+            except Exception:
+                job_data["company_name"] = None
+        return JobRead(**job_data)
+    
+    def _enrich_jobs_with_company(self, jobs: List[Dict]) -> List[JobRead]:
+        if not jobs:
+            return []
+        
+        company_ids = list(set(job.get("company_id") for job in jobs if job.get("company_id")))
+        companies_map = {}
+        
+        for company_id in company_ids:
+            try:
+                company = self.users.get_user(company_id)
+                companies_map[company_id] = company.full_name
+            except Exception:
+                companies_map[company_id] = None
+        
+        result = []
+        for job_data in jobs:
+            job_dict = {**job_data}
+            job_dict["company_name"] = companies_map.get(job_data.get("company_id"))
+            result.append(JobRead(**job_dict))
+        
+        return result
 
     async def create_job(self, company_id: str, payload: JobCreate) -> JobRead:
         record = payload.dict()
@@ -154,7 +185,7 @@ class JobService(PostgresService):
                 cursor.execute(query, params)
                 rows = cursor.fetchall()
                 
-                items = [self._to_job(dict(row)) for row in rows]
+                items = self._enrich_jobs_with_company([dict(row) for row in rows])
                 return JobList(items=items, total=total, page=page, size=size)
                 
         except Exception as e:
