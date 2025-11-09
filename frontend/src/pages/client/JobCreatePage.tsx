@@ -23,6 +23,9 @@ import {
   Flame,
   MessageCircle,
   UserCircle,
+  Upload,
+  X,
+  Clock,
 } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 
@@ -37,6 +40,8 @@ interface FormData {
   starts_at: string;
   ends_at: string;
   is_urgent: boolean;
+  working_hours: string;
+  thumbnail: string;
 }
 
 interface FormErrors {
@@ -64,6 +69,8 @@ export default function JobCreatePage() {
     starts_at: '',
     ends_at: '',
     is_urgent: false,
+    working_hours: '',
+    thumbnail: '',
   });
 
   const prefectures = [
@@ -451,6 +458,52 @@ export default function JobCreatePage() {
                   </div>
                 </div>
 
+                {/* Thumbnail Upload */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
+                    サムネイル画像
+                  </label>
+                  <div className="flex items-center gap-4">
+                    {formData.thumbnail && (
+                      <div className="relative w-32 h-32 rounded-xl overflow-hidden border-2 border-gray-200">
+                        <img 
+                          src={formData.thumbnail} 
+                          alt="サムネイル" 
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setFormData(prev => ({ ...prev, thumbnail: '' }))}
+                          className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
+                    <label className="flex-1 cursor-pointer">
+                      <div className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-dashed border-gray-300 hover:border-[#00CED1] transition-colors bg-gray-50 hover:bg-gray-100">
+                        <Upload className="w-5 h-5 text-gray-400" />
+                        <span className="text-gray-600">画像をアップロード</span>
+                      </div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setFormData(prev => ({ ...prev, thumbnail: reader.result as string }));
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                </div>
+
                 {/* Employment Type & Hourly Rate */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
@@ -463,10 +516,8 @@ export default function JobCreatePage() {
                       onChange={handleChange}
                       className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#00CED1] focus:ring-2 focus:ring-[#00CED1]/20 transition-colors"
                     >
-                      <option value="full-time">正社員</option>
-                      <option value="part-time">パート</option>
-                      <option value="contract">契約</option>
-                      <option value="temporary">派遣</option>
+                      <option value="part-time">アルバイト</option>
+                      <option value="contract">業務委託</option>
                     </select>
                   </div>
 
@@ -498,30 +549,49 @@ export default function JobCreatePage() {
                   </div>
                 </div>
 
-                {/* Work Date */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">
-                    募集開始日
-                  </label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input
-                      type="date"
-                      name="starts_at"
-                      value={formData.starts_at}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 ${
-                        errors.starts_at ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-[#00CED1]'
-                      } focus:ring-2 focus:ring-[#00CED1]/20 transition-colors`}
-                    />
+                {/* Working Hours & Work Date */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      稼働時間
+                    </label>
+                    <div className="relative">
+                      <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <input
+                        type="text"
+                        name="working_hours"
+                        value={formData.working_hours}
+                        onChange={handleChange}
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#00CED1] focus:ring-2 focus:ring-[#00CED1]/20 transition-colors"
+                        placeholder="例：9:00〜18:00（実働8時間）"
+                      />
+                    </div>
                   </div>
-                  {errors.starts_at && (
-                    <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-4 h-4" />
-                      {errors.starts_at}
-                    </p>
-                  )}
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      募集開始日
+                    </label>
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <input
+                        type="date"
+                        name="starts_at"
+                        value={formData.starts_at}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 ${
+                          errors.starts_at ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-[#00CED1]'
+                        } focus:ring-2 focus:ring-[#00CED1]/20 transition-colors`}
+                      />
+                    </div>
+                    {errors.starts_at && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
+                        {errors.starts_at}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 {/* Tags */}

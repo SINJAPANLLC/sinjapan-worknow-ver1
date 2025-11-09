@@ -32,6 +32,7 @@ import AdminJobsManagePage from './pages/admin/JobsManagePage';
 import AdminStatsPage from './pages/admin/StatsPage';
 import { NotificationsPage } from './pages/NotificationsPage';
 import MessagesPage from './pages/shared/MessagesPage';
+import ClientMessagesPage from './pages/client/MessagesPage';
 import SettingsPage from './pages/shared/SettingsPage';
 import JobDetailPage from './pages/shared/JobDetailPage';
 import MainLayout from './components/layout/MainLayout';
@@ -207,6 +208,14 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <ClientWorkersPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/messages"
+          element={
+            <ProtectedRoute>
+              <ClientMessagesPage />
             </ProtectedRoute>
           }
         />
