@@ -1,0 +1,88 @@
+sudo chmod 600 /var/www/worknow/.env
+# 設定を確認
+echo "=== .env ファイル確認 ==="
+sudo cat /var/www/worknow/.env | grep -E "CORS|PORT|DOMAIN"
+# バックエンドサービスを再起動
+systemctl restart worknow-backend
+# 2秒待機
+sleep 2
+# サービス状態を確認
+systemctl status worknow-backend --no-pager
+# 最新ログを確認
+echo ""
+echo "=== バックエンドログ（最新20行） ==="
+journalctl -u worknow-backend -n 20 --no-pager
+echo ""
+echo "✅ 設定完了！ブラウザでログインを試してください"
+echo "URL: https://sinjapan-worknow.com"
+echo "Email: info@sinjapan.jp"
+echo "Password: Kazuya8008"
+● worknow-backend.service - Work Now Backend (FastAPI)
+     Loaded: loaded (/etc/systemd/system/worknow-backend.service; enabled; preset: enabled)
+     Active: deactivating (stop-sigterm) since Sun 2025-11-09 15:23:37 UTC; 6s ago
+   Main PID: 158160 (gunicorn)
+      Tasks: 1 (limit: 9483)
+     Memory: 18.0M (peak: 280.3M)
+        CPU: 21.279s
+     CGroup: /system.slice/worknow-backend.service
+             └─158160 /var/www/worknow/venv/bin/python3 /var/www/worknow/venv/b…
+
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:     time.sleep(0.1)
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:   File "/var/www/worknow/venv/l…hld
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:     self.reap_workers()
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:   File "/var/www/worknow/venv/l…ers
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:     self.log.error(msg)
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:   File "/var/www/worknow/venv/l…ror
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:     self.error_log.error(msg, *…gs)
+Nov 09 15:23:37 srv1087935 gunicorn[158160]: Message: 'Worker (pid:158179) w…M!'
+Nov 09 15:23:37 srv1087935 gunicorn[158160]: Arguments: ()
+Nov 09 15:23:37 srv1087935 gunicorn[158160]: [2025-11-09 15:23:37 +0000] [15…RM!
+Hint: Some lines were ellipsized, use -l to show in full.
+
+=== バックエンドログ（最新20行） ===
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:     WSGIApplication("%(prog)s [OPTIONS] [APP_MODULE]", prog=prog).run()
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:   File "/var/www/worknow/venv/lib/python3.12/site-packages/gunicorn/app/base.py", line 235, in run
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:     super().run()
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:   File "/var/www/worknow/venv/lib/python3.12/site-packages/gunicorn/app/base.py", line 71, in run
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:     Arbiter(self).run()
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:   File "/var/www/worknow/venv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 226, in run
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:     self.halt()
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:   File "/var/www/worknow/venv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 341, in halt
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:     self.stop()
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:   File "/var/www/worknow/venv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 395, in stop
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:     time.sleep(0.1)
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:   File "/var/www/worknow/venv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 241, in handle_chld
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:     self.reap_workers()
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:   File "/var/www/worknow/venv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 553, in reap_workers
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:     self.log.error(msg)
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:   File "/var/www/worknow/venv/lib/python3.12/site-packages/gunicorn/glogging.py", line 271, in error
+Nov 09 15:23:37 srv1087935 gunicorn[158160]:     self.error_log.error(msg, *args, **kwargs)
+Nov 09 15:23:37 srv1087935 gunicorn[158160]: Message: 'Worker (pid:158179) was sent SIGTERM!'
+Nov 09 15:23:37 srv1087935 gunicorn[158160]: Arguments: ()
+Nov 09 15:23:37 srv1087935 gunicorn[158160]: [2025-11-09 15:23:37 +0000] [158160] [ERROR] Worker (pid:158178) was sent SIGTERM!
+
+✅ 設定完了！ブラウザでログインを試してください
+URL: https://sinjapan-worknow.com
+Email: info@sinjapan.jp
+Password: Kazuya8008
+(venv) root@srv1087935:/var/www/worknow# sudo chown www-data:www-data /var/www/worknow/.env
+sudo chmod 600 /var/www/worknow/.env
+# 設定を確認
+echo "=== .env ファイル確認 ==="
+sudo cat /var/www/worknow/.env | grep -E "CORS|PORT|DOMAIN"
+# バックエンドサービスを再起動
+systemctl restart worknow-backend
+# 2秒待機
+sleep 2
+# サービス状態を確認
+systemctl status worknow-backend --no-pager
+# 最新ログを確認
+echo ""
+echo "=== バックエンドログ（最新20行） ==="
+journalctl -u worknow-backend -n 20 --no-pager
+echo ""
+echo "✅ 設定完了！ブラウザでログインを試してください"
+echo "URL: https://sinjapan-worknow.com"
+echo "Email: info@sinjapan.jp"
+echo "Password: Kazuya8008"
+(venv) root@srv1087935:/var/www/worknow# 
