@@ -21,6 +21,8 @@ import QRCodeDisplayPage from './pages/client/QRCodeDisplayPage';
 import { ProfilePage } from './pages/ProfilePage';
 import PaymentsPage from './pages/PaymentsPage';
 import ActivityPage from './pages/ActivityPage';
+import { PenaltiesPage } from './pages/PenaltiesPage';
+import { SupportPage } from './pages/SupportPage';
 import AdminUsersManagePage from './pages/admin/UsersManagePage';
 import AdminJobsManagePage from './pages/admin/JobsManagePage';
 import AdminStatsPage from './pages/admin/StatsPage';
@@ -112,6 +114,30 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <ReviewPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reviews"
+          element={
+            <ProtectedRoute>
+              <ReviewPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/penalties"
+          element={
+            <ProtectedRoute>
+              <PenaltiesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/support"
+          element={
+            <ProtectedRoute>
+              <SupportPage />
             </ProtectedRoute>
           }
         />
