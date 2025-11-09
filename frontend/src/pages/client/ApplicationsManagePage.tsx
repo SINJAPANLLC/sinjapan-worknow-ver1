@@ -182,7 +182,7 @@ export default function ApplicationsManagePage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => navigate(`/messages?user_id=${application.worker_id}`)}
+                  onClick={() => navigate(`/client/messages?user_id=${application.worker_id}`)}
                 >
                   <MessageSquare className="w-4 h-4 mr-1" />
                   メッセージ
@@ -581,7 +581,7 @@ export default function ApplicationsManagePage() {
           { label: 'ダッシュボード', path: '/dashboard', icon: Sparkles },
           { label: '求人作成', path: '/jobs/new', icon: Zap },
           { label: '求人管理', path: '/jobs/manage', icon: Flame },
-          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
+          { label: 'メッセージ', path: '/client/messages', icon: MessageCircle },
           { label: 'マイページ', path: '/profile', icon: UserCircle },
         ]}
       />

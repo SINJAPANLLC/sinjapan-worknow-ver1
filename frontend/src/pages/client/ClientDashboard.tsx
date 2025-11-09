@@ -193,7 +193,7 @@ export default function ClientDashboard() {
                   </motion.div>
                 </Link>
 
-                <Link to="/messages" className="block">
+                <Link to="/client/messages" className="block">
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <div className="p-4 rounded-xl border-2 border-neutral-200 hover:border-neutral-300 bg-neutral-50 hover:bg-neutral-100 transition-all cursor-pointer">
                       <div className="flex items-center gap-3">
@@ -239,7 +239,7 @@ export default function ClientDashboard() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 }}
                       className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-[#00CED1]/10 to-[#009999]/10 hover:from-[#00CED1]/20 hover:to-[#009999]/20 transition-all group cursor-pointer"
-                      onClick={() => navigate(`/messages?user=${worker.id}`)}
+                      onClick={() => navigate(`/client/messages?user=${worker.id}`)}
                     >
                       <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#00CED1] to-[#009999] flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-md">
                         {worker.full_name?.charAt(0) || 'W'}
@@ -401,7 +401,7 @@ export default function ClientDashboard() {
           { label: '求人管理', path: '/jobs/manage', icon: Briefcase },
           { label: '新規作成', path: '/jobs/new', icon: Plus },
           { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
+          { label: 'メッセージ', path: '/client/messages', icon: MessageCircle },
           { label: 'マイページ', path: '/profile', icon: UserCircle },
         ]}
       />

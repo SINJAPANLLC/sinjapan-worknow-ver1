@@ -30,6 +30,8 @@ class JobBase(TimestampedModel):
     longitude: Optional[float] = None
     is_urgent: bool = False
     urgent_deadline: Optional[datetime] = None
+    working_hours: Optional[str] = None
+    thumbnail: Optional[str] = None
 
 
 class JobCreate(BaseModel):
@@ -47,6 +49,8 @@ class JobCreate(BaseModel):
     longitude: Optional[float] = None
     is_urgent: bool = False
     urgent_deadline: Optional[datetime] = None
+    working_hours: Optional[str] = None
+    thumbnail: Optional[str] = None
 
 
 class JobUpdate(BaseModel):
@@ -65,6 +69,8 @@ class JobUpdate(BaseModel):
     longitude: Optional[float] = None
     is_urgent: Optional[bool] = None
     urgent_deadline: Optional[datetime] = None
+    working_hours: Optional[str] = None
+    thumbnail: Optional[str] = None
 
 
 class JobRead(JobBase):

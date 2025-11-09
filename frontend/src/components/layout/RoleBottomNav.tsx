@@ -25,7 +25,7 @@ export function RoleBottomNav() {
         { label: 'ホーム', path: '/dashboard', icon: Home },
         { label: '求人管理', path: '/jobs/manage', icon: Briefcase },
         { label: '求人作成', path: '/jobs/new', icon: Plus },
-        { label: 'メッセージ', path: '/messages', icon: MessageCircle },
+        { label: 'メッセージ', path: '/client/messages', icon: MessageCircle },
         { label: 'マイページ', path: '/profile', icon: UserCircle },
       ]} />
     );

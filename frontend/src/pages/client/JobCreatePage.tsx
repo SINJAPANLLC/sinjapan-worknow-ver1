@@ -164,6 +164,8 @@ export default function JobCreatePage() {
         starts_at: formData.starts_at || undefined,
         ends_at: formData.ends_at || undefined,
         is_urgent: formData.is_urgent,
+        working_hours: formData.working_hours || undefined,
+        thumbnail: formData.thumbnail || undefined,
       });
       
       // If not saving as draft, publish the job using jobsAPI

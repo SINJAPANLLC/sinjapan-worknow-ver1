@@ -251,7 +251,7 @@ export default function ClientWorkersPage() {
                         詳細
                       </Button>
                       <Button
-                        onClick={() => navigate(`/messages?user_id=${worker.id}`)}
+                        onClick={() => navigate(`/client/messages?user_id=${worker.id}`)}
                         variant="primary"
                         size="sm"
                         className="flex-1"
@@ -379,7 +379,7 @@ export default function ClientWorkersPage() {
               {/* Actions */}
               <div className="flex gap-3">
                 <Button
-                  onClick={() => navigate(`/messages?user_id=${selectedWorker.id}`)}
+                  onClick={() => navigate(`/client/messages?user_id=${selectedWorker.id}`)}
                   variant="primary"
                   className="flex-1"
                 >
@@ -404,7 +404,7 @@ export default function ClientWorkersPage() {
           { label: 'ダッシュボード', path: '/client/dashboard', icon: Sparkles },
           { label: '求人作成', path: '/client/jobs/new', icon: Zap },
           { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
+          { label: 'メッセージ', path: '/client/messages', icon: MessageCircle },
           { label: 'マイページ', path: '/profile', icon: UserCircle },
         ]}
       />
