@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
@@ -17,28 +18,39 @@ import {
   Calendar,
   User
 } from 'lucide-react';
-import { Sparkles, Zap, Flame, MessageCircle, UserCircle } from 'lucide-react';
-import { BottomNav } from '../../components/layout/BottomNav';
+import { RoleBottomNav } from '../../components/layout/RoleBottomNav';
+import { adminAPI } from '../../lib/api';
 
 export default function UsersManagePage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<string>('all');
 
-  const mockUsers = [
-    { id: '1', email: 'worker1@example.com', full_name: '山田太郎', role: 'worker', is_active: true, created_at: '2025-01-01' },
-    { id: '2', email: 'company1@example.com', full_name: '株式会社ABC', role: 'company', is_active: true, created_at: '2025-01-02' },
-    { id: '3', email: 'worker2@example.com', full_name: '佐藤花子', role: 'worker', is_active: false, created_at: '2025-01-03' },
-    { id: '4', email: 'admin@example.com', full_name: '管理者', role: 'admin', is_active: true, created_at: '2025-01-04' },
-  ];
-
-  const filteredUsers = mockUsers.filter((user) => {
-    const matchesSearch =
-      user.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesRole = roleFilter === 'all' || user.role === roleFilter;
-    return matchesSearch && matchesRole;
+  const { data: allUsers = [], isLoading: isLoadingAll } = useQuery({
+    queryKey: ['admin', 'users', 'all'],
+    queryFn: () => adminAPI.listUsers({ limit: 500 }),
   });
+
+  const { data: filteredByRole = [], isLoading: isLoadingFiltered } = useQuery({
+    queryKey: ['admin', 'users', roleFilter],
+    queryFn: () => adminAPI.listUsers({ 
+      role: roleFilter === 'all' ? undefined : roleFilter,
+      limit: 500 
+    }),
+    enabled: roleFilter !== 'all',
+  });
+
+  const users = roleFilter === 'all' ? allUsers : filteredByRole;
+  const isLoading = roleFilter === 'all' ? isLoadingAll : isLoadingFiltered;
+
+  const filteredUsers = useMemo(() => {
+    return users.filter((user) => {
+      const matchesSearch =
+        user.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesSearch;
+    });
+  }, [users, searchQuery]);
 
   const getRoleBadge = (role: string) => {
     switch (role) {
@@ -53,12 +65,12 @@ export default function UsersManagePage() {
     }
   };
 
-  const roleStats = {
-    all: mockUsers.length,
-    worker: mockUsers.filter(u => u.role === 'worker').length,
-    company: mockUsers.filter(u => u.role === 'company').length,
-    admin: mockUsers.filter(u => u.role === 'admin').length,
-  };
+  const roleStats = useMemo(() => ({
+    all: allUsers.length,
+    worker: allUsers.filter(u => u.role === 'worker').length,
+    company: allUsers.filter(u => u.role === 'company').length,
+    admin: allUsers.filter(u => u.role === 'admin').length,
+  }), [allUsers]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00B4B4] to-[#009999] pb-24">
@@ -117,7 +129,15 @@ export default function UsersManagePage() {
         </motion.div>
 
         {/* Users List */}
-        <div className="space-y-4">
+        {isLoading ? (
+          <Card className="bg-white/95 backdrop-blur-sm p-12">
+            <div className="text-center">
+              <div className="inline-block w-12 h-12 border-4 border-gray-300 border-t-primary rounded-full animate-spin mb-4" />
+              <p className="text-gray-500">読み込み中...</p>
+            </div>
+          </Card>
+        ) : (
+          <div className="space-y-4">
           {filteredUsers.map((user, index) => {
             const roleInfo = getRoleBadge(user.role);
 
@@ -185,7 +205,7 @@ export default function UsersManagePage() {
             );
           })}
 
-          {filteredUsers.length === 0 && (
+          {!isLoading && filteredUsers.length === 0 && (
             <Card className="bg-white/95 backdrop-blur-sm p-12">
               <div className="text-center text-gray-500">
                 <User className="w-16 h-16 mx-auto mb-4 text-gray-300" />
@@ -193,18 +213,11 @@ export default function UsersManagePage() {
               </div>
             </Card>
           )}
-        </div>
+          </div>
+        )}
       </div>
 
-      <BottomNav
-        items={[
-          { label: 'ユーザー', path: '/admin/users', icon: Sparkles },
-          { label: '求人', path: '/admin/jobs', icon: Zap },
-          { label: 'Now', path: '/dashboard', icon: Flame },
-          { label: 'メッセージ', path: '/messages', icon: MessageCircle },
-          { label: 'マイページ', path: '/profile', icon: UserCircle },
-        ]}
-      />
+      <RoleBottomNav />
     </div>
   );
 }

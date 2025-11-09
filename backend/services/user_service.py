@@ -92,3 +92,28 @@ class UserService(PostgresService):
             )
             results = cursor.fetchall()
             return [self._to_user(dict(row)) for row in results]
+
+    def list_users(self, role: Optional[str] = None, limit: int = 100) -> List[UserRead]:
+        """List all users with optional role filter (admin only)"""
+        with self._get_cursor() as cursor:
+            if role:
+                cursor.execute(
+                    """
+                    SELECT * FROM users 
+                    WHERE role = %s
+                    ORDER BY created_at DESC
+                    LIMIT %s
+                    """,
+                    (role, limit),
+                )
+            else:
+                cursor.execute(
+                    """
+                    SELECT * FROM users 
+                    ORDER BY created_at DESC
+                    LIMIT %s
+                    """,
+                    (limit,),
+                )
+            results = cursor.fetchall()
+            return [self._to_user(dict(row)) for row in results]

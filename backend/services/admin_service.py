@@ -22,6 +22,46 @@ class AdminService:
             "recent_jobs": recent_jobs,
         }
 
+    def get_stats(self) -> dict:
+        """Get comprehensive platform statistics"""
+        conn = get_pg_connection()
+        try:
+            cursor = conn.cursor(cursor_factory=RealDictCursor)
+            
+            cursor.execute("SELECT COUNT(*) as count FROM users")
+            total_users = cursor.fetchone()['count']
+            
+            cursor.execute("SELECT COUNT(*) as count FROM jobs")
+            total_jobs = cursor.fetchone()['count']
+            
+            cursor.execute("SELECT COUNT(*) as count FROM applications")
+            total_applications = cursor.fetchone()['count']
+            
+            cursor.execute("""
+                SELECT COALESCE(SUM(amount), 0) as total 
+                FROM payments 
+                WHERE status = 'completed'
+            """)
+            total_revenue = cursor.fetchone()['total']
+            
+            cursor.execute("SELECT COUNT(*) as count FROM users WHERE role = 'worker'")
+            total_workers = cursor.fetchone()['count']
+            
+            cursor.execute("SELECT COUNT(*) as count FROM users WHERE role = 'company'")
+            total_companies = cursor.fetchone()['count']
+            
+            return {
+                "total_users": total_users,
+                "total_jobs": total_jobs,
+                "total_applications": total_applications,
+                "total_revenue": total_revenue,
+                "total_workers": total_workers,
+                "total_companies": total_companies,
+            }
+        finally:
+            cursor.close()
+            release_pg_connection(conn)
+
     def _count(self, table: str) -> int:
         conn = get_pg_connection()
         try:
