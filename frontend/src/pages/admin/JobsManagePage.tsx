@@ -1,167 +1,244 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
-import { jobsAPI } from '../../lib/api';
 import { slideUp, fadeIn } from '../../utils/animations';
-import { Sparkles, Zap, Flame, MessageCircle, UserCircle, Search, Eye, Edit, Trash2, UserPlus } from 'lucide-react';
+import {
+  Search,
+  CheckCircle,
+  XCircle,
+  ArrowLeft,
+  Calendar,
+  DollarSign,
+  MapPin,
+  Eye,
+  Trash2,
+  AlertCircle,
+  Briefcase
+} from 'lucide-react';
+import { Sparkles, Zap, Flame, MessageCircle, UserCircle } from 'lucide-react';
 import { BottomNav } from '../../components/layout/BottomNav';
 
-export default function JobsManagePage() {
+export default function AdminJobsManagePage() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
 
-  const { data: jobsData, isLoading } = useQuery({
-    queryKey: ['jobs', 'all'],
-    queryFn: () => jobsAPI.list(),
-  });
+  const mockJobs = [
+    {
+      id: '1',
+      title: 'Webデザイナー募集',
+      description: 'クリエイティブなWebデザイナーを募集しています',
+      hourly_rate: 2000,
+      status: 'published',
+      prefecture: '東京都',
+      created_at: '2025-01-01',
+      company_name: '株式会社ABC',
+      is_urgent: true,
+    },
+    {
+      id: '2',
+      title: '倉庫作業員',
+      description: '倉庫での軽作業スタッフを募集',
+      hourly_rate: 1200,
+      status: 'draft',
+      prefecture: '神奈川県',
+      created_at: '2025-01-02',
+      company_name: '株式会社XYZ',
+      is_urgent: false,
+    },
+    {
+      id: '3',
+      title: 'イベントスタッフ',
+      description: '週末イベントのサポートスタッフ',
+      hourly_rate: 1500,
+      status: 'closed',
+      prefecture: '大阪府',
+      created_at: '2025-01-03',
+      company_name: '株式会社イベント社',
+      is_urgent: false,
+    },
+  ];
 
-  const filteredJobs = jobsData?.filter((job: any) => {
+  const filteredJobs = mockJobs.filter((job) => {
     const matchesSearch =
       job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = !statusFilter || job.status === statusFilter;
+      job.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      job.company_name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || job.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'draft':
-        return { variant: 'neutral' as const, text: '下書き' };
       case 'published':
-        return { variant: 'success' as const, text: '公開中' };
+        return { variant: 'success' as const, text: '公開中', icon: CheckCircle };
+      case 'draft':
+        return { variant: 'neutral' as const, text: '下書き', icon: AlertCircle };
       case 'closed':
-        return { variant: 'danger' as const, text: '募集終了' };
+        return { variant: 'danger' as const, text: '終了', icon: XCircle };
       default:
-        return { variant: 'neutral' as const, text: status };
+        return { variant: 'neutral' as const, text: status, icon: AlertCircle };
     }
   };
 
+  const statusStats = {
+    all: mockJobs.length,
+    published: mockJobs.filter(j => j.status === 'published').length,
+    draft: mockJobs.filter(j => j.status === 'draft').length,
+    closed: mockJobs.filter(j => j.status === 'closed').length,
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary via-primary-dark to-gray-900 pb-20">
-      <div className="container mx-auto px-4 py-8">
-        <motion.div {...fadeIn}>
-          <h1 className="text-3xl font-bold mb-2 text-white">求人管理</h1>
-          <p className="text-white/80 mb-6">全ての求人情報を管理</p>
+    <div className="min-h-screen bg-gradient-to-br from-[#00CED1] via-[#00B4B4] to-[#009999] pb-24">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        {/* Header */}
+        <motion.div {...fadeIn} className="flex items-center gap-4 mb-8">
+          <Button
+            onClick={() => navigate('/dashboard')}
+            variant="ghost"
+            size="sm"
+            className="text-white hover:bg-white/10"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <div>
+            <h1 className="text-4xl font-bold text-white">求人管理</h1>
+            <p className="text-white/80 mt-1">求人の承認と削除</p>
+          </div>
         </motion.div>
 
-        <motion.div {...slideUp} className="mb-6 space-y-4">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="求人タイトルまたは内容で検索..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 rounded-xl border-0 shadow-lg focus:ring-2 focus:ring-primary"
-            />
-          </div>
+        {/* Search and Filter */}
+        <motion.div {...slideUp} className="space-y-4 mb-6">
+          <Card className="bg-white/95 backdrop-blur-sm p-4">
+            <div className="flex items-center gap-3">
+              <Search className="w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="求人タイトル、説明、企業名で検索..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 border-none outline-none bg-transparent text-gray-900 placeholder-gray-400"
+              />
+            </div>
+          </Card>
 
           <div className="flex gap-2 overflow-x-auto pb-2">
-            {['', 'draft', 'published', 'closed'].map((status) => (
+            {[
+              { key: 'all', label: `全て (${statusStats.all})` },
+              { key: 'published', label: `公開中 (${statusStats.published})` },
+              { key: 'draft', label: `下書き (${statusStats.draft})` },
+              { key: 'closed', label: `終了 (${statusStats.closed})` },
+            ].map(({ key, label }) => (
               <button
-                key={status}
-                onClick={() => setStatusFilter(status)}
-                className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all ${
-                  statusFilter === status
+                key={key}
+                onClick={() => setStatusFilter(key)}
+                className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all font-medium ${
+                  statusFilter === key
                     ? 'bg-white text-primary shadow-lg'
-                    : 'bg-white/10 text-white hover:bg-white/20'
+                    : 'bg-white/20 text-white hover:bg-white/30'
                 }`}
               >
-                {status === '' ? '全て' : status === 'draft' ? '下書き' : status === 'published' ? '公開中' : '募集終了'}
+                {label}
               </button>
             ))}
           </div>
         </motion.div>
 
-        {isLoading ? (
-          <div className="text-center py-12">
-            <div className="inline-block w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin" />
-          </div>
-        ) : filteredJobs && filteredJobs.length > 0 ? (
-          <div className="space-y-4">
-            {filteredJobs.map((job, index) => {
-              const statusInfo = getStatusBadge(job.status);
+        {/* Jobs List */}
+        <div className="space-y-4">
+          {filteredJobs.map((job, index) => {
+            const statusInfo = getStatusBadge(job.status);
+            const StatusIcon = statusInfo.icon;
 
-              return (
-                <motion.div key={job.id} {...slideUp} style={{ animationDelay: `${index * 0.1}s` }}>
-                  <Card>
+            return (
+              <motion.div
+                key={job.id}
+                {...slideUp}
+                transition={{ delay: index * 0.05 }}
+              >
+                <Card className="bg-white/95 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+                  <div className="p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
-                        <h3 className="font-bold text-xl text-gray-900 mb-2">{job.title}</h3>
-                        <Badge variant={statusInfo.variant} size="lg">
-                          {statusInfo.text}
-                        </Badge>
-                      </div>
-                      {job.hourly_rate && (
-                        <div className="ml-4">
-                          <div className="text-2xl font-bold text-primary">
-                            ¥{job.hourly_rate.toLocaleString()}
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="font-bold text-lg text-gray-900">{job.title}</h3>
+                          {job.is_urgent && (
+                            <Badge variant="danger" size="sm">
+                              🔥 急募
+                            </Badge>
+                          )}
+                          <Badge variant={statusInfo.variant}>
+                            <StatusIcon className="w-3 h-3 mr-1" />
+                            {statusInfo.text}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{job.description}</p>
+                        <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                          <div className="flex items-center gap-1">
+                            <Briefcase className="w-4 h-4" />
+                            <span>{job.company_name}</span>
                           </div>
-                          <div className="text-xs text-gray-500">時給</div>
-                        </div>
-                      )}
-                    </div>
-
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{job.description}</p>
-
-                    <div className="flex gap-2 flex-wrap mb-4">
-                      {job.tags.slice(0, 5).map((tag, i) => (
-                        <Badge key={i} variant="neutral" size="sm">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                      <div className="space-y-1 text-sm text-gray-600">
-                        <div>企業ID: {job.company_id}</div>
-                        <div className="flex items-center">
-                          <UserPlus className="w-4 h-4 mr-1" />
-                          <span>応募者: 0名</span>
+                          <div className="flex items-center gap-1">
+                            <DollarSign className="w-4 h-4" />
+                            <span className="font-medium text-primary">¥{job.hourly_rate}/時間</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-4 h-4" />
+                            <span>{job.prefecture}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-4 h-4" />
+                            <span>{new Date(job.created_at).toLocaleDateString('ja-JP')}</span>
+                          </div>
                         </div>
                       </div>
-
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
-                          <Eye className="w-4 h-4 mr-1" />
-                          詳細
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <Edit className="w-4 h-4 mr-1" />
-                          編集
-                        </Button>
-                        <Button variant="danger" size="sm">
-                          <Trash2 className="w-4 h-4 mr-1" />
-                          削除
-                        </Button>
-                      </div>
                     </div>
-                  </Card>
-                </motion.div>
-              );
-            })}
-          </div>
-        ) : (
-          <motion.div {...fadeIn} className="text-center py-12">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 max-w-md mx-auto">
-              <Briefcase className="w-16 h-16 text-white/60 mx-auto mb-4" />
-              <p className="text-white text-lg mb-2">求人が見つかりませんでした</p>
-              <p className="text-white/70 text-sm">検索条件を変更してみてください</p>
-            </div>
-          </motion.div>
-        )}
+
+                    <div className="flex items-center justify-end gap-2 pt-4 border-t border-gray-200">
+                      <Button
+                        onClick={() => navigate(`/jobs/${job.id}`)}
+                        variant="outline"
+                        size="sm"
+                      >
+                        <Eye className="w-4 h-4 mr-1" />
+                        詳細
+                      </Button>
+                      <Button variant="primary" size="sm">
+                        <CheckCircle className="w-4 h-4 mr-1" />
+                        承認
+                      </Button>
+                      <Button variant="danger" size="sm">
+                        <Trash2 className="w-4 h-4 mr-1" />
+                        削除
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            );
+          })}
+
+          {filteredJobs.length === 0 && (
+            <Card className="bg-white/95 backdrop-blur-sm p-12">
+              <div className="text-center text-gray-500">
+                <Briefcase className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                <p>該当する求人が見つかりませんでした</p>
+              </div>
+            </Card>
+          )}
+        </div>
       </div>
 
       <BottomNav
         items={[
-          { label: 'さがす', path: '/admin/users', icon: Sparkles },
-          { label: 'はたらく', path: '/admin/jobs', icon: Zap },
+          { label: 'ユーザー', path: '/admin/users', icon: Sparkles },
+          { label: '求人', path: '/admin/jobs', icon: Zap },
           { label: 'Now', path: '/dashboard', icon: Flame },
           { label: 'メッセージ', path: '/messages', icon: MessageCircle },
-          { label: 'マイページ', path: '/admin/stats', icon: UserCircle },
+          { label: 'マイページ', path: '/profile', icon: UserCircle },
         ]}
       />
     </div>

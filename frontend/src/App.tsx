@@ -18,6 +18,9 @@ import ReviewPage from './pages/shared/ReviewPage';
 import { ReviewsListPage } from './pages/ReviewsListPage';
 import ClientJobCreatePage from './pages/client/JobCreatePage';
 import ClientJobsManagePage from './pages/client/JobsManagePage';
+import ClientApplicationsManagePage from './pages/client/ApplicationsManagePage';
+import ClientPaymentsPage from './pages/client/PaymentsPage';
+import ClientWorkersPage from './pages/client/WorkersPage';
 import QRCodeDisplayPage from './pages/client/QRCodeDisplayPage';
 import { ProfilePage } from './pages/ProfilePage';
 import PaymentsPage from './pages/PaymentsPage';
@@ -180,6 +183,30 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <ClientJobsManagePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs/applications/:jobId"
+          element={
+            <ProtectedRoute>
+              <ClientApplicationsManagePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/client/payments"
+          element={
+            <ProtectedRoute>
+              <ClientPaymentsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/client/workers"
+          element={
+            <ProtectedRoute>
+              <ClientWorkersPage />
             </ProtectedRoute>
           }
         />
