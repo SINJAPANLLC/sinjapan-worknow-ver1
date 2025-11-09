@@ -1,0 +1,36 @@
+     Loaded: loaded (/etc/systemd/system/worknow-backend.service; enabled; pres>
+     Active: active (running) since Sun 2025-11-09 14:24:45 UTC; 365ms ago
+   Main PID: 157624 (gunicorn)
+      Tasks: 5 (limit: 9483)
+     Memory: 77.4M (peak: 77.7M)
+        CPU: 586ms
+     CGroup: /system.slice/worknow-backend.service
+             ├─157624 /var/www/worknow/venv/bin/python3 /var/www/worknow/venv/b>
+             ├─157625 /var/www/worknow/venv/bin/python3 /var/www/worknow/venv/b>
+             ├─157626 /var/www/worknow/venv/bin/python3 /var/www/worknow/venv/b>
+             ├─157627 /var/www/worknow/venv/bin/python3 /var/www/worknow/venv/b>
+             └─157628 /var/www/worknow/venv/bin/python3 /var/www/worknow/venv/b>
+
+Nov 09 14:24:45 srv1087935 systemd[1]: worknow-backend.service: Scheduled resta>
+Nov 09 14:24:45 srv1087935 systemd[1]: Started worknow-backend.service - Work N>
+Nov 09 14:24:45 srv1087935 gunicorn[157624]: [2025-11-09 14:24:45 +0000] [15762>
+Nov 09 14:24:45 srv1087935 gunicorn[157624]: [2025-11-09 14:24:45 +0000] [15762>
+Nov 09 14:24:45 srv1087935 gunicorn[157624]: [2025-11-09 14:24:45 +0000] [15762>
+Nov 09 14:24:45 srv1087935 gunicorn[157625]: [2025-11-09 14:24:45 +0000] [15762>
+Nov 09 14:24:45 srv1087935 gunicorn[157626]: [2025-11-09 14:24:45 +0000] [15762>
+Nov 09 14:24:45 srv1087935 gunicorn[157627]: [2025-11-09 14:24:45 +0000] [15762>
+Nov 09 14:24:45 srv1087935 gunicorn[157628]: [2025-11-09 14:24:45 +0000] [15762>
+curl: (7) Failed to connect to localhost port 20000 after 0 ms: Couldn't connect to server
+curl: (7) Failed to connect to localhost port 8008 after 0 ms: Couldn't connect to server
+root@srv1087935:/var/www/worknow/frontend# # SSL証明書の取得（メールアドレスを自分のものに変更してください）
+certbot --nginx -d sinjapan-worknow.com -d www.sinjapan-worknow.com --non-interactive --agree-tos -m your-email@example.com
+
+# SSL証明書取得後、HTTPS設定に切り替え
+cp /var/www/worknow/deployment/nginx.conf /etc/nginx/sites-available/worknow
+nginx -t
+systemctl restart nginx
+
+# 証明書の自動更新を有効化
+systemctl enable certbot.timer
+systemctl status certbot.timer
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
