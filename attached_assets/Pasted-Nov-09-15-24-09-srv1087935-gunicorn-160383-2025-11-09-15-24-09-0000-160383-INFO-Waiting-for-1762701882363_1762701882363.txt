@@ -1,0 +1,38 @@
+Nov 09 15:24:09 srv1087935 gunicorn[160383]: [2025-11-09 15:24:09 +0000] [160383] [INFO] Waiting for application startup.
+Nov 09 15:24:09 srv1087935 gunicorn[160383]: [2025-11-09 15:24:09 +0000] [160383] [INFO] Application startup complete.
+Nov 09 15:24:09 srv1087935 gunicorn[160386]: [2025-11-09 15:24:09 +0000] [160386] [INFO] Started server process [160386]
+Nov 09 15:24:09 srv1087935 gunicorn[160386]: [2025-11-09 15:24:09 +0000] [160386] [INFO] Waiting for application startup.
+Nov 09 15:24:09 srv1087935 gunicorn[160386]: [2025-11-09 15:24:09 +0000] [160386] [INFO] Application startup complete.
+Nov 09 15:24:09 srv1087935 gunicorn[160384]: [2025-11-09 15:24:09 +0000] [160384] [INFO] Started server process [160384]
+Nov 09 15:24:09 srv1087935 gunicorn[160384]: [2025-11-09 15:24:09 +0000] [160384] [INFO] Waiting for application startup.
+Nov 09 15:24:09 srv1087935 gunicorn[160384]: [2025-11-09 15:24:09 +0000] [160384] [INFO] Application startup complete.
+Nov 09 15:24:09 srv1087935 gunicorn[160385]: [2025-11-09 15:24:09 +0000] [160385] [INFO] Started server process [160385]
+Nov 09 15:24:09 srv1087935 gunicorn[160385]: [2025-11-09 15:24:09 +0000] [160385] [INFO] Waiting for application startup.
+Nov 09 15:24:09 srv1087935 gunicorn[160385]: [2025-11-09 15:24:09 +0000] [160385] [INFO] Application startup complete.
+Nov 09 15:24:15 srv1087935 gunicorn[160384]: 127.0.0.1:50468 - "HEAD /auth/login HTTP/1.1" 405
+Nov 09 15:24:31 srv1087935 gunicorn[160385]: 127.0.0.1:51164 - "HEAD /auth/login HTTP/1.1" 405
+
+=== 環境変数確認 ===
+PGPORT=5432
+DOMAIN=sinjapan-worknow.com
+CORS_ORIGINS=https://sinjapan-worknow.com,https://www.sinjapan-worknow.com
+PORT=8008
+SMTP_PORT=587
+
+=== API動作確認 ===
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0    31    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 405 Method Not Allowed
+date: Sun, 09 Nov 2025 15:24:37 GMT
+server: uvicorn
+allow: POST
+content-length: 31
+content-type: application/json
+
+
+=== ブラウザでログインテスト ===
+URL: https://sinjapan-worknow.com
+Email: info@sinjapan.jp
+Password: Kazuya8008
+(venv) root@srv1087935:/var/www/worknow# 
