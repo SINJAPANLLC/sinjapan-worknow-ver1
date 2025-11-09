@@ -49,8 +49,18 @@ Thumbs.db
 # Environment
 .env
 .env.local
+.env.production
 backend/.env
 
 # Logs
 *.log
 /tmp/
+
+# Deployment
+deployment/*.log
+*.pem
+*.key
+
+# Uploads
+backend/uploads/*
+!backend/uploads/.gitkeep

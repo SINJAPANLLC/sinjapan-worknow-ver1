@@ -108,6 +108,10 @@ cd frontend
 npm install
 npm run build
 
+# プロダクション用のExpressサーバーディレクトリを先に作成
+mkdir -p dist-server
+npm install express --save
+
 # プロダクション用のExpressサーバーを作成
 cat > dist-server/server.js << 'SERVERJS'
 const express = require('express');
@@ -128,9 +132,6 @@ app.listen(PORT, HOST, () => {
   console.log(\`Frontend server running on http://\${HOST}:\${PORT}\`);
 });
 SERVERJS
-
-mkdir -p dist-server
-npm install express --save
 
 cd ..
 
@@ -159,8 +160,8 @@ echo -e "${GREEN}[10/10] systemdサービスとNginxを設定中...${NC}"
 cp deployment/worknow-backend.service /etc/systemd/system/
 cp deployment/worknow-frontend.service /etc/systemd/system/
 
-# Nginx設定をコピー
-cp deployment/nginx.conf /etc/nginx/sites-available/worknow
+# HTTP専用のNginx設定を先に適用（SSL証明書取得前）
+cp deployment/nginx-http.conf /etc/nginx/sites-available/worknow
 ln -sf /etc/nginx/sites-available/worknow /etc/nginx/sites-enabled/
 rm -f /etc/nginx/sites-enabled/default
 
@@ -186,6 +187,11 @@ echo -e "${YELLOW}メールアドレスを入力してください:${NC}"
 read -p "Email: " email
 
 certbot --nginx -d sinjapan-worknow.com -d www.sinjapan-worknow.com --non-interactive --agree-tos -m "$email"
+
+# SSL証明書取得後、HTTPS設定に切り替え
+cp deployment/nginx.conf /etc/nginx/sites-available/worknow
+nginx -t
+systemctl restart nginx
 
 # 証明書の自動更新を設定
 systemctl enable certbot.timer
