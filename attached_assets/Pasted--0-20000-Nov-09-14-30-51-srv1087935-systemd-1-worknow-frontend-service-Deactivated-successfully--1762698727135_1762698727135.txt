@@ -1,0 +1,31 @@
+.0:20000
+Nov 09 14:30:51 srv1087935 systemd[1]: worknow-frontend.service: Deactivated successfully.
+Nov 09 14:31:01 srv1087935 systemd[1]: worknow-frontend.service: Scheduled restart job, restart counter is at 48.
+Nov 09 14:31:01 srv1087935 systemd[1]: Started worknow-frontend.service - Work Now Frontend (React + Vite).
+Nov 09 14:31:01 srv1087935 node[158445]: Frontend server running on http://0.0.0.0:20000
+Nov 09 14:31:01 srv1087935 systemd[1]: worknow-frontend.service: Deactivated successfully.
+Nov 09 14:31:07 srv1087935 systemd[1]: Stopped worknow-frontend.service - Work Now Frontend (React + Vite).
+Nov 09 14:31:07 srv1087935 systemd[1]: Started worknow-frontend.service - Work Now Frontend (React + Vite).
+Nov 09 14:31:07 srv1087935 node[158456]: Frontend server running on http://0.0.0.0:20000
+Nov 09 14:31:07 srv1087935 node[158456]: Error: ENOENT: no such file or directory, stat '/var/www/worknow/frontend/dist/index.html'
+Nov 09 14:31:15 srv1087935 node[158456]: Error: ENOENT: no such file or directory, stat '/var/www/worknow/frontend/dist/index.html'
+Nov 09 14:31:33 srv1087935 systemd[1]: Stopping worknow-frontend.service - Work Now Frontend (React + Vite)...
+Nov 09 14:31:33 srv1087935 systemd[1]: worknow-frontend.service: Deactivated successfully.
+Nov 09 14:31:33 srv1087935 systemd[1]: Stopped worknow-frontend.service - Work Now Frontend (React + Vite).
+Nov 09 14:31:33 srv1087935 systemd[1]: Started worknow-frontend.service - Work Now Frontend (React + Vite).
+Nov 09 14:31:33 srv1087935 node[158492]: Frontend server running on http://0.0.0.0:20000
+Nov 09 14:31:40 srv1087935 node[158492]: Error: ENOENT: no such file or directory, stat '/var/www/worknow/frontend/dist/index.html'
+root      122941  0.1  1.2 11808884 101124 ?     Ssl  Nov08   3:45 node /var/www/sinjapan-onlineschool-ver2/dist/index.js
+root      136402  0.0  0.6 1025056 55676 ?       Ssl  Nov08   0:00 node /usr/bin/tsx /var/www/sinjapan-manager/server/index.ts
+root      136414  0.0  2.4 54690188 202780 ?     Sl   Nov08   0:33 /usr/bin/nod --require /usr/lib/node_modules/tsx/dist/preflight.cjs --import file:///usr/lib/node_modules/tsx/dist/loader.mjs /var/www/sinjapan-manager/server/index.ts
+root      136426  0.0  0.0 1236776 6144 ?        Sl   Nov08   1:14 /usr/lib/nod_modules/tsx/node_modules/@esbuild/linux-x64/bin/esbuild --service=0.25.12 --ping
+root      151294  1.2  6.7 55334052 547968 ?     Ssl  13:58   0:25 node /var/www/poker/start.js
+root      151578  0.2  1.3 22561056 110116 ?     Sl   14:03   0:04 node /root/only-u-ver3/dist/index.js
+www-data  158492  0.6  0.6 1026684 53748 ?       Ssl  14:31   0:00 /usr/bin/nod /var/www/worknow/frontend/dist-server/server.cjs
+root      158515  0.0  0.0   7076  2176 pts/0    S+   14:32   0:00 grep --color=auto node
+ls: cannot access '/var/www/worknow/frontend/dist/': No such file or directory
+
+> frontend@0.0.0 build
+> tsc -b && vite build
+
+sh: 1: tsc: not found
