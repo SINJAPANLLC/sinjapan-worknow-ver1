@@ -34,7 +34,7 @@ The "Work Now" platform comprises a FastAPI (Python) backend, a React + Vite + T
 -   **Job Management**: CRUD operations for jobs with status management, including urgent job prioritization and geocoding integration.
 -   **Application & Assignment Management**: Create, update applications, track assignments. Includes a Wolt-style delivery management system with status progression, route visualization, and real-time updates. Application cards display enriched job information.
 -   **Payment Management**: Stripe Connect integration for payouts, bank account management (Japanese banking specifics), worker withdrawal system with automatic payment creation and balance tracking.
--   **Profile Management**: Extended user profiles with personal details, phone verification, ID document upload, emergency contacts, qualifications, location features, and password change functionality. Header displays user avatar.
+-   **Profile Management**: Extended user profiles with personal details, phone verification, ID document upload, emergency contacts, qualifications, location features, and password change functionality. Header displays user avatar. **Client My Page**: Full profile management with mobile-first slide-up modals for editing company information (name, phone, address) and secure password change with validation.
 -   **Activity Tracking**: Comprehensive logging of user actions.
 -   **Review System**: 1-5 star ratings with comments for mutual evaluation.
 -   **Notifications**: Push notification readiness with device token management.
