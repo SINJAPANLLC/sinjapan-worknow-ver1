@@ -450,8 +450,8 @@ function WithdrawalRequestSection({
       alert('振込先口座を選択してください');
       return;
     }
-    if (formData.amount <= 0) {
-      alert('金額を入力してください');
+    if (formData.amount < 100) {
+      alert('振込金額は100円以上で入力してください');
       return;
     }
     mutation.mutate(formData);
@@ -482,7 +482,7 @@ function WithdrawalRequestSection({
           <input
             type="number"
             required
-            min="1"
+            min="100"
             value={formData.amount || ''}
             onChange={(e) => setFormData({ ...formData, amount: parseInt(e.target.value) || 0 })}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
