@@ -544,6 +544,15 @@ export default function JobCreatePage() {
                         {errors.hourly_rate}
                       </p>
                     )}
+                    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <p className="text-xs text-blue-900 font-semibold mb-2">💡 料金について</p>
+                      <ul className="text-xs text-blue-800 space-y-1">
+                        <li>• <strong>交通費：</strong>別途支給または含む（仕事内容に記載してください）</li>
+                        <li>• <strong>プラットフォーム手数料：</strong>20%（税抜・クライアント負担）</li>
+                        <li>• <strong>振込手数料：</strong>¥330（税抜・ワーカー負担）</li>
+                        <li>• <strong>即時支払手数料：</strong>5%（税抜・ワーカーが選択した場合のみ）</li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
 

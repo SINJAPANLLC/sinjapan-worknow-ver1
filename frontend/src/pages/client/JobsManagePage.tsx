@@ -5,7 +5,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
-import { jobsAPI, assignmentsAPI, reviewsAPI, type Assignment, type Job } from '../../lib/api';
+import { jobsAPI, assignmentsAPI, reviewsAPI, qrAPI, type Assignment, type Job, type QRCodeResponse } from '../../lib/api';
 import { useAuthStore } from '../../stores/authStore';
 import { slideUp, fadeIn } from '../../utils/animations';
 import { 
@@ -44,6 +44,8 @@ export default function JobsManagePage() {
   const [expandedJobId, setExpandedJobId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<JobStatus | 'all'>('all');
+  const [qrModalAssignment, setQrModalAssignment] = useState<Assignment | null>(null);
+  const [qrType, setQrType] = useState<'check-in' | 'check-out'>('check-in');
   const { user } = useAuthStore();
   
   const { data: jobsData = [], isLoading } = useQuery({
@@ -61,6 +63,17 @@ export default function JobsManagePage() {
     queryKey: ['my-reviews', user?.id],
     queryFn: () => reviewsAPI.list({ reviewer_id: user?.id }),
     enabled: !!user?.id,
+  });
+
+  const { data: qrCodeData, isLoading: qrLoading } = useQuery({
+    queryKey: ['qr-code', qrModalAssignment?.id, qrType],
+    queryFn: () => {
+      if (!qrModalAssignment) throw new Error('No assignment selected');
+      return qrType === 'check-in' 
+        ? qrAPI.getCheckInQR(qrModalAssignment.id)
+        : qrAPI.getCheckOutQR(qrModalAssignment.id);
+    },
+    enabled: !!qrModalAssignment,
   });
 
   const deleteMutation = useMutation({
@@ -366,7 +379,10 @@ export default function JobsManagePage() {
                           <div className="flex gap-2">
                             {assignment.status === 'active' && (
                               <Button
-                                onClick={() => navigate(`/qr-code/${assignment.id}`)}
+                                onClick={() => {
+                                  setQrModalAssignment(assignment);
+                                  setQrType('check-in');
+                                }}
                                 className="bg-gradient-to-r from-primary to-primary-dark text-white hover:from-primary-dark hover:to-primary"
                                 size="sm"
                               >
@@ -631,6 +647,87 @@ export default function JobsManagePage() {
           </motion.div>
         )}
       </div>
+
+      {/* QR Code Modal */}
+      <AnimatePresence>
+        {qrModalAssignment && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setQrModalAssignment(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl"
+            >
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-[#00CED1] to-[#009999] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <QrCode className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">QRコード</h3>
+                <p className="text-gray-600">ワーカーにこのQRコードをスキャンしてもらってください</p>
+              </div>
+
+              {/* QR Type Selector */}
+              <div className="flex gap-2 mb-6">
+                <Button
+                  onClick={() => setQrType('check-in')}
+                  variant={qrType === 'check-in' ? 'primary' : 'outline'}
+                  className="flex-1"
+                  size="sm"
+                >
+                  チェックイン
+                </Button>
+                <Button
+                  onClick={() => setQrType('check-out')}
+                  variant={qrType === 'check-out' ? 'primary' : 'outline'}
+                  className="flex-1"
+                  size="sm"
+                >
+                  チェックアウト
+                </Button>
+              </div>
+
+              {/* QR Code Image */}
+              {qrLoading ? (
+                <div className="flex justify-center items-center h-64">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00CED1]"></div>
+                </div>
+              ) : qrCodeData ? (
+                <div className="space-y-4">
+                  <div className="bg-white p-4 rounded-xl border-2 border-gray-200 flex justify-center">
+                    <img 
+                      src={qrCodeData.qr_code_image} 
+                      alt="QR Code" 
+                      className="w-64 h-64 object-contain"
+                    />
+                  </div>
+                  <div className="text-xs text-center text-gray-500">
+                    有効期限: {new Date(qrCodeData.expires_at).toLocaleString('ja-JP')}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center text-gray-500 py-8">
+                  QRコードの生成に失敗しました
+                </div>
+              )}
+
+              <Button
+                onClick={() => setQrModalAssignment(null)}
+                variant="outline"
+                className="w-full mt-6"
+              >
+                閉じる
+              </Button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Delete Confirmation Modal */}
       <AnimatePresence>
