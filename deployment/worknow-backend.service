@@ -1,0 +1,17 @@
+[Unit]
+Description=Work Now Backend (FastAPI)
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/worknow/backend
+Environment="PATH=/var/www/worknow/venv/bin"
+EnvironmentFile=/var/www/worknow/.env
+ExecStart=/var/www/worknow/venv/bin/gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8008 --timeout 120 --access-logfile - --error-logfile -
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
