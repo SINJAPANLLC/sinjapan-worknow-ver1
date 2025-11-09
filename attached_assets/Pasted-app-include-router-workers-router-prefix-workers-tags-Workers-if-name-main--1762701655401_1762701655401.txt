@@ -1,0 +1,97 @@
+app.include_router(workers.router, prefix="/workers", tags=["Workers"])
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=int(CFG["PORT"]), reload=True)
+Note: Unnecessary use of -X or --request, POST is already inferred.
+* Host localhost:8008 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying [::1]:8008...
+* connect to ::1 port 8008 from ::1 port 58280 failed: Connection refused
+*   Trying 127.0.0.1:8008...
+* Connected to localhost (127.0.0.1) port 8008
+> POST /auth/login HTTP/1.1
+> Host: localhost:8008
+> User-Agent: curl/8.5.0
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 34
+> 
+} [34 bytes data]
+< HTTP/1.1 422 Unprocessable Entity
+< date: Sun, 09 Nov 2025 15:20:19 GMT
+(venv) root@srv1087935:/var/www/worknow# # VPS上で実行：環境変数とCORS設定を確認 
+
+# .envファイルの内容を確認
+sudo cat /var/www/worknow/.env
+
+# フロントエンドのAPI設定を確認
+cat /var/www/worknow/frontend/dist/index.html | grep -o 'http[s]*://[^"]*' | head -10
+
+# APIのベースURLが正しいか確認
+curl -I http://localhost:8008/auth/login 2>&1 | head -10
+DATABASE_URL=postgresql://worknow_user:Change_This_Password_123!@localhost:5432/worknow_production
+PGHOST=localhost
+PGPORT=5432
+PGDATABASE=worknow_production
+PGUSER=worknow_user
+PGPASSWORD=Change_This_Password_123!
+
+SECRET_KEY=pioA8o+nNR+8Zpp+a+QBn6PcKBSQ5unzUFVr6YTTGML557q2o1kt4Sf/eyuUDlj6
+JWT_SECRET=pioA8o+nNR+8Zpp+a+QBn6PcKBSQ5unzUFVr6YTTGML557q2o1kt4Sf/eyuUDlj6
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+BACKEND_URL=https://sinjapan-worknow.com/api
+FRONTEND_URL=https://sinjapan-worknow.com
+DOMAIN=sinjapan-worknow.com
+ALLOWED_ORIGINS=https://sinjapan-worknow.com,https://www.sinjapan-worknow.com
+
+SUPABASE_URL=https://dummy.supabase.co
+SUPABASE_KEY=dummy_key_replace_later
+
+STRIPE_API_KEY=sk_test_dummy
+STRIPE_SECRET_KEY=pioA8o+nNR+8Zpp+a+QBn6PcKBSQ5unzUFVr6YTTGML557q2o1kt4Sf/eyuUDlj6
+STRIPE_PUBLISHABLE_KEY=pk_test_dummy
+STRIPE_WEBHOOK_SECRET=whsec_dummy
+STRIPE_CONNECT_CLIENT_ID=ca_dummy
+
+FIREBASE_PROJECT_ID=dummy
+FIREBASE_PRIVATE_KEY_ID=dummy
+FIREBASE_PRIVATE_KEY="dummy"
+FIREBASE_CLIENT_EMAIL=dummy@dummy.com
+FIREBASE_CLIENT_ID=dummy
+FIREBASE_CLIENT_X509_CERT_URL=https://dummy.com
+FIREBASE_KEY=dummy
+
+REDIS_URL=redis://localhost:6379/0
+
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=noreply@sinjapan-worknow.com
+SMTP_PASSWORD=dummy
+SMTP_FROM=noreply@sinjapan-worknow.com
+
+UPLOAD_DIR=/var/www/worknow/backend/uploads
+MAX_UPLOAD_SIZE=10485760
+
+ADMIN_EMAIL=admin@sinjapan-worknow.com
+
+NODE_ENV=production
+PYTHON_ENV=production
+LOG_LEVEL=info
+https://unpkg.com/leaflet@1.9.4/dist/leaflet.css
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0    31    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 405 Method Not Allowed
+date: Sun, 09 Nov 2025 15:20:50 GMT
+server: uvicorn
+allow: POST
+content-length: 31
+content-type: application/json
+
+(venv) root@srv1087935:/var/www/worknow# 
